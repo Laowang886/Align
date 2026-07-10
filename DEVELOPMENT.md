@@ -2,7 +2,7 @@
 
 ## 1. environemnt setup
 - **Node.js**
-- **Package Manager**
+- **Package Manager** :https://pnpm.io/    / run "pnpm install"
 - **Database:** Ensure Docker is installed and running. Execute `docker compose up -d` to start Postgres/Redis
 
 #NOTES:
