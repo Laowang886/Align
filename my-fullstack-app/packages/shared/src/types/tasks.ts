@@ -4,11 +4,11 @@ export type TaskPriority = 'low' | 'medium' | 'high';
 export interface Task {
   id: string;
   title: string;
-  description?: string; // 可选字段
+  description?: string; 
   status: TaskStatus;
   priority: TaskPriority;
   boardId: string;
-  assigneeId?: string; // 负责人ID
+  assigneeId?: string; 
   createdAt: Date;
   updatedAt: Date;
 }
