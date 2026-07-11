@@ -1,0 +1,95 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  avatarUrl String?
+  createdAt DateTime @default(now())
+
+  teamMembers TeamMember[]
+  tasks       Task[]       @relation("assignee")
+  messages    Message[]
+}
+
+model Team {
+  id      String @id @default(uuid())
+  name    String
+  slug    String @unique
+
+  members  TeamMember[]
+  boards   Board[]
+  channels Channel[]
+}
+
+model TeamMember {
+  id     String @id @default(uuid())
+  role   String @default("member") // owner | admin | member
+  userId String
+  teamId String
+
+  user User @relation(fields: [userId], references: [id])
+  team Team @relation(fields: [teamId], references: [id])
+
+  @@unique([userId, teamId])
+}
+
+model Board {
+  id     String @id @default(uuid())
+  title  String
+  teamId String
+
+  team    Team     @relation(fields: [teamId], references: [id])
+  columns Column[]
+}
+
+model Column {
+  id      String @id @default(uuid())
+  title   String
+  order   Int
+  boardId String
+
+  board Board  @relation(fields: [boardId], references: [id])
+  tasks Task[]
+}
+
+model Task {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  order       Int
+  columnId    String
+  assigneeId  String?
+
+  column   Column @relation(fields: [columnId], references: [id])
+  assignee User?  @relation("assignee", fields: [assigneeId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Channel {
+  id     String @id @default(uuid())
+  name   String
+  teamId String
+
+  team     Team      @relation(fields: [teamId], references: [id])
+  messages Message[]
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  channelId String
+  authorId  String
+  createdAt DateTime @default(now())
+
+  channel Channel @relation(fields: [channelId], references: [id])
+  author  User    @relation(fields: [authorId], references: [id])
+}
