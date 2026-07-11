@@ -5,6 +5,7 @@ import styles from "../page.module.css";
 import DashboardView from "./DashboardView";
 import Header from "./Header";
 import Icon from "./Icon";
+import KanbanBoardView from "./KanbanBoardView";
 import Sidebar from "./Sidebar";
 
 export default function AppShell() {
@@ -18,7 +19,7 @@ export default function AppShell() {
   }
 
   function navigate(view: string) {
-    if (view === "Dashboard") setActiveView(view);
+    if (view === "Dashboard" || view === "Kanban Board") setActiveView(view);
     else notify(`${view} view is coming next.`);
   }
 
@@ -26,7 +27,9 @@ export default function AppShell() {
     {sidebarOpen && <Sidebar activeView={activeView} onNavigate={navigate} />}
     <div className={styles.shell}>
       <Header onToggleSidebar={() => setSidebarOpen((open) => !open)} />
-      <DashboardView onGenerateReport={() => notify("Weekly report generation started.")} />
+      {activeView === "Dashboard"
+        ? <DashboardView onGenerateReport={() => notify("Weekly report generation started.")} />
+        : <KanbanBoardView onNotify={notify} />}
     </div>
     {toast && <div className={styles.toast}><Icon name="check" size={19} />{toast}</div>}
   </div>;
