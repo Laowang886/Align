@@ -1,6 +1,11 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-sans: "Inter", var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Space Grotesk", var(--font-geist-sans), sans-serif;
+  --font-mono: "JetBrains Mono", var(--font-geist-mono), ui-monospace, monospace;
 }
 
 html,
@@ -28,3 +33,22 @@ a {
 .imgDark {
   display: none;
 }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.25); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.45); }
+
+.markdown-body h1, .markdown-body h2 { font-family: var(--font-heading); color: #111827; border-bottom: 1px solid #e5e7eb; }
+.markdown-body h1 { font-size: 1.75rem; margin: 1.5rem 0 .75rem; padding-bottom: .375rem; }
+.markdown-body h2 { font-size: 1.35rem; margin: 1.25rem 0 .5rem; padding-bottom: .25rem; }
+.markdown-body h3 { font-size: 1.125rem; margin: 1rem 0 .5rem; color: #374151; }
+.markdown-body p { margin: .5rem 0 .75rem; line-height: 1.625; color: #4b5563; }
+.markdown-body ul, .markdown-body ol { padding-left: 1.5rem; margin-bottom: .75rem; color: #4b5563; }
+.markdown-body code { font-family: var(--font-mono); font-size: .85em; background:#f3f4f6; padding:.125rem .25rem; border-radius:.25rem; color:#dc2626; }
+.markdown-body pre { background:#1f2937; padding:1rem; border-radius:.5rem; overflow-x:auto; margin-bottom:1rem; }
+.markdown-body pre code { background:transparent; padding:0; color:#f3f4f6; }
+.markdown-body blockquote { border-left:4px solid #e5e7eb; padding-left:1rem; color:#6b7280; font-style:italic; margin-bottom:1rem; }
+.markdown-body table { width:100%; border-collapse:collapse; margin-bottom:1rem; }
+.markdown-body th, .markdown-body td { border:1px solid #e5e7eb; padding:.5rem .75rem; text-align:left; }
+.markdown-body th { background:#f9fafb; font-weight:600; }
