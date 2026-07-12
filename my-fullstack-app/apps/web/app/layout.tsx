@@ -12,8 +12,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "SprintForge | Workspace Overview",
-  description: "SprintForge workspace analytics dashboard",
+  title: "SprintForge | Sprint workspace",
+  description: "SprintForge helps teams plan sprints, monitor risk, and share weekly workspace summaries.",
 };
 
 export default function RootLayout({
