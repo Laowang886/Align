@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 
-const jwtExpiresIn = (process.env.JWT_EXPIRATION_TIME ?? '365d') as NonNullable<
+const jwtExpiresIn = (process.env.JWT_EXPIRATION_TIME ?? '7d') as NonNullable<
   JwtModuleOptions['signOptions']
 >['expiresIn'];
 

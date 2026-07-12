@@ -12,8 +12,16 @@ interface JwtPayload {
   email: string;
 }
 
-const cookieExtractor = (request: Request): string | null =>
-  request?.cookies?.token ?? null;
+const cookieExtractor = (request: Request): string | null => {
+  const cookies: unknown = request?.cookies;
+
+  if (typeof cookies !== 'object' || cookies === null) {
+    return null;
+  }
+
+  const token = (cookies as Record<string, unknown>).token;
+  return typeof token === 'string' ? token : null;
+};
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -31,7 +39,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload) {
+  validate(payload: JwtPayload) {
     return {
       id: payload.sub,
       email: payload.email,
