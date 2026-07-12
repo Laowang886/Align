@@ -66,9 +66,135 @@ npx prisma studio
 小技巧：如果想让日志更直观，可以在 Nest.js 中使用 Logger 模块，或者在终端安装 pino-pretty，让控制台输出带颜色的结构化 JSON 日志，这样看起来会比原始文本清晰得多。
 
 
+## 5. 本地运行指南
 
-run backend:
-PORT=4000 pnpm --filter api start:dev
+以下命令默认在项目目录 `my-fullstack-app` 中执行。
 
-run frontend:
+### 5.1 环境要求
+
+- Node.js 18 或更高版本
+- pnpm 9
+- Docker Desktop（用于运行 PostgreSQL 和 Redis）
+
+首次运行先安装依赖：
+
+```powershell
+cd C:\code\Align\my-fullstack-app
+pnpm install
+```
+
+### 5.2 配置环境变量
+
+后端配置文件：`apps/api/.env`
+
+```env
+DATABASE_URL="postgresql://dev:dev@localhost:5432/fullstack_app"
+JWT_SECRET="请替换为本地开发密钥"
+JWT_EXPIRATION_TIME="1h"
+FRONTEND_URL="http://localhost:3000"
+PORT=4000
+```
+
+注意：`FRONTEND_URL` 末尾不要添加 `/`，否则浏览器可能因为 CORS Origin 不匹配而拦截 API 响应。
+
+前端配置文件：`apps/web/.env.local`
+
+```env
+NEXT_PUBLIC_API_URL="http://localhost:4000/"
+NEXT_PUBLIC_WS_URL="ws://localhost:4000"
+```
+
+修改环境变量后，需要重启对应的开发服务。
+
+### 5.3 启动数据库
+
+先启动 Docker Desktop，再运行：
+
+```powershell
+docker compose up -d
+docker compose ps
+```
+
+正常情况下，PostgreSQL 使用端口 `5432`，Redis 使用端口 `6379`。
+
+首次启动或 Prisma Schema 更新后执行：
+
+```powershell
+pnpm --filter api prisma:generate
+pnpm --filter api prisma:migrate
+```
+
+### 5.4 启动应用
+
+同时启动 Web、API 和其他 workspace 开发任务：
+
+```powershell
+pnpm dev
+```
+
+也可以分别启动：
+
+```powershell
+# API：http://localhost:4000
+pnpm --filter api start:dev
+
+# Web：http://localhost:3000
 pnpm --filter web dev
+```
+
+常用访问地址：
+
+- Web 首页：`http://localhost:3000`
+- 登录/注册：`http://localhost:3000/login`
+- Workspace：`http://localhost:3000/workspaces`
+- API 健康检查：`http://localhost:4000`
+
+### 5.5 首次使用流程
+
+1. 打开 `http://localhost:3000/login`。
+2. 切换到 Register，创建第一个账户。
+3. 登录成功后，前端会把 JWT 保存到 `localStorage.accessToken`。
+4. 创建 Workspace。
+5. 如需邀请成员，请先让对方注册账户，然后在 Members & Access 中输入对方邮箱并选择角色。
+
+Owner 可以邀请 Admin 或 Member；Admin 只能邀请 Member。当前邀请功能会直接把已注册用户加入 Workspace，不发送真实邮件。
+
+### 5.6 验证与检查
+
+```powershell
+pnpm check-types
+pnpm lint
+pnpm build
+```
+
+提交代码前至少运行 `pnpm check-types` 和 `pnpm lint`。
+
+### 5.7 常见问题
+
+#### Unable to connect to the API service
+
+- 确认 API 正在监听 `4000` 端口。
+- 确认 `NEXT_PUBLIC_API_URL` 指向 `http://localhost:4000/`。
+- 确认 `FRONTEND_URL` 是 `http://localhost:3000`，末尾没有 `/`。
+
+#### Unauthorized / 401
+
+- 打开 `/login` 重新登录。
+- 401 时前端会自动清除失效 token 并跳转登录页。
+- JWT 默认一小时过期，可通过 `JWT_EXPIRATION_TIME` 调整。
+
+#### 数据库连接失败
+
+```powershell
+docker compose ps
+```
+
+确认 Docker Desktop 已启动，并确认 PostgreSQL 容器处于 Running 状态。若 Schema 尚未初始化，重新执行 Prisma migration。
+
+#### 修改共享类型后没有生效
+
+```powershell
+pnpm --filter @repo/shared build
+```
+
+API 和 Web 使用的是 `@repo/shared` 的构建产物，修改 `packages/shared` 后需要重新构建，或启动 TypeScript watch。

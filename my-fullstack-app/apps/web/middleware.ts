@@ -25,7 +25,7 @@ export function middleware(request: NextRequest) {
 
   //Already logged in, but would like to access the login page again? → Go directly to the workspace
   if (token && publicPath && pathname !== "/") {
-    return NextResponse.redirect(new URL("/workspace", request.url));
+    return NextResponse.redirect(new URL("/workspaces", request.url));
   }
   //The inspection passed, everything is normal, and permission is granted to proceed to its destination.
   return NextResponse.next();

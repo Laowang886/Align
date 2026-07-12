@@ -21,6 +21,7 @@ const paths: Record<IconName, ReactNode> = {
   plus: <path d="M12 5v14M5 12h14" />,
   alert: <><circle cx="12" cy="12" r="9" /><path d="M12 7v6M12 17h.01" /></>,
   activity: <path d="M3 12h4l2.5-7 5 14 2.5-7h4" />,
+  mail: <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></>,
 };
 
 export default function Icon({ name, size = 20, ...props }: IconProps) {
