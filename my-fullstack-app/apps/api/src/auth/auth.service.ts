@@ -4,3 +4,76 @@
 // 创建 User
 // 比较登录密码
 // 签发 JWT token
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { RegisterDto } from './dto/register.dto';
+import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from '../prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
+import { LoginDto } from './dto/login.dto';
+
+@Injectable()
+export class AuthService {
+  constructor(
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+  ) {}
+  async register(dto: RegisterDto) {
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+
+    if (existingUser) {
+      throw new ConflictException('Email already exists');
+    }
+
+    // Hash the password before storing it in the database
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+    const user = await this.prisma.user.create({
+      data: {
+        name: dto.name,
+        email: dto.email,
+        password: hashedPassword,
+      },
+    });
+
+    // Exclude the password from the returned user object for security reasons
+    const { password, ...safeUser } = user;
+    void password; // Do not send the password hash to the client.
+    return safeUser;
+  }
+
+  async login(dto: LoginDto) {
+    // Search for the user in the database by email
+    const user = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    // Compare the provided password with the hashed password stored in the database
+    const isPasswordValid = await bcrypt.compare(dto.password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Incorrect password');
+    }
+
+    // 3. Generate a JWT token for the authenticated user
+    // The payload typically includes the user's ID and email, which can be used to identify the user in subsequent requests. The token is signed using the JwtService, which ensures that it can be verified later.
+    const payload = { sub: user.id, email: user.email };
+    const token = await this.jwtService.signAsync(payload);
+
+    // 4. return the token and user information (excluding the password) to the client. The password is omitted from the response for security reasons, ensuring that sensitive information is not exposed.
+    const { password, ...safeUser } = user;
+    void password; // Do not send the password hash to the client.
+    return {
+      token,
+      user: safeUser,
+    };
+  }
+}

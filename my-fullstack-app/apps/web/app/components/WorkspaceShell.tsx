@@ -7,7 +7,7 @@ import Header from "./Header";
 import Icon from "./Icon";
 import Sidebar from "./Sidebar";
 
-export default function AppShell() {
+export default function WorkspaceShell() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeView, setActiveView] = useState("Dashboard");
   const [toast, setToast] = useState<string | null>(null);

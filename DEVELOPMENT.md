@@ -64,3 +64,11 @@ npx prisma studio
 在终端运行 pnpm --filter api start:dev 时，Nest.js 的日志默认会输出在终端。
 
 小技巧：如果想让日志更直观，可以在 Nest.js 中使用 Logger 模块，或者在终端安装 pino-pretty，让控制台输出带颜色的结构化 JSON 日志，这样看起来会比原始文本清晰得多。
+
+
+
+run backend:
+PORT=4000 pnpm --filter api start:dev
+
+run frontend:
+pnpm --filter web dev
