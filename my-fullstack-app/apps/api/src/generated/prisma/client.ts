@@ -45,15 +45,20 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
- * Model Team
+ * Model Workspace
  * 
  */
-export type Team = Prisma.TeamModel
+export type Workspace = Prisma.WorkspaceModel
 /**
- * Model TeamMember
+ * Model WorkspaceMember
  * 
  */
-export type TeamMember = Prisma.TeamMemberModel
+export type WorkspaceMember = Prisma.WorkspaceMemberModel
+/**
+ * Model Project
+ * 
+ */
+export type Project = Prisma.ProjectModel
 /**
  * Model Board
  * 

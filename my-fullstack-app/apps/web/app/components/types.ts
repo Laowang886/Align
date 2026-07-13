@@ -3,7 +3,7 @@ import type { ComponentProps } from "react";
 export type IconName =
   | "menu" | "external" | "bell" | "chevron" | "user" | "dashboard"
   | "board" | "clock" | "book" | "chat" | "users" | "clipboard"
-  | "check" | "trend" | "calendar" | "sparkles" | "plus" | "alert" | "activity";
+  | "check" | "trend" | "calendar" | "sparkles" | "plus" | "alert" | "activity" | "mail";
 
 export type NavigationItem = {
   label: string;

@@ -27,19 +27,19 @@ export type AggregateBoard = {
 export type BoardMinAggregateOutputType = {
   id: string | null
   title: string | null
-  teamId: string | null
+  projectId: string | null
 }
 
 export type BoardMaxAggregateOutputType = {
   id: string | null
   title: string | null
-  teamId: string | null
+  projectId: string | null
 }
 
 export type BoardCountAggregateOutputType = {
   id: number
   title: number
-  teamId: number
+  projectId: number
   _all: number
 }
 
@@ -47,19 +47,19 @@ export type BoardCountAggregateOutputType = {
 export type BoardMinAggregateInputType = {
   id?: true
   title?: true
-  teamId?: true
+  projectId?: true
 }
 
 export type BoardMaxAggregateInputType = {
   id?: true
   title?: true
-  teamId?: true
+  projectId?: true
 }
 
 export type BoardCountAggregateInputType = {
   id?: true
   title?: true
-  teamId?: true
+  projectId?: true
   _all?: true
 }
 
@@ -138,7 +138,7 @@ export type BoardGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type BoardGroupByOutputType = {
   id: string
   title: string
-  teamId: string
+  projectId: string
   _count: BoardCountAggregateOutputType | null
   _min: BoardMinAggregateOutputType | null
   _max: BoardMaxAggregateOutputType | null
@@ -165,16 +165,16 @@ export type BoardWhereInput = {
   NOT?: Prisma.BoardWhereInput | Prisma.BoardWhereInput[]
   id?: Prisma.StringFilter<"Board"> | string
   title?: Prisma.StringFilter<"Board"> | string
-  teamId?: Prisma.StringFilter<"Board"> | string
-  team?: Prisma.XOR<Prisma.TeamScalarRelationFilter, Prisma.TeamWhereInput>
+  projectId?: Prisma.StringFilter<"Board"> | string
+  project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
   columns?: Prisma.ColumnListRelationFilter
 }
 
 export type BoardOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  teamId?: Prisma.SortOrder
-  team?: Prisma.TeamOrderByWithRelationInput
+  projectId?: Prisma.SortOrder
+  project?: Prisma.ProjectOrderByWithRelationInput
   columns?: Prisma.ColumnOrderByRelationAggregateInput
 }
 
@@ -184,15 +184,15 @@ export type BoardWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.BoardWhereInput[]
   NOT?: Prisma.BoardWhereInput | Prisma.BoardWhereInput[]
   title?: Prisma.StringFilter<"Board"> | string
-  teamId?: Prisma.StringFilter<"Board"> | string
-  team?: Prisma.XOR<Prisma.TeamScalarRelationFilter, Prisma.TeamWhereInput>
+  projectId?: Prisma.StringFilter<"Board"> | string
+  project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
   columns?: Prisma.ColumnListRelationFilter
 }, "id">
 
 export type BoardOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  teamId?: Prisma.SortOrder
+  projectId?: Prisma.SortOrder
   _count?: Prisma.BoardCountOrderByAggregateInput
   _max?: Prisma.BoardMaxOrderByAggregateInput
   _min?: Prisma.BoardMinOrderByAggregateInput
@@ -204,41 +204,41 @@ export type BoardScalarWhereWithAggregatesInput = {
   NOT?: Prisma.BoardScalarWhereWithAggregatesInput | Prisma.BoardScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Board"> | string
   title?: Prisma.StringWithAggregatesFilter<"Board"> | string
-  teamId?: Prisma.StringWithAggregatesFilter<"Board"> | string
+  projectId?: Prisma.StringWithAggregatesFilter<"Board"> | string
 }
 
 export type BoardCreateInput = {
   id?: string
   title: string
-  team: Prisma.TeamCreateNestedOneWithoutBoardsInput
+  project: Prisma.ProjectCreateNestedOneWithoutBoardsInput
   columns?: Prisma.ColumnCreateNestedManyWithoutBoardInput
 }
 
 export type BoardUncheckedCreateInput = {
   id?: string
   title: string
-  teamId: string
+  projectId: string
   columns?: Prisma.ColumnUncheckedCreateNestedManyWithoutBoardInput
 }
 
 export type BoardUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  team?: Prisma.TeamUpdateOneRequiredWithoutBoardsNestedInput
+  project?: Prisma.ProjectUpdateOneRequiredWithoutBoardsNestedInput
   columns?: Prisma.ColumnUpdateManyWithoutBoardNestedInput
 }
 
 export type BoardUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
   columns?: Prisma.ColumnUncheckedUpdateManyWithoutBoardNestedInput
 }
 
 export type BoardCreateManyInput = {
   id?: string
   title: string
-  teamId: string
+  projectId: string
 }
 
 export type BoardUpdateManyMutationInput = {
@@ -249,7 +249,7 @@ export type BoardUpdateManyMutationInput = {
 export type BoardUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type BoardListRelationFilter = {
@@ -265,19 +265,19 @@ export type BoardOrderByRelationAggregateInput = {
 export type BoardCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  teamId?: Prisma.SortOrder
+  projectId?: Prisma.SortOrder
 }
 
 export type BoardMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  teamId?: Prisma.SortOrder
+  projectId?: Prisma.SortOrder
 }
 
 export type BoardMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  teamId?: Prisma.SortOrder
+  projectId?: Prisma.SortOrder
 }
 
 export type BoardScalarRelationFilter = {
@@ -285,45 +285,45 @@ export type BoardScalarRelationFilter = {
   isNot?: Prisma.BoardWhereInput
 }
 
-export type BoardCreateNestedManyWithoutTeamInput = {
-  create?: Prisma.XOR<Prisma.BoardCreateWithoutTeamInput, Prisma.BoardUncheckedCreateWithoutTeamInput> | Prisma.BoardCreateWithoutTeamInput[] | Prisma.BoardUncheckedCreateWithoutTeamInput[]
-  connectOrCreate?: Prisma.BoardCreateOrConnectWithoutTeamInput | Prisma.BoardCreateOrConnectWithoutTeamInput[]
-  createMany?: Prisma.BoardCreateManyTeamInputEnvelope
+export type BoardCreateNestedManyWithoutProjectInput = {
+  create?: Prisma.XOR<Prisma.BoardCreateWithoutProjectInput, Prisma.BoardUncheckedCreateWithoutProjectInput> | Prisma.BoardCreateWithoutProjectInput[] | Prisma.BoardUncheckedCreateWithoutProjectInput[]
+  connectOrCreate?: Prisma.BoardCreateOrConnectWithoutProjectInput | Prisma.BoardCreateOrConnectWithoutProjectInput[]
+  createMany?: Prisma.BoardCreateManyProjectInputEnvelope
   connect?: Prisma.BoardWhereUniqueInput | Prisma.BoardWhereUniqueInput[]
 }
 
-export type BoardUncheckedCreateNestedManyWithoutTeamInput = {
-  create?: Prisma.XOR<Prisma.BoardCreateWithoutTeamInput, Prisma.BoardUncheckedCreateWithoutTeamInput> | Prisma.BoardCreateWithoutTeamInput[] | Prisma.BoardUncheckedCreateWithoutTeamInput[]
-  connectOrCreate?: Prisma.BoardCreateOrConnectWithoutTeamInput | Prisma.BoardCreateOrConnectWithoutTeamInput[]
-  createMany?: Prisma.BoardCreateManyTeamInputEnvelope
+export type BoardUncheckedCreateNestedManyWithoutProjectInput = {
+  create?: Prisma.XOR<Prisma.BoardCreateWithoutProjectInput, Prisma.BoardUncheckedCreateWithoutProjectInput> | Prisma.BoardCreateWithoutProjectInput[] | Prisma.BoardUncheckedCreateWithoutProjectInput[]
+  connectOrCreate?: Prisma.BoardCreateOrConnectWithoutProjectInput | Prisma.BoardCreateOrConnectWithoutProjectInput[]
+  createMany?: Prisma.BoardCreateManyProjectInputEnvelope
   connect?: Prisma.BoardWhereUniqueInput | Prisma.BoardWhereUniqueInput[]
 }
 
-export type BoardUpdateManyWithoutTeamNestedInput = {
-  create?: Prisma.XOR<Prisma.BoardCreateWithoutTeamInput, Prisma.BoardUncheckedCreateWithoutTeamInput> | Prisma.BoardCreateWithoutTeamInput[] | Prisma.BoardUncheckedCreateWithoutTeamInput[]
-  connectOrCreate?: Prisma.BoardCreateOrConnectWithoutTeamInput | Prisma.BoardCreateOrConnectWithoutTeamInput[]
-  upsert?: Prisma.BoardUpsertWithWhereUniqueWithoutTeamInput | Prisma.BoardUpsertWithWhereUniqueWithoutTeamInput[]
-  createMany?: Prisma.BoardCreateManyTeamInputEnvelope
+export type BoardUpdateManyWithoutProjectNestedInput = {
+  create?: Prisma.XOR<Prisma.BoardCreateWithoutProjectInput, Prisma.BoardUncheckedCreateWithoutProjectInput> | Prisma.BoardCreateWithoutProjectInput[] | Prisma.BoardUncheckedCreateWithoutProjectInput[]
+  connectOrCreate?: Prisma.BoardCreateOrConnectWithoutProjectInput | Prisma.BoardCreateOrConnectWithoutProjectInput[]
+  upsert?: Prisma.BoardUpsertWithWhereUniqueWithoutProjectInput | Prisma.BoardUpsertWithWhereUniqueWithoutProjectInput[]
+  createMany?: Prisma.BoardCreateManyProjectInputEnvelope
   set?: Prisma.BoardWhereUniqueInput | Prisma.BoardWhereUniqueInput[]
   disconnect?: Prisma.BoardWhereUniqueInput | Prisma.BoardWhereUniqueInput[]
   delete?: Prisma.BoardWhereUniqueInput | Prisma.BoardWhereUniqueInput[]
   connect?: Prisma.BoardWhereUniqueInput | Prisma.BoardWhereUniqueInput[]
-  update?: Prisma.BoardUpdateWithWhereUniqueWithoutTeamInput | Prisma.BoardUpdateWithWhereUniqueWithoutTeamInput[]
-  updateMany?: Prisma.BoardUpdateManyWithWhereWithoutTeamInput | Prisma.BoardUpdateManyWithWhereWithoutTeamInput[]
+  update?: Prisma.BoardUpdateWithWhereUniqueWithoutProjectInput | Prisma.BoardUpdateWithWhereUniqueWithoutProjectInput[]
+  updateMany?: Prisma.BoardUpdateManyWithWhereWithoutProjectInput | Prisma.BoardUpdateManyWithWhereWithoutProjectInput[]
   deleteMany?: Prisma.BoardScalarWhereInput | Prisma.BoardScalarWhereInput[]
 }
 
-export type BoardUncheckedUpdateManyWithoutTeamNestedInput = {
-  create?: Prisma.XOR<Prisma.BoardCreateWithoutTeamInput, Prisma.BoardUncheckedCreateWithoutTeamInput> | Prisma.BoardCreateWithoutTeamInput[] | Prisma.BoardUncheckedCreateWithoutTeamInput[]
-  connectOrCreate?: Prisma.BoardCreateOrConnectWithoutTeamInput | Prisma.BoardCreateOrConnectWithoutTeamInput[]
-  upsert?: Prisma.BoardUpsertWithWhereUniqueWithoutTeamInput | Prisma.BoardUpsertWithWhereUniqueWithoutTeamInput[]
-  createMany?: Prisma.BoardCreateManyTeamInputEnvelope
+export type BoardUncheckedUpdateManyWithoutProjectNestedInput = {
+  create?: Prisma.XOR<Prisma.BoardCreateWithoutProjectInput, Prisma.BoardUncheckedCreateWithoutProjectInput> | Prisma.BoardCreateWithoutProjectInput[] | Prisma.BoardUncheckedCreateWithoutProjectInput[]
+  connectOrCreate?: Prisma.BoardCreateOrConnectWithoutProjectInput | Prisma.BoardCreateOrConnectWithoutProjectInput[]
+  upsert?: Prisma.BoardUpsertWithWhereUniqueWithoutProjectInput | Prisma.BoardUpsertWithWhereUniqueWithoutProjectInput[]
+  createMany?: Prisma.BoardCreateManyProjectInputEnvelope
   set?: Prisma.BoardWhereUniqueInput | Prisma.BoardWhereUniqueInput[]
   disconnect?: Prisma.BoardWhereUniqueInput | Prisma.BoardWhereUniqueInput[]
   delete?: Prisma.BoardWhereUniqueInput | Prisma.BoardWhereUniqueInput[]
   connect?: Prisma.BoardWhereUniqueInput | Prisma.BoardWhereUniqueInput[]
-  update?: Prisma.BoardUpdateWithWhereUniqueWithoutTeamInput | Prisma.BoardUpdateWithWhereUniqueWithoutTeamInput[]
-  updateMany?: Prisma.BoardUpdateManyWithWhereWithoutTeamInput | Prisma.BoardUpdateManyWithWhereWithoutTeamInput[]
+  update?: Prisma.BoardUpdateWithWhereUniqueWithoutProjectInput | Prisma.BoardUpdateWithWhereUniqueWithoutProjectInput[]
+  updateMany?: Prisma.BoardUpdateManyWithWhereWithoutProjectInput | Prisma.BoardUpdateManyWithWhereWithoutProjectInput[]
   deleteMany?: Prisma.BoardScalarWhereInput | Prisma.BoardScalarWhereInput[]
 }
 
@@ -341,42 +341,42 @@ export type BoardUpdateOneRequiredWithoutColumnsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BoardUpdateToOneWithWhereWithoutColumnsInput, Prisma.BoardUpdateWithoutColumnsInput>, Prisma.BoardUncheckedUpdateWithoutColumnsInput>
 }
 
-export type BoardCreateWithoutTeamInput = {
+export type BoardCreateWithoutProjectInput = {
   id?: string
   title: string
   columns?: Prisma.ColumnCreateNestedManyWithoutBoardInput
 }
 
-export type BoardUncheckedCreateWithoutTeamInput = {
+export type BoardUncheckedCreateWithoutProjectInput = {
   id?: string
   title: string
   columns?: Prisma.ColumnUncheckedCreateNestedManyWithoutBoardInput
 }
 
-export type BoardCreateOrConnectWithoutTeamInput = {
+export type BoardCreateOrConnectWithoutProjectInput = {
   where: Prisma.BoardWhereUniqueInput
-  create: Prisma.XOR<Prisma.BoardCreateWithoutTeamInput, Prisma.BoardUncheckedCreateWithoutTeamInput>
+  create: Prisma.XOR<Prisma.BoardCreateWithoutProjectInput, Prisma.BoardUncheckedCreateWithoutProjectInput>
 }
 
-export type BoardCreateManyTeamInputEnvelope = {
-  data: Prisma.BoardCreateManyTeamInput | Prisma.BoardCreateManyTeamInput[]
+export type BoardCreateManyProjectInputEnvelope = {
+  data: Prisma.BoardCreateManyProjectInput | Prisma.BoardCreateManyProjectInput[]
   skipDuplicates?: boolean
 }
 
-export type BoardUpsertWithWhereUniqueWithoutTeamInput = {
+export type BoardUpsertWithWhereUniqueWithoutProjectInput = {
   where: Prisma.BoardWhereUniqueInput
-  update: Prisma.XOR<Prisma.BoardUpdateWithoutTeamInput, Prisma.BoardUncheckedUpdateWithoutTeamInput>
-  create: Prisma.XOR<Prisma.BoardCreateWithoutTeamInput, Prisma.BoardUncheckedCreateWithoutTeamInput>
+  update: Prisma.XOR<Prisma.BoardUpdateWithoutProjectInput, Prisma.BoardUncheckedUpdateWithoutProjectInput>
+  create: Prisma.XOR<Prisma.BoardCreateWithoutProjectInput, Prisma.BoardUncheckedCreateWithoutProjectInput>
 }
 
-export type BoardUpdateWithWhereUniqueWithoutTeamInput = {
+export type BoardUpdateWithWhereUniqueWithoutProjectInput = {
   where: Prisma.BoardWhereUniqueInput
-  data: Prisma.XOR<Prisma.BoardUpdateWithoutTeamInput, Prisma.BoardUncheckedUpdateWithoutTeamInput>
+  data: Prisma.XOR<Prisma.BoardUpdateWithoutProjectInput, Prisma.BoardUncheckedUpdateWithoutProjectInput>
 }
 
-export type BoardUpdateManyWithWhereWithoutTeamInput = {
+export type BoardUpdateManyWithWhereWithoutProjectInput = {
   where: Prisma.BoardScalarWhereInput
-  data: Prisma.XOR<Prisma.BoardUpdateManyMutationInput, Prisma.BoardUncheckedUpdateManyWithoutTeamInput>
+  data: Prisma.XOR<Prisma.BoardUpdateManyMutationInput, Prisma.BoardUncheckedUpdateManyWithoutProjectInput>
 }
 
 export type BoardScalarWhereInput = {
@@ -385,19 +385,19 @@ export type BoardScalarWhereInput = {
   NOT?: Prisma.BoardScalarWhereInput | Prisma.BoardScalarWhereInput[]
   id?: Prisma.StringFilter<"Board"> | string
   title?: Prisma.StringFilter<"Board"> | string
-  teamId?: Prisma.StringFilter<"Board"> | string
+  projectId?: Prisma.StringFilter<"Board"> | string
 }
 
 export type BoardCreateWithoutColumnsInput = {
   id?: string
   title: string
-  team: Prisma.TeamCreateNestedOneWithoutBoardsInput
+  project: Prisma.ProjectCreateNestedOneWithoutBoardsInput
 }
 
 export type BoardUncheckedCreateWithoutColumnsInput = {
   id?: string
   title: string
-  teamId: string
+  projectId: string
 }
 
 export type BoardCreateOrConnectWithoutColumnsInput = {
@@ -419,33 +419,33 @@ export type BoardUpdateToOneWithWhereWithoutColumnsInput = {
 export type BoardUpdateWithoutColumnsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  team?: Prisma.TeamUpdateOneRequiredWithoutBoardsNestedInput
+  project?: Prisma.ProjectUpdateOneRequiredWithoutBoardsNestedInput
 }
 
 export type BoardUncheckedUpdateWithoutColumnsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type BoardCreateManyTeamInput = {
+export type BoardCreateManyProjectInput = {
   id?: string
   title: string
 }
 
-export type BoardUpdateWithoutTeamInput = {
+export type BoardUpdateWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   columns?: Prisma.ColumnUpdateManyWithoutBoardNestedInput
 }
 
-export type BoardUncheckedUpdateWithoutTeamInput = {
+export type BoardUncheckedUpdateWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   columns?: Prisma.ColumnUncheckedUpdateManyWithoutBoardNestedInput
 }
 
-export type BoardUncheckedUpdateManyWithoutTeamInput = {
+export type BoardUncheckedUpdateManyWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -484,8 +484,8 @@ export type BoardCountOutputTypeCountColumnsArgs<ExtArgs extends runtime.Types.E
 export type BoardSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
-  teamId?: boolean
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  projectId?: boolean
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   columns?: boolean | Prisma.Board$columnsArgs<ExtArgs>
   _count?: boolean | Prisma.BoardCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["board"]>
@@ -493,46 +493,46 @@ export type BoardSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type BoardSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
-  teamId?: boolean
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  projectId?: boolean
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["board"]>
 
 export type BoardSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
-  teamId?: boolean
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  projectId?: boolean
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["board"]>
 
 export type BoardSelectScalar = {
   id?: boolean
   title?: boolean
-  teamId?: boolean
+  projectId?: boolean
 }
 
-export type BoardOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "teamId", ExtArgs["result"]["board"]>
+export type BoardOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "projectId", ExtArgs["result"]["board"]>
 export type BoardInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   columns?: boolean | Prisma.Board$columnsArgs<ExtArgs>
   _count?: boolean | Prisma.BoardCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BoardIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }
 export type BoardIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }
 
 export type $BoardPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Board"
   objects: {
-    team: Prisma.$TeamPayload<ExtArgs>
+    project: Prisma.$ProjectPayload<ExtArgs>
     columns: Prisma.$ColumnPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     title: string
-    teamId: string
+    projectId: string
   }, ExtArgs["result"]["board"]>
   composites: {}
 }
@@ -927,7 +927,7 @@ readonly fields: BoardFieldRefs;
  */
 export interface Prisma__BoardClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  team<T extends Prisma.TeamDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeamDefaultArgs<ExtArgs>>): Prisma.Prisma__TeamClient<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  project<T extends Prisma.ProjectDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProjectDefaultArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   columns<T extends Prisma.Board$columnsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Board$columnsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ColumnPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -960,7 +960,7 @@ export interface Prisma__BoardClient<T, Null = never, ExtArgs extends runtime.Ty
 export interface BoardFieldRefs {
   readonly id: Prisma.FieldRef<"Board", 'String'>
   readonly title: Prisma.FieldRef<"Board", 'String'>
-  readonly teamId: Prisma.FieldRef<"Board", 'String'>
+  readonly projectId: Prisma.FieldRef<"Board", 'String'>
 }
     
 

@@ -27,19 +27,19 @@ export type AggregateChannel = {
 export type ChannelMinAggregateOutputType = {
   id: string | null
   name: string | null
-  teamId: string | null
+  workspaceId: string | null
 }
 
 export type ChannelMaxAggregateOutputType = {
   id: string | null
   name: string | null
-  teamId: string | null
+  workspaceId: string | null
 }
 
 export type ChannelCountAggregateOutputType = {
   id: number
   name: number
-  teamId: number
+  workspaceId: number
   _all: number
 }
 
@@ -47,19 +47,19 @@ export type ChannelCountAggregateOutputType = {
 export type ChannelMinAggregateInputType = {
   id?: true
   name?: true
-  teamId?: true
+  workspaceId?: true
 }
 
 export type ChannelMaxAggregateInputType = {
   id?: true
   name?: true
-  teamId?: true
+  workspaceId?: true
 }
 
 export type ChannelCountAggregateInputType = {
   id?: true
   name?: true
-  teamId?: true
+  workspaceId?: true
   _all?: true
 }
 
@@ -138,7 +138,7 @@ export type ChannelGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type ChannelGroupByOutputType = {
   id: string
   name: string
-  teamId: string
+  workspaceId: string
   _count: ChannelCountAggregateOutputType | null
   _min: ChannelMinAggregateOutputType | null
   _max: ChannelMaxAggregateOutputType | null
@@ -165,16 +165,16 @@ export type ChannelWhereInput = {
   NOT?: Prisma.ChannelWhereInput | Prisma.ChannelWhereInput[]
   id?: Prisma.StringFilter<"Channel"> | string
   name?: Prisma.StringFilter<"Channel"> | string
-  teamId?: Prisma.StringFilter<"Channel"> | string
-  team?: Prisma.XOR<Prisma.TeamScalarRelationFilter, Prisma.TeamWhereInput>
+  workspaceId?: Prisma.StringFilter<"Channel"> | string
+  workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   messages?: Prisma.MessageListRelationFilter
 }
 
 export type ChannelOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  teamId?: Prisma.SortOrder
-  team?: Prisma.TeamOrderByWithRelationInput
+  workspaceId?: Prisma.SortOrder
+  workspace?: Prisma.WorkspaceOrderByWithRelationInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
 }
 
@@ -184,15 +184,15 @@ export type ChannelWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ChannelWhereInput[]
   NOT?: Prisma.ChannelWhereInput | Prisma.ChannelWhereInput[]
   name?: Prisma.StringFilter<"Channel"> | string
-  teamId?: Prisma.StringFilter<"Channel"> | string
-  team?: Prisma.XOR<Prisma.TeamScalarRelationFilter, Prisma.TeamWhereInput>
+  workspaceId?: Prisma.StringFilter<"Channel"> | string
+  workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   messages?: Prisma.MessageListRelationFilter
 }, "id">
 
 export type ChannelOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  teamId?: Prisma.SortOrder
+  workspaceId?: Prisma.SortOrder
   _count?: Prisma.ChannelCountOrderByAggregateInput
   _max?: Prisma.ChannelMaxOrderByAggregateInput
   _min?: Prisma.ChannelMinOrderByAggregateInput
@@ -204,41 +204,41 @@ export type ChannelScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ChannelScalarWhereWithAggregatesInput | Prisma.ChannelScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Channel"> | string
   name?: Prisma.StringWithAggregatesFilter<"Channel"> | string
-  teamId?: Prisma.StringWithAggregatesFilter<"Channel"> | string
+  workspaceId?: Prisma.StringWithAggregatesFilter<"Channel"> | string
 }
 
 export type ChannelCreateInput = {
   id?: string
   name: string
-  team: Prisma.TeamCreateNestedOneWithoutChannelsInput
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutChannelsInput
   messages?: Prisma.MessageCreateNestedManyWithoutChannelInput
 }
 
 export type ChannelUncheckedCreateInput = {
   id?: string
   name: string
-  teamId: string
+  workspaceId: string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutChannelInput
 }
 
 export type ChannelUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  team?: Prisma.TeamUpdateOneRequiredWithoutChannelsNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutChannelsNestedInput
   messages?: Prisma.MessageUpdateManyWithoutChannelNestedInput
 }
 
 export type ChannelUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutChannelNestedInput
 }
 
 export type ChannelCreateManyInput = {
   id?: string
   name: string
-  teamId: string
+  workspaceId: string
 }
 
 export type ChannelUpdateManyMutationInput = {
@@ -249,7 +249,7 @@ export type ChannelUpdateManyMutationInput = {
 export type ChannelUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ChannelListRelationFilter = {
@@ -265,19 +265,19 @@ export type ChannelOrderByRelationAggregateInput = {
 export type ChannelCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  teamId?: Prisma.SortOrder
+  workspaceId?: Prisma.SortOrder
 }
 
 export type ChannelMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  teamId?: Prisma.SortOrder
+  workspaceId?: Prisma.SortOrder
 }
 
 export type ChannelMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  teamId?: Prisma.SortOrder
+  workspaceId?: Prisma.SortOrder
 }
 
 export type ChannelScalarRelationFilter = {
@@ -285,45 +285,45 @@ export type ChannelScalarRelationFilter = {
   isNot?: Prisma.ChannelWhereInput
 }
 
-export type ChannelCreateNestedManyWithoutTeamInput = {
-  create?: Prisma.XOR<Prisma.ChannelCreateWithoutTeamInput, Prisma.ChannelUncheckedCreateWithoutTeamInput> | Prisma.ChannelCreateWithoutTeamInput[] | Prisma.ChannelUncheckedCreateWithoutTeamInput[]
-  connectOrCreate?: Prisma.ChannelCreateOrConnectWithoutTeamInput | Prisma.ChannelCreateOrConnectWithoutTeamInput[]
-  createMany?: Prisma.ChannelCreateManyTeamInputEnvelope
+export type ChannelCreateNestedManyWithoutWorkspaceInput = {
+  create?: Prisma.XOR<Prisma.ChannelCreateWithoutWorkspaceInput, Prisma.ChannelUncheckedCreateWithoutWorkspaceInput> | Prisma.ChannelCreateWithoutWorkspaceInput[] | Prisma.ChannelUncheckedCreateWithoutWorkspaceInput[]
+  connectOrCreate?: Prisma.ChannelCreateOrConnectWithoutWorkspaceInput | Prisma.ChannelCreateOrConnectWithoutWorkspaceInput[]
+  createMany?: Prisma.ChannelCreateManyWorkspaceInputEnvelope
   connect?: Prisma.ChannelWhereUniqueInput | Prisma.ChannelWhereUniqueInput[]
 }
 
-export type ChannelUncheckedCreateNestedManyWithoutTeamInput = {
-  create?: Prisma.XOR<Prisma.ChannelCreateWithoutTeamInput, Prisma.ChannelUncheckedCreateWithoutTeamInput> | Prisma.ChannelCreateWithoutTeamInput[] | Prisma.ChannelUncheckedCreateWithoutTeamInput[]
-  connectOrCreate?: Prisma.ChannelCreateOrConnectWithoutTeamInput | Prisma.ChannelCreateOrConnectWithoutTeamInput[]
-  createMany?: Prisma.ChannelCreateManyTeamInputEnvelope
+export type ChannelUncheckedCreateNestedManyWithoutWorkspaceInput = {
+  create?: Prisma.XOR<Prisma.ChannelCreateWithoutWorkspaceInput, Prisma.ChannelUncheckedCreateWithoutWorkspaceInput> | Prisma.ChannelCreateWithoutWorkspaceInput[] | Prisma.ChannelUncheckedCreateWithoutWorkspaceInput[]
+  connectOrCreate?: Prisma.ChannelCreateOrConnectWithoutWorkspaceInput | Prisma.ChannelCreateOrConnectWithoutWorkspaceInput[]
+  createMany?: Prisma.ChannelCreateManyWorkspaceInputEnvelope
   connect?: Prisma.ChannelWhereUniqueInput | Prisma.ChannelWhereUniqueInput[]
 }
 
-export type ChannelUpdateManyWithoutTeamNestedInput = {
-  create?: Prisma.XOR<Prisma.ChannelCreateWithoutTeamInput, Prisma.ChannelUncheckedCreateWithoutTeamInput> | Prisma.ChannelCreateWithoutTeamInput[] | Prisma.ChannelUncheckedCreateWithoutTeamInput[]
-  connectOrCreate?: Prisma.ChannelCreateOrConnectWithoutTeamInput | Prisma.ChannelCreateOrConnectWithoutTeamInput[]
-  upsert?: Prisma.ChannelUpsertWithWhereUniqueWithoutTeamInput | Prisma.ChannelUpsertWithWhereUniqueWithoutTeamInput[]
-  createMany?: Prisma.ChannelCreateManyTeamInputEnvelope
+export type ChannelUpdateManyWithoutWorkspaceNestedInput = {
+  create?: Prisma.XOR<Prisma.ChannelCreateWithoutWorkspaceInput, Prisma.ChannelUncheckedCreateWithoutWorkspaceInput> | Prisma.ChannelCreateWithoutWorkspaceInput[] | Prisma.ChannelUncheckedCreateWithoutWorkspaceInput[]
+  connectOrCreate?: Prisma.ChannelCreateOrConnectWithoutWorkspaceInput | Prisma.ChannelCreateOrConnectWithoutWorkspaceInput[]
+  upsert?: Prisma.ChannelUpsertWithWhereUniqueWithoutWorkspaceInput | Prisma.ChannelUpsertWithWhereUniqueWithoutWorkspaceInput[]
+  createMany?: Prisma.ChannelCreateManyWorkspaceInputEnvelope
   set?: Prisma.ChannelWhereUniqueInput | Prisma.ChannelWhereUniqueInput[]
   disconnect?: Prisma.ChannelWhereUniqueInput | Prisma.ChannelWhereUniqueInput[]
   delete?: Prisma.ChannelWhereUniqueInput | Prisma.ChannelWhereUniqueInput[]
   connect?: Prisma.ChannelWhereUniqueInput | Prisma.ChannelWhereUniqueInput[]
-  update?: Prisma.ChannelUpdateWithWhereUniqueWithoutTeamInput | Prisma.ChannelUpdateWithWhereUniqueWithoutTeamInput[]
-  updateMany?: Prisma.ChannelUpdateManyWithWhereWithoutTeamInput | Prisma.ChannelUpdateManyWithWhereWithoutTeamInput[]
+  update?: Prisma.ChannelUpdateWithWhereUniqueWithoutWorkspaceInput | Prisma.ChannelUpdateWithWhereUniqueWithoutWorkspaceInput[]
+  updateMany?: Prisma.ChannelUpdateManyWithWhereWithoutWorkspaceInput | Prisma.ChannelUpdateManyWithWhereWithoutWorkspaceInput[]
   deleteMany?: Prisma.ChannelScalarWhereInput | Prisma.ChannelScalarWhereInput[]
 }
 
-export type ChannelUncheckedUpdateManyWithoutTeamNestedInput = {
-  create?: Prisma.XOR<Prisma.ChannelCreateWithoutTeamInput, Prisma.ChannelUncheckedCreateWithoutTeamInput> | Prisma.ChannelCreateWithoutTeamInput[] | Prisma.ChannelUncheckedCreateWithoutTeamInput[]
-  connectOrCreate?: Prisma.ChannelCreateOrConnectWithoutTeamInput | Prisma.ChannelCreateOrConnectWithoutTeamInput[]
-  upsert?: Prisma.ChannelUpsertWithWhereUniqueWithoutTeamInput | Prisma.ChannelUpsertWithWhereUniqueWithoutTeamInput[]
-  createMany?: Prisma.ChannelCreateManyTeamInputEnvelope
+export type ChannelUncheckedUpdateManyWithoutWorkspaceNestedInput = {
+  create?: Prisma.XOR<Prisma.ChannelCreateWithoutWorkspaceInput, Prisma.ChannelUncheckedCreateWithoutWorkspaceInput> | Prisma.ChannelCreateWithoutWorkspaceInput[] | Prisma.ChannelUncheckedCreateWithoutWorkspaceInput[]
+  connectOrCreate?: Prisma.ChannelCreateOrConnectWithoutWorkspaceInput | Prisma.ChannelCreateOrConnectWithoutWorkspaceInput[]
+  upsert?: Prisma.ChannelUpsertWithWhereUniqueWithoutWorkspaceInput | Prisma.ChannelUpsertWithWhereUniqueWithoutWorkspaceInput[]
+  createMany?: Prisma.ChannelCreateManyWorkspaceInputEnvelope
   set?: Prisma.ChannelWhereUniqueInput | Prisma.ChannelWhereUniqueInput[]
   disconnect?: Prisma.ChannelWhereUniqueInput | Prisma.ChannelWhereUniqueInput[]
   delete?: Prisma.ChannelWhereUniqueInput | Prisma.ChannelWhereUniqueInput[]
   connect?: Prisma.ChannelWhereUniqueInput | Prisma.ChannelWhereUniqueInput[]
-  update?: Prisma.ChannelUpdateWithWhereUniqueWithoutTeamInput | Prisma.ChannelUpdateWithWhereUniqueWithoutTeamInput[]
-  updateMany?: Prisma.ChannelUpdateManyWithWhereWithoutTeamInput | Prisma.ChannelUpdateManyWithWhereWithoutTeamInput[]
+  update?: Prisma.ChannelUpdateWithWhereUniqueWithoutWorkspaceInput | Prisma.ChannelUpdateWithWhereUniqueWithoutWorkspaceInput[]
+  updateMany?: Prisma.ChannelUpdateManyWithWhereWithoutWorkspaceInput | Prisma.ChannelUpdateManyWithWhereWithoutWorkspaceInput[]
   deleteMany?: Prisma.ChannelScalarWhereInput | Prisma.ChannelScalarWhereInput[]
 }
 
@@ -341,42 +341,42 @@ export type ChannelUpdateOneRequiredWithoutMessagesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ChannelUpdateToOneWithWhereWithoutMessagesInput, Prisma.ChannelUpdateWithoutMessagesInput>, Prisma.ChannelUncheckedUpdateWithoutMessagesInput>
 }
 
-export type ChannelCreateWithoutTeamInput = {
+export type ChannelCreateWithoutWorkspaceInput = {
   id?: string
   name: string
   messages?: Prisma.MessageCreateNestedManyWithoutChannelInput
 }
 
-export type ChannelUncheckedCreateWithoutTeamInput = {
+export type ChannelUncheckedCreateWithoutWorkspaceInput = {
   id?: string
   name: string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutChannelInput
 }
 
-export type ChannelCreateOrConnectWithoutTeamInput = {
+export type ChannelCreateOrConnectWithoutWorkspaceInput = {
   where: Prisma.ChannelWhereUniqueInput
-  create: Prisma.XOR<Prisma.ChannelCreateWithoutTeamInput, Prisma.ChannelUncheckedCreateWithoutTeamInput>
+  create: Prisma.XOR<Prisma.ChannelCreateWithoutWorkspaceInput, Prisma.ChannelUncheckedCreateWithoutWorkspaceInput>
 }
 
-export type ChannelCreateManyTeamInputEnvelope = {
-  data: Prisma.ChannelCreateManyTeamInput | Prisma.ChannelCreateManyTeamInput[]
+export type ChannelCreateManyWorkspaceInputEnvelope = {
+  data: Prisma.ChannelCreateManyWorkspaceInput | Prisma.ChannelCreateManyWorkspaceInput[]
   skipDuplicates?: boolean
 }
 
-export type ChannelUpsertWithWhereUniqueWithoutTeamInput = {
+export type ChannelUpsertWithWhereUniqueWithoutWorkspaceInput = {
   where: Prisma.ChannelWhereUniqueInput
-  update: Prisma.XOR<Prisma.ChannelUpdateWithoutTeamInput, Prisma.ChannelUncheckedUpdateWithoutTeamInput>
-  create: Prisma.XOR<Prisma.ChannelCreateWithoutTeamInput, Prisma.ChannelUncheckedCreateWithoutTeamInput>
+  update: Prisma.XOR<Prisma.ChannelUpdateWithoutWorkspaceInput, Prisma.ChannelUncheckedUpdateWithoutWorkspaceInput>
+  create: Prisma.XOR<Prisma.ChannelCreateWithoutWorkspaceInput, Prisma.ChannelUncheckedCreateWithoutWorkspaceInput>
 }
 
-export type ChannelUpdateWithWhereUniqueWithoutTeamInput = {
+export type ChannelUpdateWithWhereUniqueWithoutWorkspaceInput = {
   where: Prisma.ChannelWhereUniqueInput
-  data: Prisma.XOR<Prisma.ChannelUpdateWithoutTeamInput, Prisma.ChannelUncheckedUpdateWithoutTeamInput>
+  data: Prisma.XOR<Prisma.ChannelUpdateWithoutWorkspaceInput, Prisma.ChannelUncheckedUpdateWithoutWorkspaceInput>
 }
 
-export type ChannelUpdateManyWithWhereWithoutTeamInput = {
+export type ChannelUpdateManyWithWhereWithoutWorkspaceInput = {
   where: Prisma.ChannelScalarWhereInput
-  data: Prisma.XOR<Prisma.ChannelUpdateManyMutationInput, Prisma.ChannelUncheckedUpdateManyWithoutTeamInput>
+  data: Prisma.XOR<Prisma.ChannelUpdateManyMutationInput, Prisma.ChannelUncheckedUpdateManyWithoutWorkspaceInput>
 }
 
 export type ChannelScalarWhereInput = {
@@ -385,19 +385,19 @@ export type ChannelScalarWhereInput = {
   NOT?: Prisma.ChannelScalarWhereInput | Prisma.ChannelScalarWhereInput[]
   id?: Prisma.StringFilter<"Channel"> | string
   name?: Prisma.StringFilter<"Channel"> | string
-  teamId?: Prisma.StringFilter<"Channel"> | string
+  workspaceId?: Prisma.StringFilter<"Channel"> | string
 }
 
 export type ChannelCreateWithoutMessagesInput = {
   id?: string
   name: string
-  team: Prisma.TeamCreateNestedOneWithoutChannelsInput
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutChannelsInput
 }
 
 export type ChannelUncheckedCreateWithoutMessagesInput = {
   id?: string
   name: string
-  teamId: string
+  workspaceId: string
 }
 
 export type ChannelCreateOrConnectWithoutMessagesInput = {
@@ -419,33 +419,33 @@ export type ChannelUpdateToOneWithWhereWithoutMessagesInput = {
 export type ChannelUpdateWithoutMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  team?: Prisma.TeamUpdateOneRequiredWithoutChannelsNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutChannelsNestedInput
 }
 
 export type ChannelUncheckedUpdateWithoutMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type ChannelCreateManyTeamInput = {
+export type ChannelCreateManyWorkspaceInput = {
   id?: string
   name: string
 }
 
-export type ChannelUpdateWithoutTeamInput = {
+export type ChannelUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUpdateManyWithoutChannelNestedInput
 }
 
-export type ChannelUncheckedUpdateWithoutTeamInput = {
+export type ChannelUncheckedUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutChannelNestedInput
 }
 
-export type ChannelUncheckedUpdateManyWithoutTeamInput = {
+export type ChannelUncheckedUpdateManyWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -484,8 +484,8 @@ export type ChannelCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Type
 export type ChannelSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  teamId?: boolean
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  workspaceId?: boolean
+  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   messages?: boolean | Prisma.Channel$messagesArgs<ExtArgs>
   _count?: boolean | Prisma.ChannelCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["channel"]>
@@ -493,46 +493,46 @@ export type ChannelSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 export type ChannelSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  teamId?: boolean
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  workspaceId?: boolean
+  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["channel"]>
 
 export type ChannelSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  teamId?: boolean
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  workspaceId?: boolean
+  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["channel"]>
 
 export type ChannelSelectScalar = {
   id?: boolean
   name?: boolean
-  teamId?: boolean
+  workspaceId?: boolean
 }
 
-export type ChannelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "teamId", ExtArgs["result"]["channel"]>
+export type ChannelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "workspaceId", ExtArgs["result"]["channel"]>
 export type ChannelInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   messages?: boolean | Prisma.Channel$messagesArgs<ExtArgs>
   _count?: boolean | Prisma.ChannelCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ChannelIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
 }
 export type ChannelIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
 }
 
 export type $ChannelPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Channel"
   objects: {
-    team: Prisma.$TeamPayload<ExtArgs>
+    workspace: Prisma.$WorkspacePayload<ExtArgs>
     messages: Prisma.$MessagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
-    teamId: string
+    workspaceId: string
   }, ExtArgs["result"]["channel"]>
   composites: {}
 }
@@ -927,7 +927,7 @@ readonly fields: ChannelFieldRefs;
  */
 export interface Prisma__ChannelClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  team<T extends Prisma.TeamDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeamDefaultArgs<ExtArgs>>): Prisma.Prisma__TeamClient<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  workspace<T extends Prisma.WorkspaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   messages<T extends Prisma.Channel$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Channel$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -960,7 +960,7 @@ export interface Prisma__ChannelClient<T, Null = never, ExtArgs extends runtime.
 export interface ChannelFieldRefs {
   readonly id: Prisma.FieldRef<"Channel", 'String'>
   readonly name: Prisma.FieldRef<"Channel", 'String'>
-  readonly teamId: Prisma.FieldRef<"Channel", 'String'>
+  readonly workspaceId: Prisma.FieldRef<"Channel", 'String'>
 }
     
 

@@ -22,7 +22,6 @@ export default function AppShell() {
     if (view === "Dashboard" || view === "Kanban Board") setActiveView(view);
     else notify(`${view} view is coming next.`);
   }
-  
 
   return <div className={styles.app}>
     {sidebarOpen && <Sidebar activeView={activeView} onNavigate={navigate} />}
