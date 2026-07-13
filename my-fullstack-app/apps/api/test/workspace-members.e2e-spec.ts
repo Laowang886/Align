@@ -2,11 +2,12 @@ import { randomUUID } from 'node:crypto';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
+import cookieParser from 'cookie-parser';
 import type { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 
-type TestUser = { id: string; token: string };
+type TestUser = { id: string; cookie: string };
 
 describe('Workspace members API (e2e)', () => {
   let app: INestApplication<App>;
@@ -17,6 +18,7 @@ describe('Workspace members API (e2e)', () => {
       imports: [AppModule],
     }).compile();
     app = module.createNestApplication();
+    app.use(cookieParser());
     await app.init();
     prisma = app.get(PrismaService);
     await cleanup();
@@ -45,14 +47,14 @@ describe('Workspace members API (e2e)', () => {
     const body = parseRecord(response.text);
     return {
       id: readString(asRecord(body.user).id),
-      token: readString(body.accessToken),
+      cookie: readAuthCookie(response.headers['set-cookie']),
     };
   }
 
   async function createWorkspace(owner: TestUser) {
     const response = await request(app.getHttpServer())
       .post('/workspaces')
-      .set('Authorization', `Bearer ${owner.token}`)
+      .set('Cookie', owner.cookie)
       .send({ name: 'Members Workspace', slug: `members-${randomUUID()}` })
       .expect(201);
     return readString(parseRecord(response.text).id);
@@ -64,7 +66,7 @@ describe('Workspace members API (e2e)', () => {
     const workspaceId = await createWorkspace(owner);
     await request(app.getHttpServer())
       .get(`/workspaces/${workspaceId}/members`)
-      .set('Authorization', `Bearer ${outsider.token}`)
+      .set('Cookie', outsider.cookie)
       .expect(404);
   });
 
@@ -82,19 +84,19 @@ describe('Workspace members API (e2e)', () => {
 
     await request(app.getHttpServer())
       .patch(`/workspaces/${workspaceId}/members/${adminMembership.id}`)
-      .set('Authorization', `Bearer ${owner.token}`)
+      .set('Cookie', owner.cookie)
       .send({ role: 'ADMIN' })
       .expect(200);
 
     await request(app.getHttpServer())
       .patch(`/workspaces/${workspaceId}/members/${memberMembership.id}`)
-      .set('Authorization', `Bearer ${admin.token}`)
+      .set('Cookie', admin.cookie)
       .send({ role: 'ADMIN' })
       .expect(403);
 
     await request(app.getHttpServer())
       .delete(`/workspaces/${workspaceId}/members/${memberMembership.id}`)
-      .set('Authorization', `Bearer ${admin.token}`)
+      .set('Cookie', admin.cookie)
       .expect(204);
 
     const ownerMembership = await prisma.workspaceMember.findUniqueOrThrow({
@@ -102,7 +104,7 @@ describe('Workspace members API (e2e)', () => {
     });
     await request(app.getHttpServer())
       .delete(`/workspaces/${workspaceId}/members/${ownerMembership.id}`)
-      .set('Authorization', `Bearer ${admin.token}`)
+      .set('Cookie', admin.cookie)
       .expect(403);
   });
 
@@ -120,7 +122,7 @@ describe('Workspace members API (e2e)', () => {
 
     await request(app.getHttpServer())
       .post(`/workspaces/${workspaceId}/leave`)
-      .set('Authorization', `Bearer ${ordinaryMember.token}`)
+      .set('Cookie', ordinaryMember.cookie)
       .expect(204);
     expect(
       await prisma.workspaceMember.findUnique({
@@ -132,18 +134,18 @@ describe('Workspace members API (e2e)', () => {
 
     await request(app.getHttpServer())
       .post(`/workspaces/${workspaceId}/leave`)
-      .set('Authorization', `Bearer ${owner.token}`)
+      .set('Cookie', owner.cookie)
       .expect(409);
 
     await request(app.getHttpServer())
       .post(`/workspaces/${workspaceId}/transfer-ownership`)
-      .set('Authorization', `Bearer ${owner.token}`)
+      .set('Cookie', owner.cookie)
       .send({ memberId: successorMembership.id })
       .expect(204);
 
     await request(app.getHttpServer())
       .post(`/workspaces/${workspaceId}/leave`)
-      .set('Authorization', `Bearer ${owner.token}`)
+      .set('Cookie', owner.cookie)
       .expect(204);
 
     const workspace = await prisma.workspace.findUniqueOrThrow({
@@ -167,4 +169,10 @@ function asRecord(value: unknown): Record<string, unknown> {
 function readString(value: unknown): string {
   if (typeof value !== 'string') throw new Error('Expected a string');
   return value;
+}
+
+function readAuthCookie(header: string[] | string | undefined): string {
+  const value = Array.isArray(header) ? header[0] : header;
+  if (!value) throw new Error('Expected an authentication cookie');
+  return value.split(';', 1)[0];
 }

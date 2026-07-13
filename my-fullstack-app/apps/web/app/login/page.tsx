@@ -1,8 +1,8 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ApiError, authApi, getAccessToken, setAccessToken } from "../../lib/api-client";
+import { ApiError, authApi } from "../../lib/api-client";
 import styles from "./page.module.css";
 
 type Mode = "login" | "register";
@@ -16,20 +16,15 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (getAccessToken()) router.replace("/workspaces");
-  }, [router]);
-
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      const result = mode === "login"
-        ? await authApi.login({ email, password })
-        : await authApi.register({ name, email, password });
-      setAccessToken(result.accessToken);
+      await (mode === "login"
+        ? authApi.login({ email, password })
+        : authApi.register({ name, email, password }));
       router.replace("/workspaces");
     } catch (caught: unknown) {
       setError(caught instanceof ApiError ? caught.message : "Unable to complete authentication.");

@@ -18,26 +18,14 @@ export class ApiError extends Error {
   }
 }
 
-export function getAccessToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return window.localStorage.getItem("accessToken");
-}
-
-export function setAccessToken(token: string): void {
-  window.localStorage.setItem("accessToken", token);
-}
-
-export function clearAccessToken(): void {
-  window.localStorage.removeItem("accessToken");
+export function clearClientAuthState(): void {
   window.localStorage.removeItem("currentWorkspaceId");
 }
 
 async function apiRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const token = getAccessToken();
   const headers = new Headers(init.headers);
   headers.set("Accept", "application/json");
   if (init.body) headers.set("Content-Type", "application/json");
-  if (token) headers.set("Authorization", `Bearer ${token}`);
 
   let response: Response;
   const controller = new AbortController();
@@ -60,7 +48,11 @@ async function apiRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
     const payload = await readJson(response);
     const message = extractErrorMessage(payload) ?? `Request failed with status ${response.status}`;
     if (response.status === 401) {
-      clearAccessToken();
+      clearClientAuthState();
+      await fetch(`${API_URL}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      }).catch(() => undefined);
       if (window.location.pathname !== "/login") window.location.assign("/login");
     }
     throw new ApiError(response.status, message);
@@ -120,7 +112,7 @@ export const workspaceApi = {
 };
 
 export type CurrentUser = { id: string; name: string; email: string; avatarUrl: string | null };
-export type AuthResponse = { accessToken: string; user: CurrentUser };
+export type AuthResponse = { user: CurrentUser };
 export const authApi = {
   login: (input: { email: string; password: string }) =>
     apiRequest<AuthResponse>("/auth/login", {
@@ -132,5 +124,6 @@ export const authApi = {
       method: "POST",
       body: JSON.stringify(input),
     }),
+  logout: () => apiRequest<void>("/auth/logout", { method: "POST" }),
   me: () => apiRequest<CurrentUser>("/auth/me"),
 };

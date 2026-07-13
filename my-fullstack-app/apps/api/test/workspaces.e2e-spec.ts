@@ -2,11 +2,12 @@ import { randomUUID } from 'node:crypto';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
+import cookieParser from 'cookie-parser';
 import type { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 
-type AuthenticatedTestUser = { id: string; accessToken: string; email: string };
+type AuthenticatedTestUser = { id: string; cookie: string; email: string };
 
 describe('Workspace CRUD API (e2e)', () => {
   let app: INestApplication<App>;
@@ -17,6 +18,7 @@ describe('Workspace CRUD API (e2e)', () => {
       imports: [AppModule],
     }).compile();
     app = module.createNestApplication();
+    app.use(cookieParser());
     await app.init();
     prisma = app.get(PrismaService);
     await cleanup();
@@ -47,7 +49,7 @@ describe('Workspace CRUD API (e2e)', () => {
     const user = asRecord(body.user);
     return {
       id: asString(user.id),
-      accessToken: asString(body.accessToken),
+      cookie: readAuthCookie(response.headers['set-cookie']),
       email,
     };
   }
@@ -55,7 +57,7 @@ describe('Workspace CRUD API (e2e)', () => {
   async function createWorkspace(user: AuthenticatedTestUser, name: string) {
     const response = await request(app.getHttpServer())
       .post('/workspaces')
-      .set('Authorization', `Bearer ${user.accessToken}`)
+      .set('Cookie', user.cookie)
       .send({ name, slug: `${name}-${randomUUID()}` })
       .expect(201);
     return parseJsonRecord(response.text);
@@ -69,7 +71,7 @@ describe('Workspace CRUD API (e2e)', () => {
     const owner = await register('Validation Owner');
     await request(app.getHttpServer())
       .post('/workspaces')
-      .set('Authorization', `Bearer ${owner.accessToken}`)
+      .set('Cookie', owner.cookie)
       .send({ name: 'Invalid Workspace', ownerId: 'forged-owner' })
       .expect(400);
   });
@@ -85,7 +87,7 @@ describe('Workspace CRUD API (e2e)', () => {
 
     const listResponse = await request(app.getHttpServer())
       .get('/workspaces')
-      .set('Authorization', `Bearer ${firstOwner.accessToken}`)
+      .set('Cookie', firstOwner.cookie)
       .expect(200);
     const list = parseJsonArray(listResponse.text).map(asRecord);
 
@@ -94,7 +96,7 @@ describe('Workspace CRUD API (e2e)', () => {
     ]);
     await request(app.getHttpServer())
       .get(`/workspaces/${asString(secondWorkspace.id)}`)
-      .set('Authorization', `Bearer ${firstOwner.accessToken}`)
+      .set('Cookie', firstOwner.cookie)
       .expect(404);
   });
 
@@ -114,13 +116,13 @@ describe('Workspace CRUD API (e2e)', () => {
 
     await request(app.getHttpServer())
       .patch(`/workspaces/${workspaceId}`)
-      .set('Authorization', `Bearer ${member.accessToken}`)
+      .set('Cookie', member.cookie)
       .send({ name: 'Member Edit' })
       .expect(403);
 
     const adminUpdate = await request(app.getHttpServer())
       .patch(`/workspaces/${workspaceId}`)
-      .set('Authorization', `Bearer ${admin.accessToken}`)
+      .set('Cookie', admin.cookie)
       .send({ description: 'Updated by admin' })
       .expect(200);
     expect(asRecord(parseJsonRecord(adminUpdate.text)).description).toBe(
@@ -129,23 +131,23 @@ describe('Workspace CRUD API (e2e)', () => {
 
     await request(app.getHttpServer())
       .delete(`/workspaces/${workspaceId}`)
-      .set('Authorization', `Bearer ${admin.accessToken}`)
+      .set('Cookie', admin.cookie)
       .expect(403);
 
     await request(app.getHttpServer())
       .patch(`/workspaces/${workspaceId}`)
-      .set('Authorization', `Bearer ${owner.accessToken}`)
+      .set('Cookie', owner.cookie)
       .send({ name: 'Owner Updated Workspace' })
       .expect(200);
 
     await request(app.getHttpServer())
       .delete(`/workspaces/${workspaceId}`)
-      .set('Authorization', `Bearer ${owner.accessToken}`)
+      .set('Cookie', owner.cookie)
       .expect(204);
 
     await request(app.getHttpServer())
       .get(`/workspaces/${workspaceId}`)
-      .set('Authorization', `Bearer ${owner.accessToken}`)
+      .set('Cookie', owner.cookie)
       .expect(404);
   });
 });
@@ -170,4 +172,10 @@ function asRecord(value: unknown): Record<string, unknown> {
 function asString(value: unknown): string {
   if (typeof value !== 'string') throw new Error('Expected a string');
   return value;
+}
+
+function readAuthCookie(header: string[] | string | undefined): string {
+  const value = Array.isArray(header) ? header[0] : header;
+  if (!value) throw new Error('Expected an authentication cookie');
+  return value.split(';', 1)[0];
 }

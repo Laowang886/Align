@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { CreateWorkspaceInput, WorkspaceDetails, WorkspaceSummary } from "@repo/shared";
-import { ApiError, authApi, clearAccessToken, type CurrentUser, workspaceApi } from "../../../lib/api-client";
+import { ApiError, authApi, clearClientAuthState, type CurrentUser, workspaceApi } from "../../../lib/api-client";
 import styles from "../../page.module.css";
 import CreateWorkspaceDialog from "./CreateWorkspaceDialog";
 import WorkspaceSelector from "./WorkspaceSelector";
@@ -60,7 +60,7 @@ export default function WorkspaceApp({ workspaceId }: { workspaceId?: string }) 
     } catch (caught: unknown) {
       const apiError = caught instanceof ApiError ? caught : new ApiError(0, "Unexpected workspace error.");
       if (apiError.status === 401) {
-        clearAccessToken();
+        clearClientAuthState();
         router.replace("/login");
         return;
       }
@@ -119,7 +119,7 @@ export default function WorkspaceApp({ workspaceId }: { workspaceId?: string }) 
       {viewState === "loading" && <WorkspaceLoadingState />}
       {viewState === "empty" && <WorkspaceEmptyState onCreate={() => setDialogOpen(true)} />}
       {viewState === "error" && error && <>
-        <div className={styles.workspaceConnectionBanner}><Icon name="alert" size={17} /><span><b>{error.unauthorized ? "Authentication required" : "Workspace API unavailable"}</b>{error.unauthorized ? " Save a valid JWT as localStorage.accessToken to enable Workspace switching." : ` ${error.message} The dashboard remains available in preview mode.`}</span><button onClick={() => void load()}>Try again</button></div>
+        <div className={styles.workspaceConnectionBanner}><Icon name="alert" size={17} /><span><b>{error.unauthorized ? "Authentication required" : "Workspace API unavailable"}</b>{error.unauthorized ? " Your session has expired. Sign in again to continue." : ` ${error.message} The dashboard remains available in preview mode.`}</span><button onClick={() => void load()}>Try again</button></div>
         <DashboardView workspaceName={currentWorkspace?.name ?? "FormatWeaver HQ"} onGenerateReport={() => showToast("Weekly report generation started.")} />
       </>}
       {viewState === "ready" && currentWorkspace && <DashboardView workspaceName={currentWorkspace.name} onGenerateReport={() => showToast("Weekly report generation started.")} />}

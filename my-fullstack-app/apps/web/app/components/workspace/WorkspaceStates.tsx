@@ -10,5 +10,5 @@ export function WorkspaceEmptyState({ onCreate }: { onCreate: () => void }) {
 }
 
 export function WorkspaceErrorState({ message, unauthorized, onRetry }: { message: string; unauthorized: boolean; onRetry: () => void }) {
-  return <main className={styles.workspaceState}><div className={`${styles.stateIcon} ${styles.errorStateIcon}`}><Icon name="alert" size={28} /></div><h2>{unauthorized ? "Authentication required" : "Workspace unavailable"}</h2><p>{unauthorized ? "Sign in through the API and store the returned token as localStorage.accessToken." : message}</p><button onClick={onRetry}>Try again</button></main>;
+  return <main className={styles.workspaceState}><div className={`${styles.stateIcon} ${styles.errorStateIcon}`}><Icon name="alert" size={28} /></div><h2>{unauthorized ? "Authentication required" : "Workspace unavailable"}</h2><p>{unauthorized ? "Your session has expired. Sign in again to continue." : message}</p><button onClick={onRetry}>Try again</button></main>;
 }

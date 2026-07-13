@@ -8,6 +8,8 @@ import {
   Res,
   UseGuards,
   Get,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -16,10 +18,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 
 interface AuthenticatedRequest extends Request {
-  user: {
-    id: string;
-    email: string;
-  };
+  user: { id: string; email: string; name: string; avatarUrl: string | null };
 }
 
 @Controller('auth')
@@ -29,7 +28,7 @@ export class AuthController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getMe(@Req() request: AuthenticatedRequest) {
-    return { user: request.user };
+    return request.user;
   }
 
   @Post('register')
@@ -39,7 +38,7 @@ export class AuthController {
   ) {
     const result = await this.authService.register(dto);
     this.setAuthCookie(res, result.accessToken);
-    return result;
+    return { user: result.user };
   }
 
   @Post('login')
@@ -49,7 +48,18 @@ export class AuthController {
   ) {
     const result = await this.authService.login(dto);
     this.setAuthCookie(res, result.accessToken);
-    return result;
+    return { user: result.user };
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  logout(@Res({ passthrough: true }) res: Response): void {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    });
   }
 
   private setAuthCookie(res: Response, accessToken: string) {
@@ -57,6 +67,7 @@ export class AuthController {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
+      path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
   }
