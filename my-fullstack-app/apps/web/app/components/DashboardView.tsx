@@ -7,10 +7,10 @@ function MetricCard({ icon, tone, label, value, children }: { icon: IconName; to
   return <article className={styles.metricCard}><div className={`${styles.metricIcon} ${styles[tone]}`}><Icon name={icon} size={23} /></div><div className={styles.metricCopy}><span className={styles.eyebrow}>{label}</span><strong>{value}</strong>{children}</div></article>;
 }
 
-export default function DashboardView({ onGenerateReport }: { onGenerateReport: () => void }) {
+export default function DashboardView({ onGenerateReport, workspaceName = "FormatWeaver HQ" }: { onGenerateReport: () => void; workspaceName?: string }) {
   const members = [{ name: "Renbo", done: 1, remaining: 1 }, { name: "Alice", done: 1, remaining: 1 }, { name: "Bob", done: 0, remaining: 1 }, { name: "Unassigned", done: 0, remaining: 1 }];
   return <main id="main" className={styles.main}>
-    <div className={styles.hero}><div><h1>Workspace Overview</h1><p>Analytics performance and collaborative summaries for <b>FormatWeaver HQ</b></p></div><button className={styles.reportButton} onClick={onGenerateReport}><Icon name="sparkles" size={19} />Generate AI Weekly Report</button></div>
+    <div className={styles.hero}><div><h1>Workspace Overview</h1><p>Analytics performance and collaborative summaries for <b>{workspaceName}</b></p></div><button className={styles.reportButton} onClick={onGenerateReport}><Icon name="sparkles" size={19} />Generate AI Weekly Report</button></div>
     <section className={styles.metrics}>
       <MetricCard icon="clipboard" tone="indigo" label="ACTIVE PROJECTS" value="2"><span className={styles.purple}>2 currently active</span></MetricCard>
       <MetricCard icon="check" tone="green" label="TASKS DELIVERED" value="2 / 6"><div className={styles.progress}><i /></div><span className={styles.greenText}>33% Completion Rate</span></MetricCard>

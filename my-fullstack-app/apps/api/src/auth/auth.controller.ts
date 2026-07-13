@@ -8,6 +8,8 @@ import {
   Res,
   UseGuards,
   Get,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -16,10 +18,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 
 interface AuthenticatedRequest extends Request {
-  user: {
-    id: string;
-    email: string;
-  };
+  user: { id: string; email: string; name: string; avatarUrl: string | null };
 }
 
 @Controller('auth')
@@ -29,13 +28,17 @@ export class AuthController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getMe(@Req() request: AuthenticatedRequest) {
-    return { user: request.user };
+    return request.user;
   }
 
   @Post('register')
-  async register(@Body() dto: RegisterDto) {
-    const user = await this.authService.register(dto);
-    return { user };
+  async register(
+    @Body() dto: RegisterDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.register(dto);
+    this.setAuthCookie(res, result.accessToken);
+    return { user: result.user };
   }
 
   @Post('login')
@@ -43,42 +46,29 @@ export class AuthController {
     @Body() dto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { token, user } = await this.authService.login(dto);
+    const result = await this.authService.login(dto);
+    this.setAuthCookie(res, result.accessToken);
+    return { user: result.user };
+  }
 
-    res.cookie('token', token, {
+  @Post('logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  logout(@Res({ passthrough: true }) res: Response): void {
+    res.clearCookie('token', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
+      path: '/',
+    });
+  }
+
+  private setAuthCookie(res: Response, accessToken: string) {
+    res.cookie('token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-
-    return { user };
   }
 }
-
-// POST /auth/register
-// POST /auth/login
-
-// Send registration request:
-// POST http://localhost:4000/auth/register
-// Content-Type: application/json
-
-// Body:
-// {
-//   "name": "Wenshuo",
-//   "email": "wenshuo@example.com",
-//   "password": "secure-password"
-// }
-
-// return:
-// {
-//   "id": "user-id",
-//   "name": "Wenshuo",
-//   "email": "wenshuo@example.com",
-//   "avatarUrl": null,
-//   "createdAt": "..."
-// }
-
-// not return:
-// password
-// Because the database stores bcrypt hashes, it must not be returned to the front end.

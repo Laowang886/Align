@@ -8,48 +8,87 @@ datasource db {
   provider = "postgresql"
 }
 
+enum WorkspaceRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  password  String
-  avatarUrl String?
-  createdAt DateTime @default(now())
+  id           String   @id @default(uuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  teamMembers TeamMember[]
-  tasks       Task[]       @relation("assignee")
-  messages    Message[]
+  ownedWorkspaces      Workspace[]       @relation("WorkspaceOwner")
+  workspaceMemberships WorkspaceMember[]
+  tasks                Task[]             @relation("assignee")
+  messages             Message[]
 }
 
-model Team {
-  id      String @id @default(uuid())
-  name    String
-  slug    String @unique
+model Workspace {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String?
+  ownerId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  members  TeamMember[]
-  boards   Board[]
+  owner    User              @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  members  WorkspaceMember[]
+  projects Project[]
   channels Channel[]
+
+  @@index([ownerId])
+  @@map("Team")
 }
 
-model TeamMember {
-  id     String @id @default(uuid())
-  role   String @default("member") // owner | admin | member
-  userId String
-  teamId String
+model WorkspaceMember {
+  id          String        @id @default(uuid())
+  role        WorkspaceRole @default(MEMBER)
+  userId      String
+  workspaceId String        @map("teamId")
+  joinedAt    DateTime      @default(now())
 
-  user User @relation(fields: [userId], references: [id])
-  team Team @relation(fields: [teamId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, teamId])
+  @@unique([userId, workspaceId], map: "TeamMember_userId_teamId_key")
+  @@index([workspaceId])
+  @@index([userId])
+  @@index([workspaceId, role])
+  @@map("TeamMember")
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  workspaceId String
+  name        String
+  key         String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  boards    Board[]
+
+  @@unique([workspaceId, key])
+  @@index([workspaceId])
 }
 
 model Board {
-  id     String @id @default(uuid())
-  title  String
-  teamId String
+  id        String @id @default(uuid())
+  title     String
+  projectId String
 
-  team    Team     @relation(fields: [teamId], references: [id])
+  project Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   columns Column[]
+
+  @@index([projectId])
 }
 
 model Column {
@@ -58,8 +97,10 @@ model Column {
   order   Int
   boardId String
 
-  board Board  @relation(fields: [boardId], references: [id])
+  board Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
   tasks Task[]
+
+  @@index([boardId])
 }
 
 model Task {
@@ -70,18 +111,23 @@ model Task {
   columnId    String
   assigneeId  String?
 
-  column   Column @relation(fields: [columnId], references: [id])
-  assignee User?  @relation("assignee", fields: [assigneeId], references: [id])
+  column   Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  assignee User?  @relation("assignee", fields: [assigneeId], references: [id], onDelete: SetNull)
   createdAt DateTime @default(now())
+
+  @@index([columnId])
+  @@index([assigneeId])
 }
 
 model Channel {
-  id     String @id @default(uuid())
-  name   String
-  teamId String
+  id          String @id @default(uuid())
+  name        String
+  workspaceId String @map("teamId")
 
-  team     Team      @relation(fields: [teamId], references: [id])
-  messages Message[]
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  messages  Message[]
+
+  @@index([workspaceId])
 }
 
 model Message {
@@ -91,6 +137,9 @@ model Message {
   authorId  String
   createdAt DateTime @default(now())
 
-  channel Channel @relation(fields: [channelId], references: [id])
-  author  User    @relation(fields: [authorId], references: [id])
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  author  User    @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([channelId])
+  @@index([authorId])
 }

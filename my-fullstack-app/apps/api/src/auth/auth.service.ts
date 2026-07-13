@@ -9,11 +9,11 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { RegisterDto } from './dto/register.dto';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -37,14 +37,11 @@ export class AuthService {
       data: {
         name: dto.name,
         email: dto.email,
-        password: hashedPassword,
+        passwordHash: hashedPassword,
       },
     });
 
-    // Exclude the password from the returned user object for security reasons
-    const { password, ...safeUser } = user;
-    void password; // Do not send the password hash to the client.
-    return safeUser;
+    return this.createAuthResponse(user);
   }
 
   async login(dto: LoginDto) {
@@ -54,25 +51,33 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException('Invalid email or password');
     }
 
     // Compare the provided password with the hashed password stored in the database
-    const isPasswordValid = await bcrypt.compare(dto.password, user.password);
+    const isPasswordValid = await bcrypt.compare(dto.password, user.passwordHash);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Incorrect password');
+      throw new UnauthorizedException('Invalid email or password');
     }
 
-    // 3. Generate a JWT token for the authenticated user
-    // The payload typically includes the user's ID and email, which can be used to identify the user in subsequent requests. The token is signed using the JwtService, which ensures that it can be verified later.
-    const payload = { sub: user.id, email: user.email };
-    const token = await this.jwtService.signAsync(payload);
+    return this.createAuthResponse(user);
+  }
 
-    // 4. return the token and user information (excluding the password) to the client. The password is omitted from the response for security reasons, ensuring that sensitive information is not exposed.
-    const { password, ...safeUser } = user;
-    void password; // Do not send the password hash to the client.
+  private async createAuthResponse(user: {
+    id: string;
+    email: string;
+    name: string;
+    avatarUrl: string | null;
+    passwordHash: string;
+  }) {
+    const payload = { sub: user.id, email: user.email };
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    const { passwordHash, ...safeUser } = user;
+    void passwordHash;
+
     return {
-      token,
+      accessToken,
       user: safeUser,
     };
   }

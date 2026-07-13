@@ -41,7 +41,7 @@ export default function RegisterForm() {
       return;
     }
 
-    router.push("/login");
+    router.replace("/workspaces");
   }
 
   return (

@@ -2,15 +2,12 @@
 // Authorization: Bearer <token>
 // Passport 会调用这个文件的逻辑，验证 token 是否有效，并找出 token 对应的用户。
 import 'dotenv/config';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import type { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-
-interface JwtPayload {
-  sub: string;
-  email: string;
-}
+import { PrismaService } from '../prisma/prisma.service';
+import type { AuthenticatedUser, JwtPayload } from './types/authenticated-user';
 
 const cookieExtractor = (request: Request): string | null => {
   const cookies: unknown = request?.cookies;
@@ -25,7 +22,7 @@ const cookieExtractor = (request: Request): string | null => {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(private readonly prisma: PrismaService) {
     const jwtSecret = process.env.JWT_SECRET;
 
     if (!jwtSecret) {
@@ -33,16 +30,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        cookieExtractor,
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       ignoreExpiration: false,
       secretOrKey: jwtSecret,
     });
   }
 
-  validate(payload: JwtPayload) {
-    return {
-      id: payload.sub,
-      email: payload.email,
-    };
+  async validate(payload: JwtPayload): Promise<AuthenticatedUser> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: payload.sub },
+      select: { id: true, email: true, name: true, avatarUrl: true },
+    });
+    if (!user) throw new UnauthorizedException('Invalid authentication token');
+    return user;
   }
 }
