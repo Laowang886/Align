@@ -11,15 +11,18 @@ import { WorkspaceEmptyState, WorkspaceLoadingState } from "./WorkspaceStates";
 import DashboardView from "../DashboardView";
 import Header from "../Header";
 import Icon from "../Icon";
+import KanbanBoardView from "../KanbanBoardView";
 import Sidebar from "../Sidebar";
 import MembersAccessDialog from "./MembersAccessDialog";
 import CurrentUserSelector from "./CurrentUserSelector";
 
 type ViewState = "loading" | "ready" | "empty" | "error";
+type WorkspaceView = "Dashboard" | "Kanban Board";
 
 export default function WorkspaceApp({ workspaceId }: { workspaceId?: string }) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [activeView, setActiveView] = useState<WorkspaceView>("Dashboard");
   const [viewState, setViewState] = useState<ViewState>("loading");
   const [workspaces, setWorkspaces] = useState<WorkspaceSummary[]>([]);
   const [currentWorkspace, setCurrentWorkspace] = useState<WorkspaceDetails | null>(null);
@@ -76,6 +79,15 @@ export default function WorkspaceApp({ workspaceId }: { workspaceId?: string }) 
     window.setTimeout(() => setToast(null), 2600);
   }
 
+  function navigate(view: string) {
+    if (view === "Dashboard" || view === "Kanban Board") {
+      setActiveView(view);
+      return;
+    }
+
+    showToast(`${view} view is coming next.`);
+  }
+
   function selectWorkspace(id: string) {
     if (id === currentWorkspace?.id) return;
     setViewState("loading");
@@ -113,7 +125,7 @@ export default function WorkspaceApp({ workspaceId }: { workspaceId?: string }) 
   const userSelector = <CurrentUserSelector workspaceId={currentWorkspace?.id} currentUser={currentUser} currentRole={currentWorkspace?.currentUserRole} onOpenMembers={openMembers} />;
 
   return <div className={styles.app}>
-    {sidebarOpen && <Sidebar activeView="Dashboard" onNavigate={(view) => { if (view !== "Dashboard") showToast(`${view} view is coming next.`); }} workspaceSelector={selector} currentUserSelector={userSelector} projectCount={currentWorkspace?.projectCount ?? 0} currentUserName={currentUser?.name} currentUserRole={currentWorkspace?.currentUserRole} onOpenMembers={openMembers} />}
+    {sidebarOpen && <Sidebar activeView={activeView} onNavigate={navigate} workspaceSelector={selector} currentUserSelector={userSelector} projectCount={currentWorkspace?.projectCount ?? 0} currentUserName={currentUser?.name} currentUserRole={currentWorkspace?.currentUserRole} onOpenMembers={openMembers} />}
     <div className={styles.shell}>
       <Header onToggleSidebar={() => setSidebarOpen((open) => !open)} workspaceName={currentWorkspace?.name ?? "Workspaces"} userName={currentUser?.name} userEmail={currentUser?.email} />
       {viewState === "loading" && <WorkspaceLoadingState />}
@@ -122,7 +134,10 @@ export default function WorkspaceApp({ workspaceId }: { workspaceId?: string }) 
         <div className={styles.workspaceConnectionBanner}><Icon name="alert" size={17} /><span><b>{error.unauthorized ? "Authentication required" : "Workspace API unavailable"}</b>{error.unauthorized ? " Your session has expired. Sign in again to continue." : ` ${error.message} The dashboard remains available in preview mode.`}</span><button onClick={() => void load()}>Try again</button></div>
         <DashboardView workspaceName={currentWorkspace?.name ?? "FormatWeaver HQ"} onGenerateReport={() => showToast("Weekly report generation started.")} />
       </>}
-      {viewState === "ready" && currentWorkspace && <DashboardView workspaceName={currentWorkspace.name} onGenerateReport={() => showToast("Weekly report generation started.")} />}
+      {viewState === "ready" && currentWorkspace && (activeView === "Dashboard"
+        ? <DashboardView workspaceName={currentWorkspace.name} onGenerateReport={() => showToast("Weekly report generation started.")} />
+        : <KanbanBoardView workspaceName={currentWorkspace.name} onNotify={showToast} />
+      )}
     </div>
     <CreateWorkspaceDialog open={dialogOpen} loading={creating} error={createError} onClose={() => { setDialogOpen(false); setCreateError(null); }} onSubmit={createWorkspace} />
     {membersOpen && currentWorkspace && currentUser && <MembersAccessDialog open={membersOpen} workspace={currentWorkspace} currentUser={currentUser} onClose={() => setMembersOpen(false)} onWorkspaceChanged={load} onLeft={leftWorkspace} />}

@@ -45,6 +45,7 @@ type StatusForm = {
 
 type KanbanBoardViewProps = {
   onNotify: (message: string) => void;
+  workspaceName?: string;
 };
 
 const INITIAL_KANBAN_COLUMNS: KanbanColumn[] = [
@@ -229,7 +230,7 @@ function isDuplicateStatusName(columns: KanbanColumn[], name: string, currentSta
   return columns.some((column) => column.id !== currentStatusId && column.label.trim().toLowerCase() === normalizedName);
 }
 
-export default function KanbanBoardView({ onNotify }: KanbanBoardViewProps) {
+export default function KanbanBoardView({ onNotify, workspaceName = "this workspace" }: KanbanBoardViewProps) {
   const [columns, setColumns] = useState<KanbanColumn[]>(INITIAL_KANBAN_COLUMNS);
   const [tasks, setTasks] = useState<KanbanTask[]>(initialTasks);
   const [search, setSearch] = useState("");
@@ -580,7 +581,7 @@ export default function KanbanBoardView({ onNotify }: KanbanBoardViewProps) {
     <div className={styles.kanbanHero}>
       <div>
         <h1>Kanban Board</h1>
-        <p>Manage tasks across the FormatWeaver HQ board</p>
+        <p>Manage tasks across the {workspaceName} board</p>
       </div>
       <button className={styles.reportButton} onClick={() => openCreateModal()} type="button">
         <Icon name="plus" size={19} />Add Task
