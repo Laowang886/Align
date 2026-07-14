@@ -202,6 +202,7 @@ export type WorkspaceWhereInput = {
   members?: Prisma.WorkspaceMemberListRelationFilter
   projects?: Prisma.ProjectListRelationFilter
   channels?: Prisma.ChannelListRelationFilter
+  wikiDocuments?: Prisma.WikiDocumentListRelationFilter
 }
 
 export type WorkspaceOrderByWithRelationInput = {
@@ -216,6 +217,7 @@ export type WorkspaceOrderByWithRelationInput = {
   members?: Prisma.WorkspaceMemberOrderByRelationAggregateInput
   projects?: Prisma.ProjectOrderByRelationAggregateInput
   channels?: Prisma.ChannelOrderByRelationAggregateInput
+  wikiDocuments?: Prisma.WikiDocumentOrderByRelationAggregateInput
 }
 
 export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
@@ -233,6 +235,7 @@ export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
   members?: Prisma.WorkspaceMemberListRelationFilter
   projects?: Prisma.ProjectListRelationFilter
   channels?: Prisma.ChannelListRelationFilter
+  wikiDocuments?: Prisma.WikiDocumentListRelationFilter
 }, "id" | "slug">
 
 export type WorkspaceOrderByWithAggregationInput = {
@@ -272,6 +275,7 @@ export type WorkspaceCreateInput = {
   members?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
   projects?: Prisma.ProjectCreateNestedManyWithoutWorkspaceInput
   channels?: Prisma.ChannelCreateNestedManyWithoutWorkspaceInput
+  wikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateInput = {
@@ -285,6 +289,7 @@ export type WorkspaceUncheckedCreateInput = {
   members?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutWorkspaceInput
   channels?: Prisma.ChannelUncheckedCreateNestedManyWithoutWorkspaceInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUpdateInput = {
@@ -298,6 +303,7 @@ export type WorkspaceUpdateInput = {
   members?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutWorkspaceNestedInput
   channels?: Prisma.ChannelUpdateManyWithoutWorkspaceNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateInput = {
@@ -311,6 +317,7 @@ export type WorkspaceUncheckedUpdateInput = {
   members?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutWorkspaceNestedInput
   channels?: Prisma.ChannelUncheckedUpdateManyWithoutWorkspaceNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateManyInput = {
@@ -457,6 +464,20 @@ export type WorkspaceUpdateOneRequiredWithoutProjectsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutProjectsInput, Prisma.WorkspaceUpdateWithoutProjectsInput>, Prisma.WorkspaceUncheckedUpdateWithoutProjectsInput>
 }
 
+export type WorkspaceCreateNestedOneWithoutWikiDocumentsInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutWikiDocumentsInput, Prisma.WorkspaceUncheckedCreateWithoutWikiDocumentsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutWikiDocumentsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+}
+
+export type WorkspaceUpdateOneRequiredWithoutWikiDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutWikiDocumentsInput, Prisma.WorkspaceUncheckedCreateWithoutWikiDocumentsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutWikiDocumentsInput
+  upsert?: Prisma.WorkspaceUpsertWithoutWikiDocumentsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutWikiDocumentsInput, Prisma.WorkspaceUpdateWithoutWikiDocumentsInput>, Prisma.WorkspaceUncheckedUpdateWithoutWikiDocumentsInput>
+}
+
 export type WorkspaceCreateNestedOneWithoutChannelsInput = {
   create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutChannelsInput, Prisma.WorkspaceUncheckedCreateWithoutChannelsInput>
   connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutChannelsInput
@@ -481,6 +502,7 @@ export type WorkspaceCreateWithoutOwnerInput = {
   members?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
   projects?: Prisma.ProjectCreateNestedManyWithoutWorkspaceInput
   channels?: Prisma.ChannelCreateNestedManyWithoutWorkspaceInput
+  wikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutOwnerInput = {
@@ -493,6 +515,7 @@ export type WorkspaceUncheckedCreateWithoutOwnerInput = {
   members?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutWorkspaceInput
   channels?: Prisma.ChannelUncheckedCreateNestedManyWithoutWorkspaceInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutOwnerInput = {
@@ -544,6 +567,7 @@ export type WorkspaceCreateWithoutMembersInput = {
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
   projects?: Prisma.ProjectCreateNestedManyWithoutWorkspaceInput
   channels?: Prisma.ChannelCreateNestedManyWithoutWorkspaceInput
+  wikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutMembersInput = {
@@ -556,6 +580,7 @@ export type WorkspaceUncheckedCreateWithoutMembersInput = {
   updatedAt?: Date | string
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutWorkspaceInput
   channels?: Prisma.ChannelUncheckedCreateNestedManyWithoutWorkspaceInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutMembersInput = {
@@ -584,6 +609,7 @@ export type WorkspaceUpdateWithoutMembersInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutWorkspaceNestedInput
   channels?: Prisma.ChannelUpdateManyWithoutWorkspaceNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutMembersInput = {
@@ -596,6 +622,7 @@ export type WorkspaceUncheckedUpdateWithoutMembersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutWorkspaceNestedInput
   channels?: Prisma.ChannelUncheckedUpdateManyWithoutWorkspaceNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutProjectsInput = {
@@ -608,6 +635,7 @@ export type WorkspaceCreateWithoutProjectsInput = {
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
   members?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
   channels?: Prisma.ChannelCreateNestedManyWithoutWorkspaceInput
+  wikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutProjectsInput = {
@@ -620,6 +648,7 @@ export type WorkspaceUncheckedCreateWithoutProjectsInput = {
   updatedAt?: Date | string
   members?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
   channels?: Prisma.ChannelUncheckedCreateNestedManyWithoutWorkspaceInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutProjectsInput = {
@@ -648,6 +677,7 @@ export type WorkspaceUpdateWithoutProjectsInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
   members?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
   channels?: Prisma.ChannelUpdateManyWithoutWorkspaceNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutProjectsInput = {
@@ -659,6 +689,75 @@ export type WorkspaceUncheckedUpdateWithoutProjectsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
+  channels?: Prisma.ChannelUncheckedUpdateManyWithoutWorkspaceNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceCreateWithoutWikiDocumentsInput = {
+  id?: string
+  name: string
+  slug: string
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
+  members?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutWorkspaceInput
+  channels?: Prisma.ChannelCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceUncheckedCreateWithoutWikiDocumentsInput = {
+  id?: string
+  name: string
+  slug: string
+  description?: string | null
+  ownerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  members?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutWorkspaceInput
+  channels?: Prisma.ChannelUncheckedCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceCreateOrConnectWithoutWikiDocumentsInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutWikiDocumentsInput, Prisma.WorkspaceUncheckedCreateWithoutWikiDocumentsInput>
+}
+
+export type WorkspaceUpsertWithoutWikiDocumentsInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutWikiDocumentsInput, Prisma.WorkspaceUncheckedUpdateWithoutWikiDocumentsInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutWikiDocumentsInput, Prisma.WorkspaceUncheckedCreateWithoutWikiDocumentsInput>
+  where?: Prisma.WorkspaceWhereInput
+}
+
+export type WorkspaceUpdateToOneWithWhereWithoutWikiDocumentsInput = {
+  where?: Prisma.WorkspaceWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutWikiDocumentsInput, Prisma.WorkspaceUncheckedUpdateWithoutWikiDocumentsInput>
+}
+
+export type WorkspaceUpdateWithoutWikiDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
+  members?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutWorkspaceNestedInput
+  channels?: Prisma.ChannelUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceUncheckedUpdateWithoutWikiDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutWorkspaceNestedInput
   channels?: Prisma.ChannelUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
@@ -672,6 +771,7 @@ export type WorkspaceCreateWithoutChannelsInput = {
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
   members?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
   projects?: Prisma.ProjectCreateNestedManyWithoutWorkspaceInput
+  wikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutChannelsInput = {
@@ -684,6 +784,7 @@ export type WorkspaceUncheckedCreateWithoutChannelsInput = {
   updatedAt?: Date | string
   members?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutWorkspaceInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutChannelsInput = {
@@ -712,6 +813,7 @@ export type WorkspaceUpdateWithoutChannelsInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
   members?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutWorkspaceNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutChannelsInput = {
@@ -724,6 +826,7 @@ export type WorkspaceUncheckedUpdateWithoutChannelsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutWorkspaceNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateManyOwnerInput = {
@@ -745,6 +848,7 @@ export type WorkspaceUpdateWithoutOwnerInput = {
   members?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutWorkspaceNestedInput
   channels?: Prisma.ChannelUpdateManyWithoutWorkspaceNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutOwnerInput = {
@@ -757,6 +861,7 @@ export type WorkspaceUncheckedUpdateWithoutOwnerInput = {
   members?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutWorkspaceNestedInput
   channels?: Prisma.ChannelUncheckedUpdateManyWithoutWorkspaceNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateManyWithoutOwnerInput = {
@@ -777,12 +882,14 @@ export type WorkspaceCountOutputType = {
   members: number
   projects: number
   channels: number
+  wikiDocuments: number
 }
 
 export type WorkspaceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   members?: boolean | WorkspaceCountOutputTypeCountMembersArgs
   projects?: boolean | WorkspaceCountOutputTypeCountProjectsArgs
   channels?: boolean | WorkspaceCountOutputTypeCountChannelsArgs
+  wikiDocuments?: boolean | WorkspaceCountOutputTypeCountWikiDocumentsArgs
 }
 
 /**
@@ -816,6 +923,13 @@ export type WorkspaceCountOutputTypeCountChannelsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.ChannelWhereInput
 }
 
+/**
+ * WorkspaceCountOutputType without action
+ */
+export type WorkspaceCountOutputTypeCountWikiDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WikiDocumentWhereInput
+}
+
 
 export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -829,6 +943,7 @@ export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   members?: boolean | Prisma.Workspace$membersArgs<ExtArgs>
   projects?: boolean | Prisma.Workspace$projectsArgs<ExtArgs>
   channels?: boolean | Prisma.Workspace$channelsArgs<ExtArgs>
+  wikiDocuments?: boolean | Prisma.Workspace$wikiDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workspace"]>
 
@@ -870,6 +985,7 @@ export type WorkspaceInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   members?: boolean | Prisma.Workspace$membersArgs<ExtArgs>
   projects?: boolean | Prisma.Workspace$projectsArgs<ExtArgs>
   channels?: boolean | Prisma.Workspace$channelsArgs<ExtArgs>
+  wikiDocuments?: boolean | Prisma.Workspace$wikiDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WorkspaceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -886,6 +1002,7 @@ export type $WorkspacePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     members: Prisma.$WorkspaceMemberPayload<ExtArgs>[]
     projects: Prisma.$ProjectPayload<ExtArgs>[]
     channels: Prisma.$ChannelPayload<ExtArgs>[]
+    wikiDocuments: Prisma.$WikiDocumentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1293,6 +1410,7 @@ export interface Prisma__WorkspaceClient<T, Null = never, ExtArgs extends runtim
   members<T extends Prisma.Workspace$membersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$membersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   projects<T extends Prisma.Workspace$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   channels<T extends Prisma.Workspace$channelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$channelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  wikiDocuments<T extends Prisma.Workspace$wikiDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$wikiDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WikiDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1799,6 +1917,30 @@ export type Workspace$channelsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.ChannelScalarFieldEnum | Prisma.ChannelScalarFieldEnum[]
+}
+
+/**
+ * Workspace.wikiDocuments
+ */
+export type Workspace$wikiDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WikiDocument
+   */
+  select?: Prisma.WikiDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WikiDocument
+   */
+  omit?: Prisma.WikiDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WikiDocumentInclude<ExtArgs> | null
+  where?: Prisma.WikiDocumentWhereInput
+  orderBy?: Prisma.WikiDocumentOrderByWithRelationInput | Prisma.WikiDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.WikiDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WikiDocumentScalarFieldEnum | Prisma.WikiDocumentScalarFieldEnum[]
 }
 
 /**

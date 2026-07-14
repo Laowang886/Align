@@ -15,6 +15,8 @@ describe('workspace permissions', () => {
     'update',
     'delete',
     'create_project',
+    'create_wiki_document',
+    'edit_wiki_document',
     'invite_member',
     'remove_member',
     'change_member_role',
@@ -36,8 +38,10 @@ describe('workspace permissions', () => {
     expect(hasWorkspacePermission('ADMIN', 'transfer_ownership')).toBe(false);
   });
 
-  it('allows MEMBER to view only', () => {
+  it('allows MEMBER to collaborate on wiki documents', () => {
     expect(hasWorkspacePermission('MEMBER', 'view')).toBe(true);
+    expect(hasWorkspacePermission('MEMBER', 'create_wiki_document')).toBe(true);
+    expect(hasWorkspacePermission('MEMBER', 'edit_wiki_document')).toBe(true);
     expect(hasWorkspacePermission('MEMBER', 'update')).toBe(false);
     expect(() => assertWorkspacePermission('MEMBER', 'invite_member')).toThrow(
       ForbiddenException,

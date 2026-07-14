@@ -388,6 +388,7 @@ export const ModelName = {
   Workspace: 'Workspace',
   WorkspaceMember: 'WorkspaceMember',
   Project: 'Project',
+  WikiDocument: 'WikiDocument',
   Board: 'Board',
   Column: 'Column',
   Task: 'Task',
@@ -408,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "workspace" | "workspaceMember" | "project" | "board" | "column" | "task" | "channel" | "message"
+    modelProps: "user" | "workspace" | "workspaceMember" | "project" | "wikiDocument" | "board" | "column" | "task" | "channel" | "message"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -705,6 +706,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ProjectCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ProjectCountAggregateOutputType> | number
+        }
+      }
+    }
+    WikiDocument: {
+      payload: Prisma.$WikiDocumentPayload<ExtArgs>
+      fields: Prisma.WikiDocumentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WikiDocumentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WikiDocumentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WikiDocumentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WikiDocumentPayload>
+        }
+        findFirst: {
+          args: Prisma.WikiDocumentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WikiDocumentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WikiDocumentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WikiDocumentPayload>
+        }
+        findMany: {
+          args: Prisma.WikiDocumentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WikiDocumentPayload>[]
+        }
+        create: {
+          args: Prisma.WikiDocumentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WikiDocumentPayload>
+        }
+        createMany: {
+          args: Prisma.WikiDocumentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WikiDocumentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WikiDocumentPayload>[]
+        }
+        delete: {
+          args: Prisma.WikiDocumentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WikiDocumentPayload>
+        }
+        update: {
+          args: Prisma.WikiDocumentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WikiDocumentPayload>
+        }
+        deleteMany: {
+          args: Prisma.WikiDocumentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WikiDocumentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WikiDocumentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WikiDocumentPayload>[]
+        }
+        upsert: {
+          args: Prisma.WikiDocumentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WikiDocumentPayload>
+        }
+        aggregate: {
+          args: Prisma.WikiDocumentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWikiDocument>
+        }
+        groupBy: {
+          args: Prisma.WikiDocumentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WikiDocumentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WikiDocumentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WikiDocumentCountAggregateOutputType> | number
         }
       }
     }
@@ -1160,11 +1235,27 @@ export const ProjectScalarFieldEnum = {
   name: 'name',
   key: 'key',
   description: 'description',
+  color: 'color',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const WikiDocumentScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  projectId: 'projectId',
+  title: 'title',
+  content: 'content',
+  createdById: 'createdById',
+  updatedById: 'updatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WikiDocumentScalarFieldEnum = (typeof WikiDocumentScalarFieldEnum)[keyof typeof WikiDocumentScalarFieldEnum]
 
 
 export const BoardScalarFieldEnum = {
@@ -1432,6 +1523,7 @@ export type GlobalOmitConfig = {
   workspace?: Prisma.WorkspaceOmit
   workspaceMember?: Prisma.WorkspaceMemberOmit
   project?: Prisma.ProjectOmit
+  wikiDocument?: Prisma.WikiDocumentOmit
   board?: Prisma.BoardOmit
   column?: Prisma.ColumnOmit
   task?: Prisma.TaskOmit

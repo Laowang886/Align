@@ -1,4 +1,4 @@
-export const WORKSPACE_ROLES = ['OWNER', 'ADMIN', 'MEMBER'] as const;
+export const WORKSPACE_ROLES = ["OWNER", "ADMIN", "MEMBER"] as const;
 export type WorkspaceRole = (typeof WORKSPACE_ROLES)[number];
 
 export interface Workspace {
@@ -41,8 +41,16 @@ export interface Project {
   name: string;
   key: string;
   description: string | null;
+  color: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface CreateProjectInput {
+  name: string;
+  key: string;
+  description?: string;
+  color: string;
 }
 
 export interface CreateWorkspaceInput {
@@ -58,12 +66,12 @@ export interface UpdateWorkspaceInput {
 }
 
 export interface UpdateWorkspaceMemberRoleInput {
-  role: Exclude<WorkspaceRole, 'OWNER'>;
+  role: Exclude<WorkspaceRole, "OWNER">;
 }
 
 export interface InviteWorkspaceMemberInput {
   email: string;
-  role: Exclude<WorkspaceRole, 'OWNER'>;
+  role: Exclude<WorkspaceRole, "OWNER">;
 }
 
 export interface TransferWorkspaceOwnershipInput {

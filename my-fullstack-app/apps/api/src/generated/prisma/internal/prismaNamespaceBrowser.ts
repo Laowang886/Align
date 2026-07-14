@@ -55,6 +55,7 @@ export const ModelName = {
   Workspace: 'Workspace',
   WorkspaceMember: 'WorkspaceMember',
   Project: 'Project',
+  WikiDocument: 'WikiDocument',
   Board: 'Board',
   Column: 'Column',
   Task: 'Task',
@@ -121,11 +122,27 @@ export const ProjectScalarFieldEnum = {
   name: 'name',
   key: 'key',
   description: 'description',
+  color: 'color',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const WikiDocumentScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  projectId: 'projectId',
+  title: 'title',
+  content: 'content',
+  createdById: 'createdById',
+  updatedById: 'updatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WikiDocumentScalarFieldEnum = (typeof WikiDocumentScalarFieldEnum)[keyof typeof WikiDocumentScalarFieldEnum]
 
 
 export const BoardScalarFieldEnum = {

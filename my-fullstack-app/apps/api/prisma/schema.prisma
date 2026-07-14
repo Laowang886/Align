@@ -25,8 +25,10 @@ model User {
 
   ownedWorkspaces      Workspace[]       @relation("WorkspaceOwner")
   workspaceMemberships WorkspaceMember[]
-  tasks                Task[]             @relation("assignee")
+  tasks                Task[]            @relation("assignee")
   messages             Message[]
+  createdWikiDocuments WikiDocument[]    @relation("WikiDocumentCreator")
+  updatedWikiDocuments WikiDocument[]    @relation("WikiDocumentUpdater")
 }
 
 model Workspace {
@@ -38,10 +40,11 @@ model Workspace {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  owner    User              @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Restrict)
-  members  WorkspaceMember[]
-  projects Project[]
-  channels Channel[]
+  owner         User              @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  members       WorkspaceMember[]
+  projects      Project[]
+  channels      Channel[]
+  wikiDocuments WikiDocument[]
 
   @@index([ownerId])
   @@map("Team")
@@ -70,14 +73,37 @@ model Project {
   name        String
   key         String
   description String?
+  color       String   @default("#6366f1")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  boards        Board[]
+  wikiDocuments WikiDocument[]
+
+  @@unique([workspaceId, key])
+  @@index([workspaceId])
+}
+
+model WikiDocument {
+  id          String   @id @default(uuid())
+  workspaceId String
+  projectId   String
+  title       String
+  content     String   @db.Text
+  createdById String
+  updatedById String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  boards    Board[]
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdBy User      @relation("WikiDocumentCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  updatedBy User      @relation("WikiDocumentUpdater", fields: [updatedById], references: [id], onDelete: Restrict)
 
-  @@unique([workspaceId, key])
-  @@index([workspaceId])
+  @@index([workspaceId, projectId, updatedAt])
+  @@index([createdById])
+  @@index([updatedById])
 }
 
 model Board {
@@ -104,15 +130,15 @@ model Column {
 }
 
 model Task {
-  id          String    @id @default(uuid())
+  id          String  @id @default(uuid())
   title       String
   description String?
   order       Int
   columnId    String
   assigneeId  String?
 
-  column   Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
-  assignee User?  @relation("assignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  column    Column   @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  assignee  User?    @relation("assignee", fields: [assigneeId], references: [id], onDelete: SetNull)
   createdAt DateTime @default(now())
 
   @@index([columnId])

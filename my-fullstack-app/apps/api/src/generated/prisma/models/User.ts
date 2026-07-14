@@ -202,6 +202,8 @@ export type UserWhereInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
   messages?: Prisma.MessageListRelationFilter
+  createdWikiDocuments?: Prisma.WikiDocumentListRelationFilter
+  updatedWikiDocuments?: Prisma.WikiDocumentListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -216,6 +218,8 @@ export type UserOrderByWithRelationInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberOrderByRelationAggregateInput
   tasks?: Prisma.TaskOrderByRelationAggregateInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
+  createdWikiDocuments?: Prisma.WikiDocumentOrderByRelationAggregateInput
+  updatedWikiDocuments?: Prisma.WikiDocumentOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -233,6 +237,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   workspaceMemberships?: Prisma.WorkspaceMemberListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
   messages?: Prisma.MessageListRelationFilter
+  createdWikiDocuments?: Prisma.WikiDocumentListRelationFilter
+  updatedWikiDocuments?: Prisma.WikiDocumentListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -273,6 +279,8 @@ export type UserCreateInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -287,6 +295,8 @@ export type UserUncheckedCreateInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserUpdateInput = {
@@ -301,6 +311,8 @@ export type UserUpdateInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -315,6 +327,8 @@ export type UserUncheckedUpdateInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -427,6 +441,34 @@ export type UserUpdateOneRequiredWithoutWorkspaceMembershipsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWorkspaceMembershipsInput, Prisma.UserUpdateWithoutWorkspaceMembershipsInput>, Prisma.UserUncheckedUpdateWithoutWorkspaceMembershipsInput>
 }
 
+export type UserCreateNestedOneWithoutCreatedWikiDocumentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedWikiDocumentsInput, Prisma.UserUncheckedCreateWithoutCreatedWikiDocumentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedWikiDocumentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutUpdatedWikiDocumentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUpdatedWikiDocumentsInput, Prisma.UserUncheckedCreateWithoutUpdatedWikiDocumentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUpdatedWikiDocumentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCreatedWikiDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedWikiDocumentsInput, Prisma.UserUncheckedCreateWithoutCreatedWikiDocumentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedWikiDocumentsInput
+  upsert?: Prisma.UserUpsertWithoutCreatedWikiDocumentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedWikiDocumentsInput, Prisma.UserUpdateWithoutCreatedWikiDocumentsInput>, Prisma.UserUncheckedUpdateWithoutCreatedWikiDocumentsInput>
+}
+
+export type UserUpdateOneRequiredWithoutUpdatedWikiDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUpdatedWikiDocumentsInput, Prisma.UserUncheckedCreateWithoutUpdatedWikiDocumentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUpdatedWikiDocumentsInput
+  upsert?: Prisma.UserUpsertWithoutUpdatedWikiDocumentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUpdatedWikiDocumentsInput, Prisma.UserUpdateWithoutUpdatedWikiDocumentsInput>, Prisma.UserUncheckedUpdateWithoutUpdatedWikiDocumentsInput>
+}
+
 export type UserCreateNestedOneWithoutTasksInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutTasksInput, Prisma.UserUncheckedCreateWithoutTasksInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutTasksInput
@@ -468,6 +510,8 @@ export type UserCreateWithoutOwnedWorkspacesInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
@@ -481,6 +525,8 @@ export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserCreateOrConnectWithoutOwnedWorkspacesInput = {
@@ -510,6 +556,8 @@ export type UserUpdateWithoutOwnedWorkspacesInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
@@ -523,6 +571,8 @@ export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserCreateWithoutWorkspaceMembershipsInput = {
@@ -536,6 +586,8 @@ export type UserCreateWithoutWorkspaceMembershipsInput = {
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserUncheckedCreateWithoutWorkspaceMembershipsInput = {
@@ -549,6 +601,8 @@ export type UserUncheckedCreateWithoutWorkspaceMembershipsInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserCreateOrConnectWithoutWorkspaceMembershipsInput = {
@@ -578,6 +632,8 @@ export type UserUpdateWithoutWorkspaceMembershipsInput = {
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkspaceMembershipsInput = {
@@ -591,6 +647,160 @@ export type UserUncheckedUpdateWithoutWorkspaceMembershipsInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
+}
+
+export type UserCreateWithoutCreatedWikiDocumentsInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash: string
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
+}
+
+export type UserUncheckedCreateWithoutCreatedWikiDocumentsInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash: string
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
+}
+
+export type UserCreateOrConnectWithoutCreatedWikiDocumentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedWikiDocumentsInput, Prisma.UserUncheckedCreateWithoutCreatedWikiDocumentsInput>
+}
+
+export type UserCreateWithoutUpdatedWikiDocumentsInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash: string
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutUpdatedWikiDocumentsInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash: string
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutUpdatedWikiDocumentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUpdatedWikiDocumentsInput, Prisma.UserUncheckedCreateWithoutUpdatedWikiDocumentsInput>
+}
+
+export type UserUpsertWithoutCreatedWikiDocumentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedWikiDocumentsInput, Prisma.UserUncheckedUpdateWithoutCreatedWikiDocumentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedWikiDocumentsInput, Prisma.UserUncheckedCreateWithoutCreatedWikiDocumentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedWikiDocumentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedWikiDocumentsInput, Prisma.UserUncheckedUpdateWithoutCreatedWikiDocumentsInput>
+}
+
+export type UserUpdateWithoutCreatedWikiDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedWikiDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
+}
+
+export type UserUpsertWithoutUpdatedWikiDocumentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUpdatedWikiDocumentsInput, Prisma.UserUncheckedUpdateWithoutUpdatedWikiDocumentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUpdatedWikiDocumentsInput, Prisma.UserUncheckedCreateWithoutUpdatedWikiDocumentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUpdatedWikiDocumentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUpdatedWikiDocumentsInput, Prisma.UserUncheckedUpdateWithoutUpdatedWikiDocumentsInput>
+}
+
+export type UserUpdateWithoutUpdatedWikiDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUpdatedWikiDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutTasksInput = {
@@ -604,6 +814,8 @@ export type UserCreateWithoutTasksInput = {
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserUncheckedCreateWithoutTasksInput = {
@@ -617,6 +829,8 @@ export type UserUncheckedCreateWithoutTasksInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserCreateOrConnectWithoutTasksInput = {
@@ -646,6 +860,8 @@ export type UserUpdateWithoutTasksInput = {
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTasksInput = {
@@ -659,6 +875,8 @@ export type UserUncheckedUpdateWithoutTasksInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserCreateWithoutMessagesInput = {
@@ -672,6 +890,8 @@ export type UserCreateWithoutMessagesInput = {
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserUncheckedCreateWithoutMessagesInput = {
@@ -685,6 +905,8 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserCreateOrConnectWithoutMessagesInput = {
@@ -714,6 +936,8 @@ export type UserUpdateWithoutMessagesInput = {
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -727,6 +951,8 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
 }
 
 
@@ -739,6 +965,8 @@ export type UserCountOutputType = {
   workspaceMemberships: number
   tasks: number
   messages: number
+  createdWikiDocuments: number
+  updatedWikiDocuments: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -746,6 +974,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   workspaceMemberships?: boolean | UserCountOutputTypeCountWorkspaceMembershipsArgs
   tasks?: boolean | UserCountOutputTypeCountTasksArgs
   messages?: boolean | UserCountOutputTypeCountMessagesArgs
+  createdWikiDocuments?: boolean | UserCountOutputTypeCountCreatedWikiDocumentsArgs
+  updatedWikiDocuments?: boolean | UserCountOutputTypeCountUpdatedWikiDocumentsArgs
 }
 
 /**
@@ -786,6 +1016,20 @@ export type UserCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.MessageWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedWikiDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WikiDocumentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUpdatedWikiDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WikiDocumentWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -799,6 +1043,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   workspaceMemberships?: boolean | Prisma.User$workspaceMembershipsArgs<ExtArgs>
   tasks?: boolean | Prisma.User$tasksArgs<ExtArgs>
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
+  createdWikiDocuments?: boolean | Prisma.User$createdWikiDocumentsArgs<ExtArgs>
+  updatedWikiDocuments?: boolean | Prisma.User$updatedWikiDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -838,6 +1084,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   workspaceMemberships?: boolean | Prisma.User$workspaceMembershipsArgs<ExtArgs>
   tasks?: boolean | Prisma.User$tasksArgs<ExtArgs>
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
+  createdWikiDocuments?: boolean | Prisma.User$createdWikiDocumentsArgs<ExtArgs>
+  updatedWikiDocuments?: boolean | Prisma.User$updatedWikiDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -850,6 +1098,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     workspaceMemberships: Prisma.$WorkspaceMemberPayload<ExtArgs>[]
     tasks: Prisma.$TaskPayload<ExtArgs>[]
     messages: Prisma.$MessagePayload<ExtArgs>[]
+    createdWikiDocuments: Prisma.$WikiDocumentPayload<ExtArgs>[]
+    updatedWikiDocuments: Prisma.$WikiDocumentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1257,6 +1507,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   workspaceMemberships<T extends Prisma.User$workspaceMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workspaceMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tasks<T extends Prisma.User$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messages<T extends Prisma.User$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdWikiDocuments<T extends Prisma.User$createdWikiDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdWikiDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WikiDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  updatedWikiDocuments<T extends Prisma.User$updatedWikiDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$updatedWikiDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WikiDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1779,6 +2031,54 @@ export type User$messagesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
+}
+
+/**
+ * User.createdWikiDocuments
+ */
+export type User$createdWikiDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WikiDocument
+   */
+  select?: Prisma.WikiDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WikiDocument
+   */
+  omit?: Prisma.WikiDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WikiDocumentInclude<ExtArgs> | null
+  where?: Prisma.WikiDocumentWhereInput
+  orderBy?: Prisma.WikiDocumentOrderByWithRelationInput | Prisma.WikiDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.WikiDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WikiDocumentScalarFieldEnum | Prisma.WikiDocumentScalarFieldEnum[]
+}
+
+/**
+ * User.updatedWikiDocuments
+ */
+export type User$updatedWikiDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WikiDocument
+   */
+  select?: Prisma.WikiDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WikiDocument
+   */
+  omit?: Prisma.WikiDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WikiDocumentInclude<ExtArgs> | null
+  where?: Prisma.WikiDocumentWhereInput
+  orderBy?: Prisma.WikiDocumentOrderByWithRelationInput | Prisma.WikiDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.WikiDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WikiDocumentScalarFieldEnum | Prisma.WikiDocumentScalarFieldEnum[]
 }
 
 /**
