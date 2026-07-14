@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { CreateProjectInput } from "@repo/shared";
 import styles from "../../page.module.css";
-import type { ProjectTheme, WorkspaceProject } from "./project-planning-types";
+import type { ProjectTheme } from "./project-planning-types";
 
 const colors = [
   "#6366f1",
@@ -15,15 +16,15 @@ const colors = [
 
 type Props = {
   open: boolean;
-  workspaceId: string;
   existingKeys: string[];
   onClose: () => void;
-  onCreate: (project: WorkspaceProject) => void;
+  onCreate: (
+    project: CreateProjectInput & { color: ProjectTheme },
+  ) => Promise<void>;
 };
 
 export default function CreateProjectDialog({
   open,
-  workspaceId,
   existingKeys,
   onClose,
   onCreate,
@@ -33,6 +34,7 @@ export default function CreateProjectDialog({
   const [description, setDescription] = useState("");
   const [color, setColor] = useState<ProjectTheme>(colors[0]);
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -56,7 +58,7 @@ export default function CreateProjectDialog({
     onClose();
   }
 
-  function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const normalizedName = name.trim();
     const normalizedKey = key.trim().toUpperCase();
@@ -68,15 +70,22 @@ export default function CreateProjectDialog({
       );
     if (existingKeys.includes(normalizedKey))
       return setError("This project key is already in use.");
-    onCreate({
-      id: crypto.randomUUID(),
-      workspaceId,
-      name: normalizedName,
-      key: normalizedKey,
-      description: description.trim(),
-      color,
-    });
-    resetAndClose();
+    setSubmitting(true);
+    try {
+      await onCreate({
+        name: normalizedName,
+        key: normalizedKey,
+        description: description.trim(),
+        color,
+      });
+      resetAndClose();
+    } catch (caught: unknown) {
+      setError(
+        caught instanceof Error ? caught.message : "Unable to create project.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -156,10 +165,12 @@ export default function CreateProjectDialog({
           </fieldset>
           {error && <div className={styles.projectFormError}>{error}</div>}
           <div className={styles.projectModalActions}>
-            <button type="button" onClick={resetAndClose}>
+            <button type="button" onClick={resetAndClose} disabled={submitting}>
               Cancel
             </button>
-            <button type="submit">Create Project</button>
+            <button type="submit" disabled={submitting}>
+              {submitting ? "Creating..." : "Create Project"}
+            </button>
           </div>
         </form>
       </section>

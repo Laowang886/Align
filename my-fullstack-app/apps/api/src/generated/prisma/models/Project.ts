@@ -30,6 +30,7 @@ export type ProjectMinAggregateOutputType = {
   name: string | null
   key: string | null
   description: string | null
+  color: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -40,6 +41,7 @@ export type ProjectMaxAggregateOutputType = {
   name: string | null
   key: string | null
   description: string | null
+  color: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,6 +52,7 @@ export type ProjectCountAggregateOutputType = {
   name: number
   key: number
   description: number
+  color: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -62,6 +65,7 @@ export type ProjectMinAggregateInputType = {
   name?: true
   key?: true
   description?: true
+  color?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -72,6 +76,7 @@ export type ProjectMaxAggregateInputType = {
   name?: true
   key?: true
   description?: true
+  color?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +87,7 @@ export type ProjectCountAggregateInputType = {
   name?: true
   key?: true
   description?: true
+  color?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -165,6 +171,7 @@ export type ProjectGroupByOutputType = {
   name: string
   key: string
   description: string | null
+  color: string
   createdAt: Date
   updatedAt: Date
   _count: ProjectCountAggregateOutputType | null
@@ -196,10 +203,12 @@ export type ProjectWhereInput = {
   name?: Prisma.StringFilter<"Project"> | string
   key?: Prisma.StringFilter<"Project"> | string
   description?: Prisma.StringNullableFilter<"Project"> | string | null
+  color?: Prisma.StringFilter<"Project"> | string
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   boards?: Prisma.BoardListRelationFilter
+  wikiDocuments?: Prisma.WikiDocumentListRelationFilter
 }
 
 export type ProjectOrderByWithRelationInput = {
@@ -208,10 +217,12 @@ export type ProjectOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   key?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  color?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
   boards?: Prisma.BoardOrderByRelationAggregateInput
+  wikiDocuments?: Prisma.WikiDocumentOrderByRelationAggregateInput
 }
 
 export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -224,10 +235,12 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Project"> | string
   key?: Prisma.StringFilter<"Project"> | string
   description?: Prisma.StringNullableFilter<"Project"> | string | null
+  color?: Prisma.StringFilter<"Project"> | string
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   boards?: Prisma.BoardListRelationFilter
+  wikiDocuments?: Prisma.WikiDocumentListRelationFilter
 }, "id" | "workspaceId_key">
 
 export type ProjectOrderByWithAggregationInput = {
@@ -236,6 +249,7 @@ export type ProjectOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   key?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  color?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ProjectCountOrderByAggregateInput
@@ -252,6 +266,7 @@ export type ProjectScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Project"> | string
   key?: Prisma.StringWithAggregatesFilter<"Project"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
+  color?: Prisma.StringWithAggregatesFilter<"Project"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
 }
@@ -261,10 +276,12 @@ export type ProjectCreateInput = {
   name: string
   key: string
   description?: string | null
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutProjectsInput
   boards?: Prisma.BoardCreateNestedManyWithoutProjectInput
+  wikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateInput = {
@@ -273,9 +290,11 @@ export type ProjectUncheckedCreateInput = {
   name: string
   key: string
   description?: string | null
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   boards?: Prisma.BoardUncheckedCreateNestedManyWithoutProjectInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUpdateInput = {
@@ -283,10 +302,12 @@ export type ProjectUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutProjectsNestedInput
   boards?: Prisma.BoardUpdateManyWithoutProjectNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateInput = {
@@ -295,9 +316,11 @@ export type ProjectUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   boards?: Prisma.BoardUncheckedUpdateManyWithoutProjectNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateManyInput = {
@@ -306,6 +329,7 @@ export type ProjectCreateManyInput = {
   name: string
   key: string
   description?: string | null
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -315,6 +339,7 @@ export type ProjectUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -325,6 +350,7 @@ export type ProjectUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -350,6 +376,7 @@ export type ProjectCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   key?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  color?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -360,6 +387,7 @@ export type ProjectMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   key?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  color?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -370,6 +398,7 @@ export type ProjectMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   key?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  color?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -421,6 +450,20 @@ export type ProjectUncheckedUpdateManyWithoutWorkspaceNestedInput = {
   deleteMany?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
 }
 
+export type ProjectCreateNestedOneWithoutWikiDocumentsInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutWikiDocumentsInput, Prisma.ProjectUncheckedCreateWithoutWikiDocumentsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutWikiDocumentsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutWikiDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutWikiDocumentsInput, Prisma.ProjectUncheckedCreateWithoutWikiDocumentsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutWikiDocumentsInput
+  upsert?: Prisma.ProjectUpsertWithoutWikiDocumentsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutWikiDocumentsInput, Prisma.ProjectUpdateWithoutWikiDocumentsInput>, Prisma.ProjectUncheckedUpdateWithoutWikiDocumentsInput>
+}
+
 export type ProjectCreateNestedOneWithoutBoardsInput = {
   create?: Prisma.XOR<Prisma.ProjectCreateWithoutBoardsInput, Prisma.ProjectUncheckedCreateWithoutBoardsInput>
   connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutBoardsInput
@@ -440,9 +483,11 @@ export type ProjectCreateWithoutWorkspaceInput = {
   name: string
   key: string
   description?: string | null
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   boards?: Prisma.BoardCreateNestedManyWithoutProjectInput
+  wikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutWorkspaceInput = {
@@ -450,9 +495,11 @@ export type ProjectUncheckedCreateWithoutWorkspaceInput = {
   name: string
   key: string
   description?: string | null
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   boards?: Prisma.BoardUncheckedCreateNestedManyWithoutProjectInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutWorkspaceInput = {
@@ -490,8 +537,73 @@ export type ProjectScalarWhereInput = {
   name?: Prisma.StringFilter<"Project"> | string
   key?: Prisma.StringFilter<"Project"> | string
   description?: Prisma.StringNullableFilter<"Project"> | string | null
+  color?: Prisma.StringFilter<"Project"> | string
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
+}
+
+export type ProjectCreateWithoutWikiDocumentsInput = {
+  id?: string
+  name: string
+  key: string
+  description?: string | null
+  color?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutProjectsInput
+  boards?: Prisma.BoardCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutWikiDocumentsInput = {
+  id?: string
+  workspaceId: string
+  name: string
+  key: string
+  description?: string | null
+  color?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  boards?: Prisma.BoardUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutWikiDocumentsInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutWikiDocumentsInput, Prisma.ProjectUncheckedCreateWithoutWikiDocumentsInput>
+}
+
+export type ProjectUpsertWithoutWikiDocumentsInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutWikiDocumentsInput, Prisma.ProjectUncheckedUpdateWithoutWikiDocumentsInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutWikiDocumentsInput, Prisma.ProjectUncheckedCreateWithoutWikiDocumentsInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutWikiDocumentsInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutWikiDocumentsInput, Prisma.ProjectUncheckedUpdateWithoutWikiDocumentsInput>
+}
+
+export type ProjectUpdateWithoutWikiDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  key?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutProjectsNestedInput
+  boards?: Prisma.BoardUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutWikiDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  key?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  boards?: Prisma.BoardUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateWithoutBoardsInput = {
@@ -499,9 +611,11 @@ export type ProjectCreateWithoutBoardsInput = {
   name: string
   key: string
   description?: string | null
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutProjectsInput
+  wikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutBoardsInput = {
@@ -510,8 +624,10 @@ export type ProjectUncheckedCreateWithoutBoardsInput = {
   name: string
   key: string
   description?: string | null
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  wikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutBoardsInput = {
@@ -535,9 +651,11 @@ export type ProjectUpdateWithoutBoardsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutProjectsNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutBoardsInput = {
@@ -546,8 +664,10 @@ export type ProjectUncheckedUpdateWithoutBoardsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateManyWorkspaceInput = {
@@ -555,6 +675,7 @@ export type ProjectCreateManyWorkspaceInput = {
   name: string
   key: string
   description?: string | null
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -564,9 +685,11 @@ export type ProjectUpdateWithoutWorkspaceInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   boards?: Prisma.BoardUpdateManyWithoutProjectNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutWorkspaceInput = {
@@ -574,9 +697,11 @@ export type ProjectUncheckedUpdateWithoutWorkspaceInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   boards?: Prisma.BoardUncheckedUpdateManyWithoutProjectNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateManyWithoutWorkspaceInput = {
@@ -584,6 +709,7 @@ export type ProjectUncheckedUpdateManyWithoutWorkspaceInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -595,10 +721,12 @@ export type ProjectUncheckedUpdateManyWithoutWorkspaceInput = {
 
 export type ProjectCountOutputType = {
   boards: number
+  wikiDocuments: number
 }
 
 export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   boards?: boolean | ProjectCountOutputTypeCountBoardsArgs
+  wikiDocuments?: boolean | ProjectCountOutputTypeCountWikiDocumentsArgs
 }
 
 /**
@@ -618,6 +746,13 @@ export type ProjectCountOutputTypeCountBoardsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.BoardWhereInput
 }
 
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountWikiDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WikiDocumentWhereInput
+}
+
 
 export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -625,10 +760,12 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name?: boolean
   key?: boolean
   description?: boolean
+  color?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   boards?: boolean | Prisma.Project$boardsArgs<ExtArgs>
+  wikiDocuments?: boolean | Prisma.Project$wikiDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
@@ -638,6 +775,7 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   name?: boolean
   key?: boolean
   description?: boolean
+  color?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
@@ -649,6 +787,7 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   name?: boolean
   key?: boolean
   description?: boolean
+  color?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
@@ -660,14 +799,16 @@ export type ProjectSelectScalar = {
   name?: boolean
   key?: boolean
   description?: boolean
+  color?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "name" | "key" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "name" | "key" | "description" | "color" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   boards?: boolean | Prisma.Project$boardsArgs<ExtArgs>
+  wikiDocuments?: boolean | Prisma.Project$wikiDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProjectIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -682,6 +823,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     workspace: Prisma.$WorkspacePayload<ExtArgs>
     boards: Prisma.$BoardPayload<ExtArgs>[]
+    wikiDocuments: Prisma.$WikiDocumentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -689,6 +831,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     name: string
     key: string
     description: string | null
+    color: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["project"]>
@@ -1087,6 +1230,7 @@ export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   workspace<T extends Prisma.WorkspaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   boards<T extends Prisma.Project$boardsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$boardsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  wikiDocuments<T extends Prisma.Project$wikiDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$wikiDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WikiDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1121,6 +1265,7 @@ export interface ProjectFieldRefs {
   readonly name: Prisma.FieldRef<"Project", 'String'>
   readonly key: Prisma.FieldRef<"Project", 'String'>
   readonly description: Prisma.FieldRef<"Project", 'String'>
+  readonly color: Prisma.FieldRef<"Project", 'String'>
   readonly createdAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Project", 'DateTime'>
 }
@@ -1545,6 +1690,30 @@ export type Project$boardsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.BoardScalarFieldEnum | Prisma.BoardScalarFieldEnum[]
+}
+
+/**
+ * Project.wikiDocuments
+ */
+export type Project$wikiDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WikiDocument
+   */
+  select?: Prisma.WikiDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WikiDocument
+   */
+  omit?: Prisma.WikiDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WikiDocumentInclude<ExtArgs> | null
+  where?: Prisma.WikiDocumentWhereInput
+  orderBy?: Prisma.WikiDocumentOrderByWithRelationInput | Prisma.WikiDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.WikiDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WikiDocumentScalarFieldEnum | Prisma.WikiDocumentScalarFieldEnum[]
 }
 
 /**

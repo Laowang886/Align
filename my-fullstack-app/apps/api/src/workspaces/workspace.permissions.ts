@@ -6,6 +6,8 @@ export type WorkspaceAction =
   | 'update'
   | 'delete'
   | 'create_project'
+  | 'create_wiki_document'
+  | 'edit_wiki_document'
   | 'invite_member'
   | 'remove_member'
   | 'change_member_role'
@@ -17,6 +19,8 @@ const ROLE_PERMISSIONS: Record<WorkspaceRole, ReadonlySet<WorkspaceAction>> = {
     'update',
     'delete',
     'create_project',
+    'create_wiki_document',
+    'edit_wiki_document',
     'invite_member',
     'remove_member',
     'change_member_role',
@@ -26,10 +30,12 @@ const ROLE_PERMISSIONS: Record<WorkspaceRole, ReadonlySet<WorkspaceAction>> = {
     'view',
     'update',
     'create_project',
+    'create_wiki_document',
+    'edit_wiki_document',
     'invite_member',
     'remove_member',
   ]),
-  MEMBER: new Set(['view']),
+  MEMBER: new Set(['view', 'create_wiki_document', 'edit_wiki_document']),
 };
 
 export function hasWorkspacePermission(

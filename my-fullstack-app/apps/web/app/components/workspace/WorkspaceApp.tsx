@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type {
+  CreateProjectInput,
   CreateWorkspaceInput,
   WorkspaceDetails,
   WorkspaceSummary,
@@ -11,6 +12,7 @@ import {
   ApiError,
   authApi,
   clearClientAuthState,
+  projectApi,
   type CurrentUser,
   workspaceApi,
 } from "../../../lib/api-client";
@@ -27,6 +29,7 @@ import MembersAccessDialog from "./MembersAccessDialog";
 import CurrentUserSelector from "./CurrentUserSelector";
 import CreateProjectDialog from "./CreateProjectDialog";
 import SprintsView from "../SprintsView";
+import WikiDocumentsView from "./WikiDocumentsView";
 import type {
   Sprint,
   SprintStatus,
@@ -34,7 +37,11 @@ import type {
 } from "./project-planning-types";
 
 type ViewState = "loading" | "ready" | "empty" | "error";
-type WorkspaceView = "Dashboard" | "Kanban Board" | "Sprints";
+type WorkspaceView =
+  | "Dashboard"
+  | "Kanban Board"
+  | "Sprints"
+  | "Wiki Documents";
 
 export default function WorkspaceApp({
   workspaceId,
@@ -65,6 +72,7 @@ export default function WorkspaceApp({
   const [planningWorkspaceId, setPlanningWorkspaceId] = useState<string | null>(
     null,
   );
+  const projectLoadWorkspaceId = useRef<string | null>(null);
 
   const load = useCallback(async () => {
     setViewState("loading");
@@ -122,59 +130,44 @@ export default function WorkspaceApp({
     if (
       !currentWorkspace ||
       viewState !== "ready" ||
-      planningWorkspaceId === currentWorkspace.id
+      projectLoadWorkspaceId.current === currentWorkspace.id
     )
       return;
-    const projectKey = `sprintforge:projects:${currentWorkspace.id}`;
+    projectLoadWorkspaceId.current = currentWorkspace.id;
     const sprintKey = `sprintforge:sprints:${currentWorkspace.id}`;
-    let savedProjects: WorkspaceProject[] = [];
     let savedSprints: Sprint[] = [];
     try {
-      savedProjects = JSON.parse(
-        window.localStorage.getItem(projectKey) ?? "[]",
-      ) as WorkspaceProject[];
       savedSprints = JSON.parse(
         window.localStorage.getItem(sprintKey) ?? "[]",
       ) as Sprint[];
     } catch {
-      window.localStorage.removeItem(projectKey);
       window.localStorage.removeItem(sprintKey);
     }
-    if (savedProjects.length === 0 && currentWorkspace.projectCount > 0) {
-      const seededProject: WorkspaceProject = {
-        id: `${currentWorkspace.id}-web`,
-        workspaceId: currentWorkspace.id,
-        name: "web",
-        key: "WEB",
-        description: "Primary product workspace",
-        color: "#6366f1",
-      };
-      savedProjects = [seededProject];
-      savedSprints = [
-        {
-          id: `${currentWorkspace.id}-bootstrap`,
-          projectId: seededProject.id,
-          name: "Sprint 1: Bootstrap",
-          goal: "Bootstrap initial features and align scopes",
-          startDate: "2026-07-13",
-          endDate: "2026-07-27",
-          status: "COMPLETED",
-        },
-      ];
-    }
-    setProjects(savedProjects);
     setSprints(savedSprints);
-    setActiveProjectId(savedProjects[0]?.id ?? null);
     setPlanningWorkspaceId(currentWorkspace.id);
+    void projectApi
+      .list(currentWorkspace.id)
+      .then((items) => {
+        if (projectLoadWorkspaceId.current !== currentWorkspace.id) return;
+        const loadedProjects = items as WorkspaceProject[];
+        setProjects(loadedProjects);
+        setActiveProjectId((selectedId) =>
+          loadedProjects.some((project) => project.id === selectedId)
+            ? selectedId
+            : (loadedProjects[0]?.id ?? null),
+        );
+      })
+      .catch((caught: unknown) => {
+        if (projectLoadWorkspaceId.current !== currentWorkspace.id) return;
+        setProjects([]);
+        setActiveProjectId(null);
+        showToast(
+          caught instanceof ApiError
+            ? caught.message
+            : "Unable to load projects.",
+        );
+      });
   }, [currentWorkspace, planningWorkspaceId, viewState]);
-
-  useEffect(() => {
-    if (!planningWorkspaceId) return;
-    window.localStorage.setItem(
-      `sprintforge:projects:${planningWorkspaceId}`,
-      JSON.stringify(projects),
-    );
-  }, [planningWorkspaceId, projects]);
 
   useEffect(() => {
     if (!planningWorkspaceId) return;
@@ -190,7 +183,12 @@ export default function WorkspaceApp({
   }
 
   function navigate(view: string) {
-    if (view === "Dashboard" || view === "Kanban Board" || view === "Sprints") {
+    if (
+      view === "Dashboard" ||
+      view === "Kanban Board" ||
+      view === "Sprints" ||
+      view === "Wiki Documents"
+    ) {
       setActiveView(view);
       return;
     }
@@ -233,7 +231,12 @@ export default function WorkspaceApp({
     router.push("/workspaces");
   }
 
-  function createProject(project: WorkspaceProject) {
+  async function createProject(input: CreateProjectInput): Promise<void> {
+    if (!currentWorkspace) throw new Error("Select a workspace first.");
+    const project = (await projectApi.create(
+      currentWorkspace.id,
+      input,
+    )) as WorkspaceProject;
     setProjects((items) => [...items, project]);
     setActiveProjectId(project.id);
     setCurrentWorkspace((workspace) =>
@@ -349,7 +352,7 @@ export default function WorkspaceApp({
               workspaceName={currentWorkspace.name}
               onNotify={showToast}
             />
-          ) : (
+          ) : activeView === "Sprints" ? (
             <SprintsView
               project={
                 projects.find((project) => project.id === activeProjectId) ??
@@ -359,6 +362,16 @@ export default function WorkspaceApp({
               onAddSprint={addSprint}
               onUpdateSprintStatus={updateSprintStatus}
               onOpenProjects={() => setProjectDialogOpen(true)}
+            />
+          ) : (
+            <WikiDocumentsView
+              workspaceId={currentWorkspace.id}
+              project={
+                projects.find((project) => project.id === activeProjectId) ??
+                null
+              }
+              onOpenProjects={() => setProjectDialogOpen(true)}
+              onNotify={showToast}
             />
           ))}
       </div>
@@ -375,7 +388,6 @@ export default function WorkspaceApp({
       {currentWorkspace && (
         <CreateProjectDialog
           open={projectDialogOpen}
-          workspaceId={currentWorkspace.id}
           existingKeys={projects.map((project) => project.key)}
           onClose={() => setProjectDialogOpen(false)}
           onCreate={createProject}

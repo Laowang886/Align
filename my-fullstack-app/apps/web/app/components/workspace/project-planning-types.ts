@@ -6,12 +6,7 @@ export type ProjectTheme =
   | "#a855f7"
   | "#0ea5e9";
 
-export type WorkspaceProject = {
-  id: string;
-  workspaceId: string;
-  name: string;
-  key: string;
-  description: string;
+export type WorkspaceProject = Omit<Project, "color"> & {
   color: ProjectTheme;
 };
 
@@ -26,3 +21,4 @@ export type Sprint = {
   endDate: string;
   status: SprintStatus;
 };
+import type { Project } from "@repo/shared";

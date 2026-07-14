@@ -1,9 +1,30 @@
 import type { ComponentProps } from "react";
 
 export type IconName =
-  | "menu" | "external" | "bell" | "chevron" | "user" | "dashboard"
-  | "board" | "clock" | "book" | "chat" | "users" | "clipboard"
-  | "check" | "trend" | "calendar" | "sparkles" | "plus" | "alert" | "activity" | "mail";
+  | "menu"
+  | "external"
+  | "bell"
+  | "chevron"
+  | "user"
+  | "dashboard"
+  | "board"
+  | "clock"
+  | "book"
+  | "chat"
+  | "users"
+  | "clipboard"
+  | "check"
+  | "trend"
+  | "calendar"
+  | "sparkles"
+  | "plus"
+  | "alert"
+  | "activity"
+  | "mail"
+  | "eye"
+  | "edit"
+  | "file"
+  | "save";
 
 export type NavigationItem = {
   label: string;
