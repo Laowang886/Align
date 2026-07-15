@@ -9,6 +9,10 @@ import type {
   WorkspaceMember,
   WorkspaceRole,
   WorkspaceSummary,
+  AuthResponse,
+  AuthenticatedUser,
+  LoginInput,
+  RegisterInput,
 } from "@repo/shared";
 
 const API_URL = (
@@ -174,24 +178,22 @@ export const wikiApi = {
     ),
 };
 
-export type CurrentUser = {
-  id: string;
-  name: string;
-  email: string;
-  avatarUrl: string | null;
-};
-export type AuthResponse = { user: CurrentUser };
+export type CurrentUser = AuthenticatedUser;
+
 export const authApi = {
-  login: (input: { email: string; password: string }) =>
+  login: (input: LoginInput) =>
     apiRequest<AuthResponse>("/auth/login", {
       method: "POST",
       body: JSON.stringify(input),
     }),
-  register: (input: { name: string; email: string; password: string }) =>
+
+  register: (input: RegisterInput) =>
     apiRequest<AuthResponse>("/auth/register", {
       method: "POST",
       body: JSON.stringify(input),
     }),
+
   logout: () => apiRequest<void>("/auth/logout", { method: "POST" }),
+
   me: () => apiRequest<CurrentUser>("/auth/me"),
 };

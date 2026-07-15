@@ -16,6 +16,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { Throttle } from '@nestjs/throttler';
 
 interface AuthenticatedRequest extends Request {
   user: { id: string; email: string; name: string; avatarUrl: string | null };
@@ -31,6 +32,12 @@ export class AuthController {
     return request.user;
   }
 
+  @Throttle({
+    default: {
+      limit: process.env.NODE_ENV === 'test' ? 1000 : 3,
+      ttl: 60000,
+    },
+  }) // Registration is more stringent, with a maximum of 3 attempts within 60 seconds.
   @Post('register')
   async register(
     @Body() dto: RegisterDto,
@@ -41,6 +48,12 @@ export class AuthController {
     return { user: result.user };
   }
 
+  @Throttle({
+    default: {
+      limit: process.env.NODE_ENV === 'test' ? 1000 : 5,
+      ttl: 60000,
+    },
+  }) // Maximum 5 times within 60 seconds
   @Post('login')
   async login(
     @Body() dto: LoginDto,
