@@ -353,6 +353,7 @@ export default function WorkspaceApp({
           }
           userName={currentUser?.name}
           userEmail={currentUser?.email}
+          userAvatarUrl={currentUser?.avatarUrl}
         />
         {viewState === "loading" && <WorkspaceLoadingState />}
         {viewState === "empty" && (
