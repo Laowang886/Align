@@ -60,6 +60,11 @@ export type WorkspaceMember = Prisma.WorkspaceMemberModel
  */
 export type Project = Prisma.ProjectModel
 /**
+ * Model Sprint
+ * 
+ */
+export type Sprint = Prisma.SprintModel
+/**
  * Model WikiDocument
  * 
  */

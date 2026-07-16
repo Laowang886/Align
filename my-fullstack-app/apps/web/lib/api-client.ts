@@ -1,8 +1,11 @@
 import type {
   CreateWorkspaceInput,
   CreateProjectInput,
+  CreateSprintInput,
   CreateWikiDocumentInput,
   Project,
+  Sprint,
+  UpdateSprintStatusInput,
   UpdateWikiDocumentInput,
   WikiDocument,
   WorkspaceDetails,
@@ -150,6 +153,28 @@ export const projectApi = {
       method: "POST",
       body: JSON.stringify(input),
     }),
+};
+
+export const sprintApi = {
+  list: (workspaceId: string, projectId: string) =>
+    apiRequest<Sprint[]>(
+      `/workspaces/${workspaceId}/projects/${projectId}/sprints`,
+    ),
+  create: (workspaceId: string, projectId: string, input: CreateSprintInput) =>
+    apiRequest<Sprint>(
+      `/workspaces/${workspaceId}/projects/${projectId}/sprints`,
+      { method: "POST", body: JSON.stringify(input) },
+    ),
+  updateStatus: (
+    workspaceId: string,
+    projectId: string,
+    sprintId: string,
+    input: UpdateSprintStatusInput,
+  ) =>
+    apiRequest<Sprint>(
+      `/workspaces/${workspaceId}/projects/${projectId}/sprints/${sprintId}/status`,
+      { method: "PATCH", body: JSON.stringify(input) },
+    ),
 };
 
 export const wikiApi = {

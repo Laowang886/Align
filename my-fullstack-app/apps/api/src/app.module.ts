@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { WorkspacesModule } from './workspaces/workspaces.module';
 import { ProjectsModule } from './projects/projects.module';
 import { WikiModule } from './wiki/wiki.module';
+import { SprintsModule } from './sprints/sprints.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { WikiModule } from './wiki/wiki.module';
     WorkspacesModule,
     ProjectsModule,
     WikiModule,
+    SprintsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

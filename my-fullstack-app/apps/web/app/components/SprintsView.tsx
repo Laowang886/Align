@@ -1,20 +1,22 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { CreateSprintInput, Sprint, SprintStatus } from "@repo/shared";
 import styles from "../page.module.css";
 import Icon from "./Icon";
-import type {
-  Sprint,
-  SprintStatus,
-  WorkspaceProject,
-} from "./workspace/project-planning-types";
+import type { WorkspaceProject } from "./workspace/project-planning-types";
 
 type Props = {
   project: WorkspaceProject | null;
   sprints: Sprint[];
-  onAddSprint: (sprint: Sprint) => void;
-  onUpdateSprintStatus: (sprintId: string, status: SprintStatus) => void;
+  onAddSprint: (input: CreateSprintInput) => Promise<void>;
+  onUpdateSprintStatus: (
+    sprintId: string,
+    status: Extract<SprintStatus, "ACTIVE" | "COMPLETED">,
+  ) => Promise<void>;
   onOpenProjects: () => void;
+  canManage: boolean;
+  loading: boolean;
 };
 
 function formatDate(value: string) {
@@ -32,6 +34,8 @@ export default function SprintsView({
   onAddSprint,
   onUpdateSprintStatus,
   onOpenProjects,
+  canManage,
+  loading,
 }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [name, setName] = useState("");
@@ -39,6 +43,9 @@ export default function SprintsView({
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [error, setError] = useState("");
+  const [actionError, setActionError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [updatingSprintId, setUpdatingSprintId] = useState<string | null>(null);
   const [summaries, setSummaries] = useState<Record<string, string>>({});
   const titleRef = useRef<HTMLInputElement>(null);
   const projectSprints = useMemo(
@@ -65,23 +72,48 @@ export default function SprintsView({
     setError("");
   }
 
-  function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!project) return;
     if (!name.trim() || !startDate || !endDate)
       return setError("Sprint title and both dates are required.");
     if (endDate < startDate)
       return setError("End date must be on or after the start date.");
-    onAddSprint({
-      id: crypto.randomUUID(),
-      projectId: project.id,
-      name: name.trim(),
-      goal: goal.trim(),
-      startDate,
-      endDate,
-      status: "PLANNED",
-    });
-    closeModal();
+    setSubmitting(true);
+    try {
+      await onAddSprint({
+        name: name.trim(),
+        ...(goal.trim() ? { goal: goal.trim() } : {}),
+        startDate,
+        endDate,
+      });
+      closeModal();
+    } catch (caught: unknown) {
+      setError(
+        caught instanceof Error ? caught.message : "Unable to create sprint.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function updateStatus(
+    sprintId: string,
+    status: Extract<SprintStatus, "ACTIVE" | "COMPLETED">,
+  ) {
+    setActionError("");
+    setUpdatingSprintId(sprintId);
+    try {
+      await onUpdateSprintStatus(sprintId, status);
+    } catch (caught: unknown) {
+      setActionError(
+        caught instanceof Error
+          ? caught.message
+          : "Unable to update sprint status.",
+      );
+    } finally {
+      setUpdatingSprintId(null);
+    }
   }
 
   if (!project)
@@ -114,100 +146,118 @@ export default function SprintsView({
             velocity, and consult AI scrum coaches.
           </p>
         </div>
-        <button type="button" onClick={() => setModalOpen(true)}>
+        <button
+          type="button"
+          onClick={() => setModalOpen(true)}
+          disabled={!canManage}
+          title={
+            !canManage
+              ? "Only workspace owners and admins can plan sprints"
+              : undefined
+          }
+        >
           <Icon name="plus" size={18} />
           Plan New Sprint
         </button>
       </header>
+      {actionError && (
+        <div className={styles.sprintFormError}>{actionError}</div>
+      )}
       <div className={styles.sprintsGrid}>
         <section className={styles.sprintColumn}>
           <h2>
             <Icon name="clock" size={18} />
             Milestone Sprints ({projectSprints.length})
           </h2>
-          {projectSprints.map((sprint) => (
-            <article key={sprint.id} className={styles.sprintCard}>
-              <div className={styles.sprintCardHead}>
-                <div>
-                  <div className={styles.sprintTitle}>
-                    <h3>{sprint.name}</h3>
-                    <span className={styles[`sprint${sprint.status}`]}>
-                      {sprint.status}
-                    </span>
+          {loading && (
+            <div className={styles.noSprints}>Loading sprints...</div>
+          )}
+          {!loading &&
+            projectSprints.map((sprint) => (
+              <article key={sprint.id} className={styles.sprintCard}>
+                <div className={styles.sprintCardHead}>
+                  <div>
+                    <div className={styles.sprintTitle}>
+                      <h3>{sprint.name}</h3>
+                      <span className={styles[`sprint${sprint.status}`]}>
+                        {sprint.status}
+                      </span>
+                    </div>
+                    {sprint.goal && <p>Goal: {sprint.goal}</p>}
+                    <time>
+                      <Icon name="calendar" size={14} />
+                      {formatDate(sprint.startDate)} —{" "}
+                      {formatDate(sprint.endDate)}
+                    </time>
                   </div>
-                  {sprint.goal && <p>Goal: {sprint.goal}</p>}
-                  <time>
-                    <Icon name="calendar" size={14} />
-                    {formatDate(sprint.startDate)} —{" "}
-                    {formatDate(sprint.endDate)}
-                  </time>
-                </div>
-                <div className={styles.sprintActions}>
-                  {sprint.status === "PLANNED" && (
+                  <div className={styles.sprintActions}>
+                    {sprint.status === "PLANNED" && (
+                      <button
+                        type="button"
+                        onClick={() => void updateStatus(sprint.id, "ACTIVE")}
+                        disabled={!canManage || updatingSprintId === sprint.id}
+                      >
+                        Start Sprint
+                      </button>
+                    )}
+                    {sprint.status === "ACTIVE" && (
+                      <button
+                        type="button"
+                        className={styles.completeSprint}
+                        onClick={() =>
+                          void updateStatus(sprint.id, "COMPLETED")
+                        }
+                        disabled={!canManage || updatingSprintId === sprint.id}
+                      >
+                        Complete Sprint
+                      </button>
+                    )}
                     <button
                       type="button"
-                      onClick={() => onUpdateSprintStatus(sprint.id, "ACTIVE")}
-                    >
-                      Start Sprint
-                    </button>
-                  )}
-                  {sprint.status === "ACTIVE" && (
-                    <button
-                      type="button"
-                      className={styles.completeSprint}
+                      className={styles.coachButton}
                       onClick={() =>
-                        onUpdateSprintStatus(sprint.id, "COMPLETED")
+                        setSummaries((current) => ({
+                          ...current,
+                          [sprint.id]: current[sprint.id]
+                            ? ""
+                            : "No tasks are assigned yet. Add backlog items to establish velocity and delivery-risk insights.",
+                        }))
                       }
                     >
-                      Complete Sprint
+                      <Icon name="sparkles" size={14} />
+                      Coach Summary
                     </button>
-                  )}
-                  <button
-                    type="button"
-                    className={styles.coachButton}
-                    onClick={() =>
-                      setSummaries((current) => ({
-                        ...current,
-                        [sprint.id]: current[sprint.id]
-                          ? ""
-                          : "No tasks are assigned yet. Add backlog items to establish velocity and delivery-risk insights.",
-                      }))
-                    }
-                  >
+                  </div>
+                </div>
+                {summaries[sprint.id] && (
+                  <div className={styles.coachSummary}>
                     <Icon name="sparkles" size={14} />
-                    Coach Summary
-                  </button>
+                    <p>
+                      <b>Agile Coach Report</b>
+                      {summaries[sprint.id]}
+                    </p>
+                  </div>
+                )}
+                <div className={styles.sprintMetrics}>
+                  <div>
+                    <small>TASKS COMPLETED</small>
+                    <b>0 / 0 Tasks</b>
+                  </div>
+                  <div>
+                    <small>STORY POINTS</small>
+                    <b>0 / 0 SP</b>
+                  </div>
+                  <div>
+                    <small>DELIVERANCE RATE</small>
+                    <b>0%</b>
+                  </div>
                 </div>
-              </div>
-              {summaries[sprint.id] && (
-                <div className={styles.coachSummary}>
-                  <Icon name="sparkles" size={14} />
-                  <p>
-                    <b>Agile Coach Report</b>
-                    {summaries[sprint.id]}
-                  </p>
+                <div className={styles.sprintDropzone}>
+                  Drag items from Backlog into this Sprint below.
                 </div>
-              )}
-              <div className={styles.sprintMetrics}>
-                <div>
-                  <small>TASKS COMPLETED</small>
-                  <b>0 / 0 Tasks</b>
-                </div>
-                <div>
-                  <small>STORY POINTS</small>
-                  <b>0 / 0 SP</b>
-                </div>
-                <div>
-                  <small>DELIVERANCE RATE</small>
-                  <b>0%</b>
-                </div>
-              </div>
-              <div className={styles.sprintDropzone}>
-                Drag items from Backlog into this Sprint below.
-              </div>
-            </article>
-          ))}
-          {projectSprints.length === 0 && (
+              </article>
+            ))}
+          {!loading && projectSprints.length === 0 && (
             <div className={styles.noSprints}>
               <Icon name="clock" size={33} />
               <b>No planned Sprints found.</b>
@@ -295,10 +345,16 @@ export default function SprintsView({
               </div>
               {error && <div className={styles.sprintFormError}>{error}</div>}
               <div className={styles.sprintModalActions}>
-                <button type="button" onClick={closeModal}>
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  disabled={submitting}
+                >
                   Cancel
                 </button>
-                <button type="submit">Plan Sprint</button>
+                <button type="submit" disabled={submitting}>
+                  {submitting ? "Planning..." : "Plan Sprint"}
+                </button>
               </div>
             </form>
           </section>
