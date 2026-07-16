@@ -55,6 +55,7 @@ export const ModelName = {
   Workspace: 'Workspace',
   WorkspaceMember: 'WorkspaceMember',
   Project: 'Project',
+  Sprint: 'Sprint',
   WikiDocument: 'WikiDocument',
   Board: 'Board',
   Column: 'Column',
@@ -128,6 +129,21 @@ export const ProjectScalarFieldEnum = {
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const SprintScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  name: 'name',
+  goal: 'goal',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SprintScalarFieldEnum = (typeof SprintScalarFieldEnum)[keyof typeof SprintScalarFieldEnum]
 
 
 export const WikiDocumentScalarFieldEnum = {

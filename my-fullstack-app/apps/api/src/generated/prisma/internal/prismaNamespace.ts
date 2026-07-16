@@ -388,6 +388,7 @@ export const ModelName = {
   Workspace: 'Workspace',
   WorkspaceMember: 'WorkspaceMember',
   Project: 'Project',
+  Sprint: 'Sprint',
   WikiDocument: 'WikiDocument',
   Board: 'Board',
   Column: 'Column',
@@ -409,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "workspace" | "workspaceMember" | "project" | "wikiDocument" | "board" | "column" | "task" | "channel" | "message"
+    modelProps: "user" | "workspace" | "workspaceMember" | "project" | "sprint" | "wikiDocument" | "board" | "column" | "task" | "channel" | "message"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -706,6 +707,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ProjectCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ProjectCountAggregateOutputType> | number
+        }
+      }
+    }
+    Sprint: {
+      payload: Prisma.$SprintPayload<ExtArgs>
+      fields: Prisma.SprintFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SprintFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SprintPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SprintFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SprintPayload>
+        }
+        findFirst: {
+          args: Prisma.SprintFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SprintPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SprintFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SprintPayload>
+        }
+        findMany: {
+          args: Prisma.SprintFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SprintPayload>[]
+        }
+        create: {
+          args: Prisma.SprintCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SprintPayload>
+        }
+        createMany: {
+          args: Prisma.SprintCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SprintCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SprintPayload>[]
+        }
+        delete: {
+          args: Prisma.SprintDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SprintPayload>
+        }
+        update: {
+          args: Prisma.SprintUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SprintPayload>
+        }
+        deleteMany: {
+          args: Prisma.SprintDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SprintUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SprintUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SprintPayload>[]
+        }
+        upsert: {
+          args: Prisma.SprintUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SprintPayload>
+        }
+        aggregate: {
+          args: Prisma.SprintAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSprint>
+        }
+        groupBy: {
+          args: Prisma.SprintGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SprintGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SprintCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SprintCountAggregateOutputType> | number
         }
       }
     }
@@ -1243,6 +1318,21 @@ export const ProjectScalarFieldEnum = {
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
 
 
+export const SprintScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  name: 'name',
+  goal: 'goal',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SprintScalarFieldEnum = (typeof SprintScalarFieldEnum)[keyof typeof SprintScalarFieldEnum]
+
+
 export const WikiDocumentScalarFieldEnum = {
   id: 'id',
   workspaceId: 'workspaceId',
@@ -1379,6 +1469,20 @@ export type EnumWorkspaceRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'WorkspaceRole[]'
  */
 export type ListEnumWorkspaceRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkspaceRole[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SprintStatus'
+ */
+export type EnumSprintStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SprintStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'SprintStatus[]'
+ */
+export type ListEnumSprintStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SprintStatus[]'>
     
 
 
@@ -1523,6 +1627,7 @@ export type GlobalOmitConfig = {
   workspace?: Prisma.WorkspaceOmit
   workspaceMember?: Prisma.WorkspaceMemberOmit
   project?: Prisma.ProjectOmit
+  sprint?: Prisma.SprintOmit
   wikiDocument?: Prisma.WikiDocumentOmit
   board?: Prisma.BoardOmit
   column?: Prisma.ColumnOmit

@@ -6,6 +6,7 @@ export type WorkspaceAction =
   | 'update'
   | 'delete'
   | 'create_project'
+  | 'manage_sprint'
   | 'create_wiki_document'
   | 'edit_wiki_document'
   | 'invite_member'
@@ -19,6 +20,7 @@ const ROLE_PERMISSIONS: Record<WorkspaceRole, ReadonlySet<WorkspaceAction>> = {
     'update',
     'delete',
     'create_project',
+    'manage_sprint',
     'create_wiki_document',
     'edit_wiki_document',
     'invite_member',
@@ -30,6 +32,7 @@ const ROLE_PERMISSIONS: Record<WorkspaceRole, ReadonlySet<WorkspaceAction>> = {
     'view',
     'update',
     'create_project',
+    'manage_sprint',
     'create_wiki_document',
     'edit_wiki_document',
     'invite_member',

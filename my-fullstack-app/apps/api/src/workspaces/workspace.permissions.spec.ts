@@ -15,6 +15,7 @@ describe('workspace permissions', () => {
     'update',
     'delete',
     'create_project',
+    'manage_sprint',
     'create_wiki_document',
     'edit_wiki_document',
     'invite_member',
@@ -33,6 +34,7 @@ describe('workspace permissions', () => {
     expect(hasWorkspacePermission('ADMIN', 'view')).toBe(true);
     expect(hasWorkspacePermission('ADMIN', 'update')).toBe(true);
     expect(hasWorkspacePermission('ADMIN', 'create_project')).toBe(true);
+    expect(hasWorkspacePermission('ADMIN', 'manage_sprint')).toBe(true);
     expect(hasWorkspacePermission('ADMIN', 'invite_member')).toBe(true);
     expect(hasWorkspacePermission('ADMIN', 'delete')).toBe(false);
     expect(hasWorkspacePermission('ADMIN', 'transfer_ownership')).toBe(false);
@@ -42,6 +44,7 @@ describe('workspace permissions', () => {
     expect(hasWorkspacePermission('MEMBER', 'view')).toBe(true);
     expect(hasWorkspacePermission('MEMBER', 'create_wiki_document')).toBe(true);
     expect(hasWorkspacePermission('MEMBER', 'edit_wiki_document')).toBe(true);
+    expect(hasWorkspacePermission('MEMBER', 'manage_sprint')).toBe(false);
     expect(hasWorkspacePermission('MEMBER', 'update')).toBe(false);
     expect(() => assertWorkspacePermission('MEMBER', 'invite_member')).toThrow(
       ForbiddenException,
