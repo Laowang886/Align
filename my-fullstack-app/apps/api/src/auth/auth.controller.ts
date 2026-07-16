@@ -43,8 +43,11 @@ export class AuthController {
     @Body() dto: RegisterDto,
     @Res({ passthrough: true }) res: Response,
   ) {
+    //this code gets the JWT token from the AuthService and sets it as a cookie in the response. The cookie is set to be HTTP-only, secure (in production), and has a max age of 7 days.
     const result = await this.authService.register(dto);
+    //this line of code send the JWT token to the client as a cookie named 'token'. The cookie is set to be HTTP-only, secure (in production), and has a max age of 7 days. This allows the client to automatically send the token with subsequent requests, enabling authentication without requiring the user to manually include the token in each request.
     this.setAuthCookie(res, result.accessToken);
+    //this line of code returns the user object from the registration result to the client. The user object typically contains information about the newly registered user, such as their ID, email, name, and avatar URL. This allows the client to have immediate access to the user's information after successful registration.
     return { user: result.user };
   }
 
@@ -64,8 +67,8 @@ export class AuthController {
     return { user: result.user };
   }
 
-  @Post('logout')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @Post('logout') //@Post('logout'): Defines this as a route for a POST request with the path /auth/logout.
+  @HttpCode(HttpStatus.NO_CONTENT) //Set the response status code to 204. 204 means "success, but no data was returned".
   logout(@Res({ passthrough: true }) res: Response): void {
     res.clearCookie('token', {
       httpOnly: true,

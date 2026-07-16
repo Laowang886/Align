@@ -182,6 +182,7 @@ export type CurrentUser = AuthenticatedUser;
 
 export const authApi = {
   login: (input: LoginInput) =>
+    //this code will send the login request to the backend API at the endpoint /auth/login with the provided input (email and password). The apiRequest function handles the HTTP request and response, returning a promise that resolves to an AuthResponse object containing the authenticated user's information and access token.
     apiRequest<AuthResponse>("/auth/login", {
       method: "POST",
       body: JSON.stringify(input),
@@ -193,7 +194,10 @@ export const authApi = {
       body: JSON.stringify(input),
     }),
 
+  //logout does not contains any datas, so we just tell the backend we are logging out by sending a POST request to the /auth/logout endpoint. The apiRequest function handles the HTTP request and response, returning a promise that resolves to void since there is no data expected in the response.
   logout: () => apiRequest<void>("/auth/logout", { method: "POST" }),
 
   me: () => apiRequest<CurrentUser>("/auth/me"),
 };
+
+
