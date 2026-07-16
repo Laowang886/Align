@@ -32,6 +32,7 @@ export default function WikiDocumentsView({
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
@@ -159,6 +160,29 @@ export default function WikiDocumentsView({
     }
   }
 
+  async function deleteDocument(document: WikiDocument) {
+    if (!project || deletingId) return;
+    setDeletingId(document.id);
+    saveVersion.current += 1;
+    try {
+      await wikiApi.delete(workspaceId, project.id, document.id);
+      const nextDocuments = documents.filter((item) => item.id !== document.id);
+      setDocuments(nextDocuments);
+      if (selectedId === document.id) {
+        const nextDocument = nextDocuments[0] ?? null;
+        setSelectedId(nextDocument?.id ?? null);
+        setEditTitle(nextDocument?.title ?? "");
+        setEditContent(nextDocument?.content ?? "");
+        setEditing(false);
+        setSaveStatus("saved");
+      }
+    } catch (caught: unknown) {
+      onNotify(errorMessage(caught, "Unable to delete this wiki page."));
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
   async function finishEditing() {
     if (isDirty) {
       const saved = await persistDocument();
@@ -207,6 +231,25 @@ export default function WikiDocumentsView({
             >
               <Icon name="file" size={17} />
               <span>{document.title}</span>
+              <span
+                role="button"
+                tabIndex={0}
+                className={styles.wikiDeletePage}
+                aria-label={`Delete ${document.title}`}
+                title="Delete wiki page"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  void deleteDocument(document);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key !== "Enter" && event.key !== " ") return;
+                  event.preventDefault();
+                  event.stopPropagation();
+                  void deleteDocument(document);
+                }}
+              >
+                <Icon name="trash" size={14} />
+              </span>
             </button>
           ))}
           {!loading && documents.length === 0 && !loadError && (

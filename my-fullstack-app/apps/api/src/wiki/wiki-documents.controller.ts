@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -61,6 +64,22 @@ export class WikiDocumentsController {
       projectId,
       documentId,
       parseUpdateWikiDocumentDto(body),
+    );
+  }
+
+  @Delete(':documentId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  delete(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('workspaceId', new ParseUUIDPipe()) workspaceId: string,
+    @Param('projectId', new ParseUUIDPipe()) projectId: string,
+    @Param('documentId', new ParseUUIDPipe()) documentId: string,
+  ): Promise<void> {
+    return this.wikiDocumentsService.delete(
+      user.id,
+      workspaceId,
+      projectId,
+      documentId,
     );
   }
 }

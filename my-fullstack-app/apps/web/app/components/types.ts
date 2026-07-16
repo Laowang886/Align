@@ -26,6 +26,7 @@ export type IconName =
   | "file"
   | "save"
   | "settings"
+  | "trash"
   | "logOut";
 
 export type NavigationItem = {
