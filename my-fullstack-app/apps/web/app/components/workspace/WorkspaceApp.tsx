@@ -349,6 +349,8 @@ export default function WorkspaceApp({
             />
           ) : activeView === "Kanban Board" ? (
             <KanbanBoardView
+              projectId={activeProjectId}
+              workspaceId={currentWorkspace.id}
               workspaceName={currentWorkspace.name}
               onNotify={showToast}
             />
