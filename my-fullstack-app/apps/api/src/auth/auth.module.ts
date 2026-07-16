@@ -5,6 +5,8 @@ import type { JwtModuleOptions } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 const jwtExpiresIn = (process.env.JWT_EXPIRATION_TIME ?? '7d') as NonNullable<
   JwtModuleOptions['signOptions']
@@ -19,8 +21,23 @@ const jwtExpiresIn = (process.env.JWT_EXPIRATION_TIME ?? '7d') as NonNullable<
         expiresIn: jwtExpiresIn,
       },
     }),
+
+    //We are using the ThrottlerModule to limit the number of requests a user can make within a certain time frame. In this case, we are allowing a maximum of 10 requests per minute (60000 milliseconds) from the same IP address. This helps to prevent abuse and protect our API from excessive requests.
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000, // Time window: 60000 milliseconds = 60 seconds
+        limit: process.env.NODE_ENV === 'production' ? 10 : Infinity, //Within this time window, a maximum of 10 requests are allowed from the same IP address.
+      },
+    ]),
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}

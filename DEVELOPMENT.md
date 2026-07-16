@@ -198,3 +198,6 @@ pnpm --filter @repo/shared build
 ```
 
 API 和 Web 使用的是 `@repo/shared` 的构建产物，修改 `packages/shared` 后需要重新构建，或启动 TypeScript watch。
+
+
+For test:pnpm run test:e2e
