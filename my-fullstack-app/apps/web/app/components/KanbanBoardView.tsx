@@ -45,6 +45,8 @@ type StatusForm = {
 
 type KanbanBoardViewProps = {
   onNotify: (message: string) => void;
+  projectId?: string | null;
+  workspaceId?: string;
   workspaceName?: string;
 };
 
@@ -139,6 +141,11 @@ const initialTasks: KanbanTask[] = [
   },
 ];
 
+type StoredKanbanBoard = {
+  columns: KanbanColumn[];
+  tasks: KanbanTask[];
+};
+
 const emptyForm: KanbanTaskForm = {
   title: "",
   description: "",
@@ -152,6 +159,34 @@ const emptyStatusForm: StatusForm = {
   name: "",
   color: "gray",
 };
+
+const KANBAN_STORAGE_PREFIX = "sprintforge:kanban";
+
+function getKanbanStorageKey(workspaceId?: string, projectId?: string | null) {
+  return `${KANBAN_STORAGE_PREFIX}:${workspaceId ?? "default"}:${projectId ?? "default"}`;
+}
+
+function readStoredKanbanBoard(storageKey: string): StoredKanbanBoard | null {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(storageKey) ?? "null") as Partial<StoredKanbanBoard> | null;
+
+    if (!parsed || !Array.isArray(parsed.columns) || !Array.isArray(parsed.tasks)) return null;
+
+    return {
+      columns: parsed.columns as KanbanColumn[],
+      tasks: parsed.tasks as KanbanTask[],
+    };
+  } catch {
+    window.localStorage.removeItem(storageKey);
+    return null;
+  }
+}
+
+function writeStoredKanbanBoard(storageKey: string, board: StoredKanbanBoard) {
+  window.localStorage.setItem(storageKey, JSON.stringify(board));
+}
 
 function toTitleCase(value: KanbanPriority) {
   return value.charAt(0).toUpperCase() + value.slice(1);
@@ -230,9 +265,16 @@ function isDuplicateStatusName(columns: KanbanColumn[], name: string, currentSta
   return columns.some((column) => column.id !== currentStatusId && column.label.trim().toLowerCase() === normalizedName);
 }
 
-export default function KanbanBoardView({ onNotify, workspaceName = "this workspace" }: KanbanBoardViewProps) {
-  const [columns, setColumns] = useState<KanbanColumn[]>(INITIAL_KANBAN_COLUMNS);
-  const [tasks, setTasks] = useState<KanbanTask[]>(initialTasks);
+export default function KanbanBoardView({
+  onNotify,
+  projectId,
+  workspaceId,
+  workspaceName = "this workspace",
+}: KanbanBoardViewProps) {
+  const storageKey = getKanbanStorageKey(workspaceId, projectId);
+  const [columns, setColumns] = useState<KanbanColumn[]>(() => readStoredKanbanBoard(storageKey)?.columns ?? INITIAL_KANBAN_COLUMNS);
+  const [tasks, setTasks] = useState<KanbanTask[]>(() => readStoredKanbanBoard(storageKey)?.tasks ?? initialTasks);
+  const [hydratedStorageKey, setHydratedStorageKey] = useState(storageKey);
   const [search, setSearch] = useState("");
   const [priorityFilter, setPriorityFilter] = useState<KanbanPriority | "all">("all");
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
@@ -285,6 +327,20 @@ export default function KanbanBoardView({ onNotify, workspaceName = "this worksp
     () => columns.filter((column) => column.id !== deleteStatusId),
     [columns, deleteStatusId],
   );
+
+  useEffect(() => {
+    const storedBoard = readStoredKanbanBoard(storageKey);
+
+    setColumns(storedBoard?.columns ?? INITIAL_KANBAN_COLUMNS);
+    setTasks(storedBoard?.tasks ?? initialTasks);
+    setHydratedStorageKey(storageKey);
+  }, [storageKey]);
+
+  useEffect(() => {
+    if (hydratedStorageKey !== storageKey) return;
+
+    writeStoredKanbanBoard(storageKey, { columns, tasks });
+  }, [columns, hydratedStorageKey, storageKey, tasks]);
 
   useEffect(() => {
     if (!modalOpen) return;

@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { WorkspacesModule } from './workspaces/workspaces.module';
 import { ProjectsModule } from './projects/projects.module';
 import { WikiModule } from './wiki/wiki.module';
+import { KanbanModule } from './kanban/kanban.module';
 import { SprintsModule } from './sprints/sprints.module';
 
 @Module({
@@ -16,6 +17,7 @@ import { SprintsModule } from './sprints/sprints.module';
     WorkspacesModule,
     ProjectsModule,
     WikiModule,
+    KanbanModule,
     SprintsModule,
   ],
   controllers: [AppController],
