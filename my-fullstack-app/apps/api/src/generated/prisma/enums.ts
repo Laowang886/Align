@@ -16,3 +16,12 @@ export const WorkspaceRole = {
 } as const
 
 export type WorkspaceRole = (typeof WorkspaceRole)[keyof typeof WorkspaceRole]
+
+
+export const SprintStatus = {
+  PLANNED: 'PLANNED',
+  ACTIVE: 'ACTIVE',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type SprintStatus = (typeof SprintStatus)[keyof typeof SprintStatus]

@@ -24,7 +24,9 @@ export type IconName =
   | "eye"
   | "edit"
   | "file"
-  | "save";
+  | "save"
+  | "settings"
+  | "logOut";
 
 export type NavigationItem = {
   label: string;

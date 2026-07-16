@@ -8,6 +8,7 @@ import { WorkspacesModule } from './workspaces/workspaces.module';
 import { ProjectsModule } from './projects/projects.module';
 import { WikiModule } from './wiki/wiki.module';
 import { KanbanModule } from './kanban/kanban.module';
+import { SprintsModule } from './sprints/sprints.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { KanbanModule } from './kanban/kanban.module';
     ProjectsModule,
     WikiModule,
     KanbanModule,
+    SprintsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

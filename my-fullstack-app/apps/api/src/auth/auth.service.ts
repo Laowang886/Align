@@ -15,6 +15,11 @@ import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 
+// auth.service.ts 顶部，或者单独一个 utils 文件
+function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -22,8 +27,9 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
   async register(dto: RegisterDto) {
+    const email = normalizeEmail(dto.email);
     const existingUser = await this.prisma.user.findUnique({
-      where: { email: dto.email },
+      where: { email },
     });
 
     if (existingUser) {
@@ -36,7 +42,7 @@ export class AuthService {
     const user = await this.prisma.user.create({
       data: {
         name: dto.name,
-        email: dto.email,
+        email,
         passwordHash: hashedPassword,
       },
     });
@@ -45,9 +51,10 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
+    const email = normalizeEmail(dto.email);
     // Search for the user in the database by email
     const user = await this.prisma.user.findUnique({
-      where: { email: dto.email },
+      where: { email },
     });
 
     if (!user) {

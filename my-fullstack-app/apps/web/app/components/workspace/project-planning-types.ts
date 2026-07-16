@@ -10,15 +10,4 @@ export type WorkspaceProject = Omit<Project, "color"> & {
   color: ProjectTheme;
 };
 
-export type SprintStatus = "PLANNED" | "ACTIVE" | "COMPLETED";
-
-export type Sprint = {
-  id: string;
-  projectId: string;
-  name: string;
-  goal: string;
-  startDate: string;
-  endDate: string;
-  status: SprintStatus;
-};
 import type { Project } from "@repo/shared";

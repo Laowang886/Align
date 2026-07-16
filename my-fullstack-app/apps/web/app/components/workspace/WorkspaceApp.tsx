@@ -4,7 +4,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type {
   CreateProjectInput,
+  CreateSprintInput,
   CreateWorkspaceInput,
+  Sprint,
+  SprintStatus,
   WorkspaceDetails,
   WorkspaceSummary,
 } from "@repo/shared";
@@ -13,6 +16,7 @@ import {
   authApi,
   clearClientAuthState,
   projectApi,
+  sprintApi,
   type CurrentUser,
   workspaceApi,
 } from "../../../lib/api-client";
@@ -30,11 +34,7 @@ import CurrentUserSelector from "./CurrentUserSelector";
 import CreateProjectDialog from "./CreateProjectDialog";
 import SprintsView from "../SprintsView";
 import WikiDocumentsView from "./WikiDocumentsView";
-import type {
-  Sprint,
-  SprintStatus,
-  WorkspaceProject,
-} from "./project-planning-types";
+import type { WorkspaceProject } from "./project-planning-types";
 
 type ViewState = "loading" | "ready" | "empty" | "error";
 type WorkspaceView =
@@ -67,12 +67,11 @@ export default function WorkspaceApp({
   const [membersOpen, setMembersOpen] = useState(false);
   const [projects, setProjects] = useState<WorkspaceProject[]>([]);
   const [sprints, setSprints] = useState<Sprint[]>([]);
+  const [sprintsLoading, setSprintsLoading] = useState(false);
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
   const [projectDialogOpen, setProjectDialogOpen] = useState(false);
-  const [planningWorkspaceId, setPlanningWorkspaceId] = useState<string | null>(
-    null,
-  );
   const projectLoadWorkspaceId = useRef<string | null>(null);
+  const sprintLoadKey = useRef<string | null>(null);
 
   const load = useCallback(async () => {
     setViewState("loading");
@@ -134,17 +133,9 @@ export default function WorkspaceApp({
     )
       return;
     projectLoadWorkspaceId.current = currentWorkspace.id;
-    const sprintKey = `sprintforge:sprints:${currentWorkspace.id}`;
-    let savedSprints: Sprint[] = [];
-    try {
-      savedSprints = JSON.parse(
-        window.localStorage.getItem(sprintKey) ?? "[]",
-      ) as Sprint[];
-    } catch {
-      window.localStorage.removeItem(sprintKey);
-    }
-    setSprints(savedSprints);
-    setPlanningWorkspaceId(currentWorkspace.id);
+    setProjects([]);
+    setSprints([]);
+    setActiveProjectId(null);
     void projectApi
       .list(currentWorkspace.id)
       .then((items) => {
@@ -167,15 +158,44 @@ export default function WorkspaceApp({
             : "Unable to load projects.",
         );
       });
-  }, [currentWorkspace, planningWorkspaceId, viewState]);
+  }, [currentWorkspace, viewState]);
 
   useEffect(() => {
-    if (!planningWorkspaceId) return;
-    window.localStorage.setItem(
-      `sprintforge:sprints:${planningWorkspaceId}`,
-      JSON.stringify(sprints),
-    );
-  }, [planningWorkspaceId, sprints]);
+    const project = projects.find((item) => item.id === activeProjectId);
+    if (
+      viewState !== "ready" ||
+      !currentWorkspace ||
+      !project ||
+      project.workspaceId !== currentWorkspace.id
+    ) {
+      sprintLoadKey.current = null;
+      setSprints([]);
+      setSprintsLoading(false);
+      return;
+    }
+
+    const requestKey = `${currentWorkspace.id}:${project.id}`;
+    sprintLoadKey.current = requestKey;
+    setSprints([]);
+    setSprintsLoading(true);
+    void sprintApi
+      .list(currentWorkspace.id, project.id)
+      .then((items) => {
+        if (sprintLoadKey.current !== requestKey) return;
+        setSprints(items);
+      })
+      .catch((caught: unknown) => {
+        if (sprintLoadKey.current !== requestKey) return;
+        showToast(
+          caught instanceof ApiError
+            ? caught.message
+            : "Unable to load sprints.",
+        );
+      })
+      .finally(() => {
+        if (sprintLoadKey.current === requestKey) setSprintsLoading(false);
+      });
+  }, [activeProjectId, currentWorkspace, projects, viewState]);
 
   function showToast(message: string) {
     setToast(message);
@@ -247,17 +267,41 @@ export default function WorkspaceApp({
     showToast(`${project.name} created successfully.`);
   }
 
-  function addSprint(sprint: Sprint) {
-    setSprints((items) => [...items, sprint]);
+  async function addSprint(input: CreateSprintInput): Promise<void> {
+    if (!currentWorkspace || !activeProjectId) {
+      throw new Error("Select a project first.");
+    }
+    const requestKey = `${currentWorkspace.id}:${activeProjectId}`;
+    const sprint = await sprintApi.create(
+      currentWorkspace.id,
+      activeProjectId,
+      input,
+    );
+    if (sprintLoadKey.current === requestKey) {
+      setSprints((items) => [sprint, ...items]);
+    }
     showToast(`${sprint.name} planned successfully.`);
   }
 
-  function updateSprintStatus(sprintId: string, status: SprintStatus) {
-    setSprints((items) =>
-      items.map((sprint) =>
-        sprint.id === sprintId ? { ...sprint, status } : sprint,
-      ),
+  async function updateSprintStatus(
+    sprintId: string,
+    status: Extract<SprintStatus, "ACTIVE" | "COMPLETED">,
+  ): Promise<void> {
+    if (!currentWorkspace || !activeProjectId) {
+      throw new Error("Select a project first.");
+    }
+    const requestKey = `${currentWorkspace.id}:${activeProjectId}`;
+    const updated = await sprintApi.updateStatus(
+      currentWorkspace.id,
+      activeProjectId,
+      sprintId,
+      { status },
     );
+    if (sprintLoadKey.current === requestKey) {
+      setSprints((items) =>
+        items.map((sprint) => (sprint.id === sprintId ? updated : sprint)),
+      );
+    }
     showToast(status === "ACTIVE" ? "Sprint started." : "Sprint completed.");
   }
 
@@ -309,6 +353,7 @@ export default function WorkspaceApp({
           }
           userName={currentUser?.name}
           userEmail={currentUser?.email}
+          userAvatarUrl={currentUser?.avatarUrl}
         />
         {viewState === "loading" && <WorkspaceLoadingState />}
         {viewState === "empty" && (
@@ -364,6 +409,11 @@ export default function WorkspaceApp({
               onAddSprint={addSprint}
               onUpdateSprintStatus={updateSprintStatus}
               onOpenProjects={() => setProjectDialogOpen(true)}
+              canManage={
+                currentWorkspace.currentUserRole === "OWNER" ||
+                currentWorkspace.currentUserRole === "ADMIN"
+              }
+              loading={sprintsLoading}
             />
           ) : (
             <WikiDocumentsView

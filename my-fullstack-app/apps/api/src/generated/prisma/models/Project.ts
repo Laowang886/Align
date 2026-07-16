@@ -208,6 +208,7 @@ export type ProjectWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   boards?: Prisma.BoardListRelationFilter
+  sprints?: Prisma.SprintListRelationFilter
   wikiDocuments?: Prisma.WikiDocumentListRelationFilter
 }
 
@@ -222,6 +223,7 @@ export type ProjectOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
   boards?: Prisma.BoardOrderByRelationAggregateInput
+  sprints?: Prisma.SprintOrderByRelationAggregateInput
   wikiDocuments?: Prisma.WikiDocumentOrderByRelationAggregateInput
 }
 
@@ -240,6 +242,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   boards?: Prisma.BoardListRelationFilter
+  sprints?: Prisma.SprintListRelationFilter
   wikiDocuments?: Prisma.WikiDocumentListRelationFilter
 }, "id" | "workspaceId_key">
 
@@ -281,6 +284,7 @@ export type ProjectCreateInput = {
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutProjectsInput
   boards?: Prisma.BoardCreateNestedManyWithoutProjectInput
+  sprints?: Prisma.SprintCreateNestedManyWithoutProjectInput
   wikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutProjectInput
 }
 
@@ -294,6 +298,7 @@ export type ProjectUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   boards?: Prisma.BoardUncheckedCreateNestedManyWithoutProjectInput
+  sprints?: Prisma.SprintUncheckedCreateNestedManyWithoutProjectInput
   wikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutProjectInput
 }
 
@@ -307,6 +312,7 @@ export type ProjectUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutProjectsNestedInput
   boards?: Prisma.BoardUpdateManyWithoutProjectNestedInput
+  sprints?: Prisma.SprintUpdateManyWithoutProjectNestedInput
   wikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutProjectNestedInput
 }
 
@@ -320,6 +326,7 @@ export type ProjectUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   boards?: Prisma.BoardUncheckedUpdateManyWithoutProjectNestedInput
+  sprints?: Prisma.SprintUncheckedUpdateManyWithoutProjectNestedInput
   wikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutProjectNestedInput
 }
 
@@ -450,6 +457,20 @@ export type ProjectUncheckedUpdateManyWithoutWorkspaceNestedInput = {
   deleteMany?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
 }
 
+export type ProjectCreateNestedOneWithoutSprintsInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutSprintsInput, Prisma.ProjectUncheckedCreateWithoutSprintsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutSprintsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutSprintsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutSprintsInput, Prisma.ProjectUncheckedCreateWithoutSprintsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutSprintsInput
+  upsert?: Prisma.ProjectUpsertWithoutSprintsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutSprintsInput, Prisma.ProjectUpdateWithoutSprintsInput>, Prisma.ProjectUncheckedUpdateWithoutSprintsInput>
+}
+
 export type ProjectCreateNestedOneWithoutWikiDocumentsInput = {
   create?: Prisma.XOR<Prisma.ProjectCreateWithoutWikiDocumentsInput, Prisma.ProjectUncheckedCreateWithoutWikiDocumentsInput>
   connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutWikiDocumentsInput
@@ -487,6 +508,7 @@ export type ProjectCreateWithoutWorkspaceInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   boards?: Prisma.BoardCreateNestedManyWithoutProjectInput
+  sprints?: Prisma.SprintCreateNestedManyWithoutProjectInput
   wikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutProjectInput
 }
 
@@ -499,6 +521,7 @@ export type ProjectUncheckedCreateWithoutWorkspaceInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   boards?: Prisma.BoardUncheckedCreateNestedManyWithoutProjectInput
+  sprints?: Prisma.SprintUncheckedCreateNestedManyWithoutProjectInput
   wikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutProjectInput
 }
 
@@ -542,6 +565,74 @@ export type ProjectScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
 }
 
+export type ProjectCreateWithoutSprintsInput = {
+  id?: string
+  name: string
+  key: string
+  description?: string | null
+  color?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutProjectsInput
+  boards?: Prisma.BoardCreateNestedManyWithoutProjectInput
+  wikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutSprintsInput = {
+  id?: string
+  workspaceId: string
+  name: string
+  key: string
+  description?: string | null
+  color?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  boards?: Prisma.BoardUncheckedCreateNestedManyWithoutProjectInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutSprintsInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutSprintsInput, Prisma.ProjectUncheckedCreateWithoutSprintsInput>
+}
+
+export type ProjectUpsertWithoutSprintsInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutSprintsInput, Prisma.ProjectUncheckedUpdateWithoutSprintsInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutSprintsInput, Prisma.ProjectUncheckedCreateWithoutSprintsInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutSprintsInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutSprintsInput, Prisma.ProjectUncheckedUpdateWithoutSprintsInput>
+}
+
+export type ProjectUpdateWithoutSprintsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  key?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutProjectsNestedInput
+  boards?: Prisma.BoardUpdateManyWithoutProjectNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutSprintsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  key?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  boards?: Prisma.BoardUncheckedUpdateManyWithoutProjectNestedInput
+  wikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutProjectNestedInput
+}
+
 export type ProjectCreateWithoutWikiDocumentsInput = {
   id?: string
   name: string
@@ -552,6 +643,7 @@ export type ProjectCreateWithoutWikiDocumentsInput = {
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutProjectsInput
   boards?: Prisma.BoardCreateNestedManyWithoutProjectInput
+  sprints?: Prisma.SprintCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutWikiDocumentsInput = {
@@ -564,6 +656,7 @@ export type ProjectUncheckedCreateWithoutWikiDocumentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   boards?: Prisma.BoardUncheckedCreateNestedManyWithoutProjectInput
+  sprints?: Prisma.SprintUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutWikiDocumentsInput = {
@@ -592,6 +685,7 @@ export type ProjectUpdateWithoutWikiDocumentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutProjectsNestedInput
   boards?: Prisma.BoardUpdateManyWithoutProjectNestedInput
+  sprints?: Prisma.SprintUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutWikiDocumentsInput = {
@@ -604,6 +698,7 @@ export type ProjectUncheckedUpdateWithoutWikiDocumentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   boards?: Prisma.BoardUncheckedUpdateManyWithoutProjectNestedInput
+  sprints?: Prisma.SprintUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateWithoutBoardsInput = {
@@ -615,6 +710,7 @@ export type ProjectCreateWithoutBoardsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutProjectsInput
+  sprints?: Prisma.SprintCreateNestedManyWithoutProjectInput
   wikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutProjectInput
 }
 
@@ -627,6 +723,7 @@ export type ProjectUncheckedCreateWithoutBoardsInput = {
   color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  sprints?: Prisma.SprintUncheckedCreateNestedManyWithoutProjectInput
   wikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutProjectInput
 }
 
@@ -655,6 +752,7 @@ export type ProjectUpdateWithoutBoardsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutProjectsNestedInput
+  sprints?: Prisma.SprintUpdateManyWithoutProjectNestedInput
   wikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutProjectNestedInput
 }
 
@@ -667,6 +765,7 @@ export type ProjectUncheckedUpdateWithoutBoardsInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sprints?: Prisma.SprintUncheckedUpdateManyWithoutProjectNestedInput
   wikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutProjectNestedInput
 }
 
@@ -689,6 +788,7 @@ export type ProjectUpdateWithoutWorkspaceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   boards?: Prisma.BoardUpdateManyWithoutProjectNestedInput
+  sprints?: Prisma.SprintUpdateManyWithoutProjectNestedInput
   wikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutProjectNestedInput
 }
 
@@ -701,6 +801,7 @@ export type ProjectUncheckedUpdateWithoutWorkspaceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   boards?: Prisma.BoardUncheckedUpdateManyWithoutProjectNestedInput
+  sprints?: Prisma.SprintUncheckedUpdateManyWithoutProjectNestedInput
   wikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutProjectNestedInput
 }
 
@@ -721,11 +822,13 @@ export type ProjectUncheckedUpdateManyWithoutWorkspaceInput = {
 
 export type ProjectCountOutputType = {
   boards: number
+  sprints: number
   wikiDocuments: number
 }
 
 export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   boards?: boolean | ProjectCountOutputTypeCountBoardsArgs
+  sprints?: boolean | ProjectCountOutputTypeCountSprintsArgs
   wikiDocuments?: boolean | ProjectCountOutputTypeCountWikiDocumentsArgs
 }
 
@@ -749,6 +852,13 @@ export type ProjectCountOutputTypeCountBoardsArgs<ExtArgs extends runtime.Types.
 /**
  * ProjectCountOutputType without action
  */
+export type ProjectCountOutputTypeCountSprintsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SprintWhereInput
+}
+
+/**
+ * ProjectCountOutputType without action
+ */
 export type ProjectCountOutputTypeCountWikiDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.WikiDocumentWhereInput
 }
@@ -765,6 +875,7 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   updatedAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   boards?: boolean | Prisma.Project$boardsArgs<ExtArgs>
+  sprints?: boolean | Prisma.Project$sprintsArgs<ExtArgs>
   wikiDocuments?: boolean | Prisma.Project$wikiDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
@@ -808,6 +919,7 @@ export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   boards?: boolean | Prisma.Project$boardsArgs<ExtArgs>
+  sprints?: boolean | Prisma.Project$sprintsArgs<ExtArgs>
   wikiDocuments?: boolean | Prisma.Project$wikiDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -823,6 +935,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     workspace: Prisma.$WorkspacePayload<ExtArgs>
     boards: Prisma.$BoardPayload<ExtArgs>[]
+    sprints: Prisma.$SprintPayload<ExtArgs>[]
     wikiDocuments: Prisma.$WikiDocumentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1230,6 +1343,7 @@ export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   workspace<T extends Prisma.WorkspaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   boards<T extends Prisma.Project$boardsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$boardsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sprints<T extends Prisma.Project$sprintsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$sprintsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SprintPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   wikiDocuments<T extends Prisma.Project$wikiDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$wikiDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WikiDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1690,6 +1804,30 @@ export type Project$boardsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.BoardScalarFieldEnum | Prisma.BoardScalarFieldEnum[]
+}
+
+/**
+ * Project.sprints
+ */
+export type Project$sprintsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Sprint
+   */
+  select?: Prisma.SprintSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Sprint
+   */
+  omit?: Prisma.SprintOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SprintInclude<ExtArgs> | null
+  where?: Prisma.SprintWhereInput
+  orderBy?: Prisma.SprintOrderByWithRelationInput | Prisma.SprintOrderByWithRelationInput[]
+  cursor?: Prisma.SprintWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SprintScalarFieldEnum | Prisma.SprintScalarFieldEnum[]
 }
 
 /**

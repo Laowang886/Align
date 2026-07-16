@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "../page.module.css";
+import { ApiError, authApi } from "../../lib/api-client";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -21,31 +22,26 @@ export default function RegisterForm() {
     setError("");
     setSubmitting(true);
 
-    const response = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
+    try {
+      await authApi.register({
         name,
         email,
         password,
-      }),
-    });
-
-    setSubmitting(false);
-
-    if (!response.ok) {
-      setError("Registration failed. Please check your details.");
-      return;
+      });
+      router.replace("/workspaces");
+    } catch (caught: unknown) {
+      setError(
+        caught instanceof ApiError
+          ? caught.message
+          : "Registration failed. Please check your details.",
+      );
+    } finally {
+      setSubmitting(false);
     }
-
-    router.replace("/workspaces");
   }
 
   return (
-    <main className={styles.loginPage}>
+    <main className={`${styles.loginPage} ${styles.authPageTransition}`}>
       <section className={styles.loginIntro}>
         <Link className={styles.landingBrand} href="/">
           <span className={styles.logo}>SF</span>
@@ -88,7 +84,7 @@ export default function RegisterForm() {
           <input
             type="password"
             required
-            minLength={6}
+            minLength={8}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
