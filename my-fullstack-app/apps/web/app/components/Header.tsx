@@ -6,24 +6,28 @@ import { useRouter } from "next/navigation";
 import { authApi, clearClientAuthState } from "../../lib/api-client";
 import styles from "../page.module.css";
 import Icon from "./Icon";
+import SettingsDialog from "./SettingsDialog";
 
 export default function Header({
   onToggleSidebar,
   workspaceName = "FormatWeaver HQ",
   projectName,
   userName = "User",
+  userEmail,
   userAvatarUrl,
 }: {
   onToggleSidebar: () => void;
   workspaceName?: string;
   projectName?: string;
   userName?: string;
+  userEmail?: string;
   userAvatarUrl?: string | null;
 }) {
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false); 
   const [signingOut, setSigningOut] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => {
     //Click anywhere outside the menu area to automatically close the drop-down menu.
@@ -110,14 +114,22 @@ export default function Header({
 
           {menuOpen && (
             <div className={styles.accountMenu} role="menu">
+              {/* <div className={styles.accountMenuIdentity}>
+                <p>Logged in as</p>
+                <b>{userName}</b>
+                {userEmail && <span>{userEmail}</span>}
+              </div> */}
               <button
                 className={styles.accountMenuItem}
                 type="button"
                 role="menuitem"
-                disabled
-                title="Settings are not available yet"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setSettingsOpen(true);
+                }}
               >
-                Settings
+                <Icon name="settings" size={16} />
+                <span>Settings</span>
               </button>
               <button
                 className={`${styles.accountMenuItem} ${styles.signOutMenuItem}`}
@@ -126,12 +138,14 @@ export default function Header({
                 disabled={signingOut}
                 onClick={() => void signOut()}
               >
-                {signingOut ? "Signing out..." : "Sign out"}
+                <Icon name="logOut" size={16} />
+                <span>{signingOut ? "Signing out..." : "Sign out"}</span>
               </button>
             </div>
           )}
         </div>
       </div>
+      <SettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </header>
   );
 }

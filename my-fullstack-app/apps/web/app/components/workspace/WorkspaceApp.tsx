@@ -308,6 +308,7 @@ export default function WorkspaceApp({
             projects.find((project) => project.id === activeProjectId)?.name
           }
           userName={currentUser?.name}
+          userEmail={currentUser?.email}
           userAvatarUrl={currentUser?.avatarUrl}
         />
         {viewState === "loading" && <WorkspaceLoadingState />}
