@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ApiError, authApi } from "../../lib/api-client";
+import OAuthButtons from "../components/OAuthButtons";
 import styles from "../page.module.css";
 
 export default function LoginPage() {
@@ -81,6 +82,8 @@ export default function LoginPage() {
         <button type="submit" disabled={loading}>
           {loading ? "Signing in..." : "Sign in"}
         </button>
+
+        <OAuthButtons mode="sign in" />
 
         <p className={styles.authSwitch}>
           New to SprintForge? <Link href="/register">Create an account</Link>
