@@ -207,6 +207,11 @@ export const wikiApi = {
       `/workspaces/${workspaceId}/projects/${projectId}/wiki-documents/${documentId}`,
       { method: "PATCH", body: JSON.stringify(input) },
     ),
+  delete: (workspaceId: string, projectId: string, documentId: string) =>
+    apiRequest<void>(
+      `/workspaces/${workspaceId}/projects/${projectId}/wiki-documents/${documentId}`,
+      { method: "DELETE" },
+    ),
 };
 
 export type CurrentUser = AuthenticatedUser;
