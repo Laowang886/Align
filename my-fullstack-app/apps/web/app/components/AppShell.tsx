@@ -23,14 +23,23 @@ export default function AppShell() {
     else notify(`${view} view is coming next.`);
   }
 
-  return <div className={styles.app}>
-    {sidebarOpen && <Sidebar activeView={activeView} onNavigate={navigate} />}
-    <div className={styles.shell}>
-      <Header onToggleSidebar={() => setSidebarOpen((open) => !open)} />
-      {activeView === "Dashboard"
-        ? <DashboardView onGenerateReport={() => notify("Weekly report generation started.")} />
-        : <KanbanBoardView onNotify={notify} />}
+  return (
+    <div className={styles.app}>
+      {sidebarOpen && <Sidebar activeView={activeView} onNavigate={navigate} />}
+      <div className={styles.shell}>
+        <Header onToggleSidebar={() => setSidebarOpen((open) => !open)} />
+        {activeView === "Dashboard" ? (
+          <DashboardView />
+        ) : (
+          <KanbanBoardView onNotify={notify} />
+        )}
+      </div>
+      {toast && (
+        <div className={styles.toast}>
+          <Icon name="check" size={19} />
+          {toast}
+        </div>
+      )}
     </div>
-    {toast && <div className={styles.toast}><Icon name="check" size={19} />{toast}</div>}
-  </div>;
+  );
 }

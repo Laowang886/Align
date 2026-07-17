@@ -60,6 +60,7 @@ export const ModelName = {
   Board: 'Board',
   Column: 'Column',
   Task: 'Task',
+  ActivityLog: 'ActivityLog',
   Channel: 'Channel',
   Message: 'Message'
 } as const
@@ -176,6 +177,8 @@ export const ColumnScalarFieldEnum = {
   id: 'id',
   title: 'title',
   order: 'order',
+  color: 'color',
+  category: 'category',
   boardId: 'boardId'
 } as const
 
@@ -184,15 +187,36 @@ export type ColumnScalarFieldEnum = (typeof ColumnScalarFieldEnum)[keyof typeof 
 
 export const TaskScalarFieldEnum = {
   id: 'id',
+  code: 'code',
   title: 'title',
   description: 'description',
+  priority: 'priority',
+  dueDate: 'dueDate',
+  storyPoints: 'storyPoints',
   order: 'order',
   columnId: 'columnId',
   assigneeId: 'assigneeId',
-  createdAt: 'createdAt'
+  sprintId: 'sprintId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
+
+
+export const ActivityLogScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  actorId: 'actorId',
+  projectId: 'projectId',
+  action: 'action',
+  resourceType: 'resourceType',
+  resourceId: 'resourceId',
+  summary: 'summary',
+  createdAt: 'createdAt'
+} as const
+
+export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[keyof typeof ActivityLogScalarFieldEnum]
 
 
 export const ChannelScalarFieldEnum = {

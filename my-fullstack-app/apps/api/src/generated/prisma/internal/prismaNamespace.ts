@@ -393,6 +393,7 @@ export const ModelName = {
   Board: 'Board',
   Column: 'Column',
   Task: 'Task',
+  ActivityLog: 'ActivityLog',
   Channel: 'Channel',
   Message: 'Message'
 } as const
@@ -410,7 +411,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "workspace" | "workspaceMember" | "project" | "sprint" | "wikiDocument" | "board" | "column" | "task" | "channel" | "message"
+    modelProps: "user" | "workspace" | "workspaceMember" | "project" | "sprint" | "wikiDocument" | "board" | "column" | "task" | "activityLog" | "channel" | "message"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1080,6 +1081,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ActivityLog: {
+      payload: Prisma.$ActivityLogPayload<ExtArgs>
+      fields: Prisma.ActivityLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ActivityLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ActivityLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityLogPayload>
+        }
+        findFirst: {
+          args: Prisma.ActivityLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ActivityLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityLogPayload>
+        }
+        findMany: {
+          args: Prisma.ActivityLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityLogPayload>[]
+        }
+        create: {
+          args: Prisma.ActivityLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityLogPayload>
+        }
+        createMany: {
+          args: Prisma.ActivityLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ActivityLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityLogPayload>[]
+        }
+        delete: {
+          args: Prisma.ActivityLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityLogPayload>
+        }
+        update: {
+          args: Prisma.ActivityLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.ActivityLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ActivityLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ActivityLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.ActivityLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityLogPayload>
+        }
+        aggregate: {
+          args: Prisma.ActivityLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateActivityLog>
+        }
+        groupBy: {
+          args: Prisma.ActivityLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ActivityLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ActivityLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ActivityLogCountAggregateOutputType> | number
+        }
+      }
+    }
     Channel: {
       payload: Prisma.$ChannelPayload<ExtArgs>
       fields: Prisma.ChannelFieldRefs
@@ -1363,6 +1438,8 @@ export const ColumnScalarFieldEnum = {
   id: 'id',
   title: 'title',
   order: 'order',
+  color: 'color',
+  category: 'category',
   boardId: 'boardId'
 } as const
 
@@ -1371,15 +1448,36 @@ export type ColumnScalarFieldEnum = (typeof ColumnScalarFieldEnum)[keyof typeof 
 
 export const TaskScalarFieldEnum = {
   id: 'id',
+  code: 'code',
   title: 'title',
   description: 'description',
+  priority: 'priority',
+  dueDate: 'dueDate',
+  storyPoints: 'storyPoints',
   order: 'order',
   columnId: 'columnId',
   assigneeId: 'assigneeId',
-  createdAt: 'createdAt'
+  sprintId: 'sprintId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
+
+
+export const ActivityLogScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  actorId: 'actorId',
+  projectId: 'projectId',
+  action: 'action',
+  resourceType: 'resourceType',
+  resourceId: 'resourceId',
+  summary: 'summary',
+  createdAt: 'createdAt'
+} as const
+
+export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[keyof typeof ActivityLogScalarFieldEnum]
 
 
 export const ChannelScalarFieldEnum = {
@@ -1499,6 +1597,34 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ColumnCategory'
+ */
+export type EnumColumnCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ColumnCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'ColumnCategory[]'
+ */
+export type ListEnumColumnCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ColumnCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TaskPriority'
+ */
+export type EnumTaskPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TaskPriority'>
+    
+
+
+/**
+ * Reference to a field of type 'TaskPriority[]'
+ */
+export type ListEnumTaskPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TaskPriority[]'>
     
 
 
@@ -1634,6 +1760,7 @@ export type GlobalOmitConfig = {
   board?: Prisma.BoardOmit
   column?: Prisma.ColumnOmit
   task?: Prisma.TaskOmit
+  activityLog?: Prisma.ActivityLogOmit
   channel?: Prisma.ChannelOmit
   message?: Prisma.MessageOmit
 }

@@ -38,6 +38,8 @@ export type ColumnMinAggregateOutputType = {
   id: string | null
   title: string | null
   order: number | null
+  color: string | null
+  category: $Enums.ColumnCategory | null
   boardId: string | null
 }
 
@@ -45,6 +47,8 @@ export type ColumnMaxAggregateOutputType = {
   id: string | null
   title: string | null
   order: number | null
+  color: string | null
+  category: $Enums.ColumnCategory | null
   boardId: string | null
 }
 
@@ -52,6 +56,8 @@ export type ColumnCountAggregateOutputType = {
   id: number
   title: number
   order: number
+  color: number
+  category: number
   boardId: number
   _all: number
 }
@@ -69,6 +75,8 @@ export type ColumnMinAggregateInputType = {
   id?: true
   title?: true
   order?: true
+  color?: true
+  category?: true
   boardId?: true
 }
 
@@ -76,6 +84,8 @@ export type ColumnMaxAggregateInputType = {
   id?: true
   title?: true
   order?: true
+  color?: true
+  category?: true
   boardId?: true
 }
 
@@ -83,6 +93,8 @@ export type ColumnCountAggregateInputType = {
   id?: true
   title?: true
   order?: true
+  color?: true
+  category?: true
   boardId?: true
   _all?: true
 }
@@ -177,6 +189,8 @@ export type ColumnGroupByOutputType = {
   id: string
   title: string
   order: number
+  color: string
+  category: $Enums.ColumnCategory
   boardId: string
   _count: ColumnCountAggregateOutputType | null
   _avg: ColumnAvgAggregateOutputType | null
@@ -207,6 +221,8 @@ export type ColumnWhereInput = {
   id?: Prisma.StringFilter<"Column"> | string
   title?: Prisma.StringFilter<"Column"> | string
   order?: Prisma.IntFilter<"Column"> | number
+  color?: Prisma.StringFilter<"Column"> | string
+  category?: Prisma.EnumColumnCategoryFilter<"Column"> | $Enums.ColumnCategory
   boardId?: Prisma.StringFilter<"Column"> | string
   board?: Prisma.XOR<Prisma.BoardScalarRelationFilter, Prisma.BoardWhereInput>
   tasks?: Prisma.TaskListRelationFilter
@@ -216,6 +232,8 @@ export type ColumnOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   order?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
   board?: Prisma.BoardOrderByWithRelationInput
   tasks?: Prisma.TaskOrderByRelationAggregateInput
@@ -228,6 +246,8 @@ export type ColumnWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ColumnWhereInput | Prisma.ColumnWhereInput[]
   title?: Prisma.StringFilter<"Column"> | string
   order?: Prisma.IntFilter<"Column"> | number
+  color?: Prisma.StringFilter<"Column"> | string
+  category?: Prisma.EnumColumnCategoryFilter<"Column"> | $Enums.ColumnCategory
   boardId?: Prisma.StringFilter<"Column"> | string
   board?: Prisma.XOR<Prisma.BoardScalarRelationFilter, Prisma.BoardWhereInput>
   tasks?: Prisma.TaskListRelationFilter
@@ -237,6 +257,8 @@ export type ColumnOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   order?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
   _count?: Prisma.ColumnCountOrderByAggregateInput
   _avg?: Prisma.ColumnAvgOrderByAggregateInput
@@ -252,6 +274,8 @@ export type ColumnScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Column"> | string
   title?: Prisma.StringWithAggregatesFilter<"Column"> | string
   order?: Prisma.IntWithAggregatesFilter<"Column"> | number
+  color?: Prisma.StringWithAggregatesFilter<"Column"> | string
+  category?: Prisma.EnumColumnCategoryWithAggregatesFilter<"Column"> | $Enums.ColumnCategory
   boardId?: Prisma.StringWithAggregatesFilter<"Column"> | string
 }
 
@@ -259,6 +283,8 @@ export type ColumnCreateInput = {
   id?: string
   title: string
   order: number
+  color?: string
+  category?: $Enums.ColumnCategory
   board: Prisma.BoardCreateNestedOneWithoutColumnsInput
   tasks?: Prisma.TaskCreateNestedManyWithoutColumnInput
 }
@@ -267,6 +293,8 @@ export type ColumnUncheckedCreateInput = {
   id?: string
   title: string
   order: number
+  color?: string
+  category?: $Enums.ColumnCategory
   boardId: string
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutColumnInput
 }
@@ -275,6 +303,8 @@ export type ColumnUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumColumnCategoryFieldUpdateOperationsInput | $Enums.ColumnCategory
   board?: Prisma.BoardUpdateOneRequiredWithoutColumnsNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutColumnNestedInput
 }
@@ -283,6 +313,8 @@ export type ColumnUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumColumnCategoryFieldUpdateOperationsInput | $Enums.ColumnCategory
   boardId?: Prisma.StringFieldUpdateOperationsInput | string
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutColumnNestedInput
 }
@@ -291,6 +323,8 @@ export type ColumnCreateManyInput = {
   id?: string
   title: string
   order: number
+  color?: string
+  category?: $Enums.ColumnCategory
   boardId: string
 }
 
@@ -298,12 +332,16 @@ export type ColumnUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumColumnCategoryFieldUpdateOperationsInput | $Enums.ColumnCategory
 }
 
 export type ColumnUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumColumnCategoryFieldUpdateOperationsInput | $Enums.ColumnCategory
   boardId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -321,6 +359,8 @@ export type ColumnCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   order?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
 }
 
@@ -332,6 +372,8 @@ export type ColumnMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   order?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
 }
 
@@ -339,6 +381,8 @@ export type ColumnMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   order?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
 }
 
@@ -401,6 +445,10 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type EnumColumnCategoryFieldUpdateOperationsInput = {
+  set?: $Enums.ColumnCategory
+}
+
 export type ColumnCreateNestedOneWithoutTasksInput = {
   create?: Prisma.XOR<Prisma.ColumnCreateWithoutTasksInput, Prisma.ColumnUncheckedCreateWithoutTasksInput>
   connectOrCreate?: Prisma.ColumnCreateOrConnectWithoutTasksInput
@@ -419,6 +467,8 @@ export type ColumnCreateWithoutBoardInput = {
   id?: string
   title: string
   order: number
+  color?: string
+  category?: $Enums.ColumnCategory
   tasks?: Prisma.TaskCreateNestedManyWithoutColumnInput
 }
 
@@ -426,6 +476,8 @@ export type ColumnUncheckedCreateWithoutBoardInput = {
   id?: string
   title: string
   order: number
+  color?: string
+  category?: $Enums.ColumnCategory
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutColumnInput
 }
 
@@ -462,6 +514,8 @@ export type ColumnScalarWhereInput = {
   id?: Prisma.StringFilter<"Column"> | string
   title?: Prisma.StringFilter<"Column"> | string
   order?: Prisma.IntFilter<"Column"> | number
+  color?: Prisma.StringFilter<"Column"> | string
+  category?: Prisma.EnumColumnCategoryFilter<"Column"> | $Enums.ColumnCategory
   boardId?: Prisma.StringFilter<"Column"> | string
 }
 
@@ -469,6 +523,8 @@ export type ColumnCreateWithoutTasksInput = {
   id?: string
   title: string
   order: number
+  color?: string
+  category?: $Enums.ColumnCategory
   board: Prisma.BoardCreateNestedOneWithoutColumnsInput
 }
 
@@ -476,6 +532,8 @@ export type ColumnUncheckedCreateWithoutTasksInput = {
   id?: string
   title: string
   order: number
+  color?: string
+  category?: $Enums.ColumnCategory
   boardId: string
 }
 
@@ -499,6 +557,8 @@ export type ColumnUpdateWithoutTasksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumColumnCategoryFieldUpdateOperationsInput | $Enums.ColumnCategory
   board?: Prisma.BoardUpdateOneRequiredWithoutColumnsNestedInput
 }
 
@@ -506,6 +566,8 @@ export type ColumnUncheckedUpdateWithoutTasksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumColumnCategoryFieldUpdateOperationsInput | $Enums.ColumnCategory
   boardId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -513,12 +575,16 @@ export type ColumnCreateManyBoardInput = {
   id?: string
   title: string
   order: number
+  color?: string
+  category?: $Enums.ColumnCategory
 }
 
 export type ColumnUpdateWithoutBoardInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumColumnCategoryFieldUpdateOperationsInput | $Enums.ColumnCategory
   tasks?: Prisma.TaskUpdateManyWithoutColumnNestedInput
 }
 
@@ -526,6 +592,8 @@ export type ColumnUncheckedUpdateWithoutBoardInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumColumnCategoryFieldUpdateOperationsInput | $Enums.ColumnCategory
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutColumnNestedInput
 }
 
@@ -533,6 +601,8 @@ export type ColumnUncheckedUpdateManyWithoutBoardInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumColumnCategoryFieldUpdateOperationsInput | $Enums.ColumnCategory
 }
 
 
@@ -570,6 +640,8 @@ export type ColumnSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   id?: boolean
   title?: boolean
   order?: boolean
+  color?: boolean
+  category?: boolean
   boardId?: boolean
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
   tasks?: boolean | Prisma.Column$tasksArgs<ExtArgs>
@@ -580,6 +652,8 @@ export type ColumnSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   id?: boolean
   title?: boolean
   order?: boolean
+  color?: boolean
+  category?: boolean
   boardId?: boolean
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["column"]>
@@ -588,6 +662,8 @@ export type ColumnSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   id?: boolean
   title?: boolean
   order?: boolean
+  color?: boolean
+  category?: boolean
   boardId?: boolean
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["column"]>
@@ -596,10 +672,12 @@ export type ColumnSelectScalar = {
   id?: boolean
   title?: boolean
   order?: boolean
+  color?: boolean
+  category?: boolean
   boardId?: boolean
 }
 
-export type ColumnOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "order" | "boardId", ExtArgs["result"]["column"]>
+export type ColumnOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "order" | "color" | "category" | "boardId", ExtArgs["result"]["column"]>
 export type ColumnInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
   tasks?: boolean | Prisma.Column$tasksArgs<ExtArgs>
@@ -622,6 +700,8 @@ export type $ColumnPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     id: string
     title: string
     order: number
+    color: string
+    category: $Enums.ColumnCategory
     boardId: string
   }, ExtArgs["result"]["column"]>
   composites: {}
@@ -1051,6 +1131,8 @@ export interface ColumnFieldRefs {
   readonly id: Prisma.FieldRef<"Column", 'String'>
   readonly title: Prisma.FieldRef<"Column", 'String'>
   readonly order: Prisma.FieldRef<"Column", 'Int'>
+  readonly color: Prisma.FieldRef<"Column", 'String'>
+  readonly category: Prisma.FieldRef<"Column", 'ColumnCategory'>
   readonly boardId: Prisma.FieldRef<"Column", 'String'>
 }
     

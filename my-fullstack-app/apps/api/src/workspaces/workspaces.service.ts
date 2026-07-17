@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  Optional,
 } from '@nestjs/common';
 import type {
   CreateWorkspaceInput,
@@ -16,6 +17,7 @@ import type {
   WorkspaceSummary,
 } from '@repo/shared';
 import { PrismaService } from '../prisma/prisma.service';
+import { ActivityService } from '../dashboard/activity.service';
 import {
   assertWorkspacePermission,
   canChangeWorkspaceMemberRole,
@@ -36,7 +38,10 @@ type WorkspaceRecord = {
 
 @Injectable()
 export class WorkspacesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Optional() private readonly activity?: ActivityService,
+  ) {}
 
   async create(
     ownerId: string,
@@ -65,6 +70,14 @@ export class WorkspacesService {
           include: { _count: { select: { members: true, projects: true } } },
         }),
       );
+      await this.activity?.record({
+        workspaceId: workspace.id,
+        actorId: ownerId,
+        action: 'created workspace',
+        resourceType: 'WORKSPACE',
+        resourceId: workspace.id,
+        summary: workspace.name,
+      });
       return toWorkspaceSummary(workspace, 'OWNER');
     } catch (error: unknown) {
       throwWorkspaceConflict(error);
@@ -116,6 +129,14 @@ export class WorkspacesService {
             : { description: normalizeDescription(input.description) }),
         },
         include: { _count: { select: { members: true, projects: true } } },
+      });
+      await this.activity?.record({
+        workspaceId,
+        actorId: userId,
+        action: 'updated workspace',
+        resourceType: 'WORKSPACE',
+        resourceId: workspaceId,
+        summary: workspace.name,
       });
       return toWorkspaceSummary(workspace, membership.role);
     } catch (error: unknown) {
@@ -173,25 +194,59 @@ export class WorkspacesService {
         },
       },
     });
+    await this.activity?.record({
+      workspaceId,
+      actorId: userId,
+      action: 'changed member role',
+      resourceType: 'WORKSPACE_MEMBER',
+      resourceId: memberId,
+      summary: `${updated.user.name} is now ${role}`,
+    });
     return toWorkspaceMember(updated);
   }
 
-  async inviteMember(userId: string, workspaceId: string, input: InviteWorkspaceMemberInput): Promise<WorkspaceMember> {
+  async inviteMember(
+    userId: string,
+    workspaceId: string,
+    input: InviteWorkspaceMemberInput,
+  ): Promise<WorkspaceMember> {
     const actor = await this.findMembership(userId, workspaceId);
-    const canInvite = actor.role === 'OWNER' || (actor.role === 'ADMIN' && input.role === 'MEMBER');
-    if (!canInvite) throw new ForbiddenException('You cannot invite a member with this role');
+    const canInvite =
+      actor.role === 'OWNER' ||
+      (actor.role === 'ADMIN' && input.role === 'MEMBER');
+    if (!canInvite)
+      throw new ForbiddenException('You cannot invite a member with this role');
 
-    const invitedUser = await this.prisma.user.findUnique({ where: { email: input.email }, select: { id: true } });
-    if (!invitedUser) throw new NotFoundException('No registered account was found for this email');
+    const invitedUser = await this.prisma.user.findUnique({
+      where: { email: input.email },
+      select: { id: true },
+    });
+    if (!invitedUser)
+      throw new NotFoundException(
+        'No registered account was found for this email',
+      );
     const existing = await this.prisma.workspaceMember.findUnique({
       where: { userId_workspaceId: { userId: invitedUser.id, workspaceId } },
     });
-    if (existing) throw new ConflictException('This user is already a workspace member');
+    if (existing)
+      throw new ConflictException('This user is already a workspace member');
 
     try {
       const member = await this.prisma.workspaceMember.create({
         data: { workspaceId, userId: invitedUser.id, role: input.role },
-        include: { user: { select: { id: true, name: true, email: true, avatarUrl: true } } },
+        include: {
+          user: {
+            select: { id: true, name: true, email: true, avatarUrl: true },
+          },
+        },
+      });
+      await this.activity?.record({
+        workspaceId,
+        actorId: userId,
+        action: 'invited member',
+        resourceType: 'WORKSPACE_MEMBER',
+        resourceId: member.id,
+        summary: `${member.user.name} joined as ${member.role}`,
       });
       return toWorkspaceMember(member);
     } catch (error: unknown) {
@@ -218,6 +273,14 @@ export class WorkspacesService {
       throw new ForbiddenException('You cannot remove this workspace member');
     }
     await this.prisma.workspaceMember.delete({ where: { id: memberId } });
+    await this.activity?.record({
+      workspaceId,
+      actorId: userId,
+      action: 'removed member',
+      resourceType: 'WORKSPACE_MEMBER',
+      resourceId: memberId,
+      summary: 'Workspace access removed',
+    });
   }
 
   async leave(userId: string, workspaceId: string): Promise<void> {
@@ -263,6 +326,14 @@ export class WorkspacesService {
         data: { role: 'OWNER' },
       }),
     ]);
+    await this.activity?.record({
+      workspaceId,
+      actorId: userId,
+      action: 'transferred ownership',
+      resourceType: 'WORKSPACE_MEMBER',
+      resourceId: targetMemberId,
+      summary: 'Workspace ownership transferred',
+    });
   }
 
   private async findMembership(userId: string, workspaceId: string) {

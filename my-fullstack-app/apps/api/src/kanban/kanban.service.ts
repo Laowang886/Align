@@ -2,8 +2,11 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  Optional,
 } from '@nestjs/common';
+import type { ColumnCategory, TaskPriority } from '@repo/shared';
 import { PrismaService } from '../prisma/prisma.service';
+import { ActivityService } from '../dashboard/activity.service';
 import type {
   CreateKanbanColumnInput,
   CreateKanbanTaskInput,
@@ -25,17 +28,25 @@ export interface KanbanColumn {
   title: string;
   order: number;
   boardId: string;
+  color: string;
+  category: ColumnCategory;
   tasks: KanbanTask[];
 }
 
 export interface KanbanTask {
   id: string;
+  code: string;
   title: string;
   description: string | null;
   order: number;
   columnId: string;
   assigneeId: string | null;
+  priority: TaskPriority;
+  dueDate: string | null;
+  storyPoints: number | null;
+  sprintId: string | null;
   createdAt: string;
+  updatedAt: string;
   assignee?: {
     id: string;
     name: string;
@@ -51,7 +62,10 @@ type KanbanDatabase = Pick<
 
 @Injectable()
 export class KanbanService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Optional() private readonly activity?: ActivityService,
+  ) {}
 
   async getBoard(
     userId: string,
@@ -78,11 +92,22 @@ export class KanbanService {
     const column = await this.prisma.column.create({
       data: {
         title: input.title,
+        color: input.color ?? 'gray',
+        category: input.category ?? 'TODO',
         order: (maxOrder._max.order ?? -1) + 1,
         boardId: board.id,
       },
       include: { tasks: { orderBy: [{ order: 'asc' }, { id: 'asc' }] } },
     });
+    await this.record(
+      userId,
+      workspaceId,
+      projectId,
+      'created status',
+      'COLUMN',
+      column.id,
+      input.title,
+    );
     return toColumn(column);
   }
 
@@ -108,9 +133,20 @@ export class KanbanService {
         where: { id: columnId },
         data: {
           ...(input.title !== undefined ? { title: input.title } : {}),
+          ...(input.color !== undefined ? { color: input.color } : {}),
+          ...(input.category !== undefined ? { category: input.category } : {}),
         },
         include: { tasks: { orderBy: [{ order: 'asc' }, { id: 'asc' }] } },
       });
+      await this.record(
+        userId,
+        workspaceId,
+        projectId,
+        'updated status',
+        'COLUMN',
+        updated.id,
+        updated.title,
+      );
       return toColumn(updated);
     });
   }
@@ -176,6 +212,15 @@ export class KanbanService {
       await tx.column.delete({ where: { id: columnId } });
       await this.normalizeColumnOrders(tx, board.id);
     });
+    await this.record(
+      userId,
+      workspaceId,
+      projectId,
+      'deleted status',
+      'COLUMN',
+      columnId,
+      'Kanban status',
+    );
   }
 
   async createTask(
@@ -189,21 +234,48 @@ export class KanbanService {
     const column = await this.findColumn(this.prisma, board.id, input.columnId);
     if (!column) throw new NotFoundException('Kanban column not found');
     await this.assertAssigneeIsWorkspaceMember(workspaceId, input.assigneeId);
+    await this.assertSprintBelongsToProject(projectId, input.sprintId);
 
-    const maxOrder = await this.prisma.task.aggregate({
-      where: { columnId: input.columnId },
-      _max: { order: true },
-    });
+    const [maxOrder, project] = await Promise.all([
+      this.prisma.task.aggregate({
+        where: { columnId: input.columnId },
+        _max: { order: true },
+      }),
+      this.prisma.project.findFirst({
+        where: { id: projectId },
+        select: { key: true },
+      }),
+    ]);
+    const taskCount =
+      typeof this.prisma.task.count === 'function'
+        ? await this.prisma.task.count({
+            where: { column: { boardId: board.id } },
+          })
+        : (maxOrder._max.order ?? -1) + 1;
     const task = await this.prisma.task.create({
       data: {
+        code: `${project?.key ?? 'TASK'}-${taskCount + 1}`,
         title: input.title,
         description: input.description ?? null,
+        priority: input.priority ?? 'MEDIUM',
+        dueDate: toDatabaseDate(input.dueDate),
+        storyPoints: input.storyPoints ?? null,
         order: (maxOrder._max.order ?? -1) + 1,
         columnId: input.columnId,
         assigneeId: input.assigneeId ?? null,
+        sprintId: input.sprintId ?? null,
       },
       include: taskAssigneeInclude,
     });
+    await this.record(
+      userId,
+      workspaceId,
+      projectId,
+      'created task',
+      'TASK',
+      task.id,
+      `${task.code} ${task.title}`,
+    );
     return toTask(task);
   }
 
@@ -220,6 +292,7 @@ export class KanbanService {
     const task = await this.findTask(this.prisma, board.id, taskId);
     if (!task) throw new NotFoundException('Kanban task not found');
     await this.assertAssigneeIsWorkspaceMember(workspaceId, input.assigneeId);
+    await this.assertSprintBelongsToProject(projectId, input.sprintId);
 
     const updated = await this.prisma.task.update({
       where: { id: taskId },
@@ -231,9 +304,26 @@ export class KanbanService {
         ...(input.assigneeId !== undefined
           ? { assigneeId: input.assigneeId }
           : {}),
+        ...(input.priority !== undefined ? { priority: input.priority } : {}),
+        ...(input.dueDate !== undefined
+          ? { dueDate: toDatabaseDate(input.dueDate) }
+          : {}),
+        ...(input.storyPoints !== undefined
+          ? { storyPoints: input.storyPoints }
+          : {}),
+        ...(input.sprintId !== undefined ? { sprintId: input.sprintId } : {}),
       },
       include: taskAssigneeInclude,
     });
+    await this.record(
+      userId,
+      workspaceId,
+      projectId,
+      'updated task',
+      'TASK',
+      updated.id,
+      `${updated.code} ${updated.title}`,
+    );
     return toTask(updated);
   }
 
@@ -253,6 +343,15 @@ export class KanbanService {
       await tx.task.delete({ where: { id: taskId } });
       await this.normalizeTaskOrders(tx, task.columnId);
     });
+    await this.record(
+      userId,
+      workspaceId,
+      projectId,
+      'deleted task',
+      'TASK',
+      taskId,
+      'Kanban task',
+    );
   }
 
   async moveTask(
@@ -284,7 +383,17 @@ export class KanbanService {
         where: { id: taskId },
         include: taskAssigneeInclude,
       });
-      return toTask(moved);
+      const result = toTask(moved);
+      await this.record(
+        userId,
+        workspaceId,
+        projectId,
+        'moved task',
+        'TASK',
+        moved.id,
+        `${moved.code} ${moved.title}`,
+      );
+      return result;
     });
   }
 
@@ -320,11 +429,66 @@ export class KanbanService {
     }
   }
 
+  private async assertSprintBelongsToProject(
+    projectId: string,
+    sprintId: string | null | undefined,
+  ): Promise<void> {
+    if (!sprintId) return;
+    const sprint = await this.prisma.sprint.findFirst({
+      where: { id: sprintId, projectId },
+      select: { id: true },
+    });
+    if (!sprint)
+      throw new BadRequestException('Sprint must belong to the project');
+  }
+
+  private async record(
+    actorId: string,
+    workspaceId: string,
+    projectId: string,
+    action: string,
+    resourceType: string,
+    resourceId: string,
+    summary: string,
+  ): Promise<void> {
+    await this.activity?.record({
+      workspaceId,
+      actorId,
+      projectId,
+      action,
+      resourceType,
+      resourceId,
+      summary,
+    });
+  }
+
   private async getOrCreateBoard(projectId: string): Promise<{ id: string }> {
     const existing = await this.findBoard(projectId);
     if (existing) return existing;
     return this.prisma.board.create({
-      data: { title: 'Kanban', projectId },
+      data: {
+        title: 'Kanban',
+        projectId,
+        columns: {
+          create: [
+            { title: 'Backlog', order: 0, color: 'gray', category: 'BACKLOG' },
+            { title: 'To do', order: 1, color: 'blue', category: 'TODO' },
+            {
+              title: 'In progress',
+              order: 2,
+              color: 'amber',
+              category: 'IN_PROGRESS',
+            },
+            {
+              title: 'In review',
+              order: 3,
+              color: 'purple',
+              category: 'REVIEW',
+            },
+            { title: 'Done', order: 4, color: 'green', category: 'DONE' },
+          ],
+        },
+      },
       select: { id: true },
     });
   }
@@ -506,6 +670,8 @@ function toBoard(board: {
     id: string;
     title: string;
     order: number;
+    color: string;
+    category: ColumnCategory;
     boardId: string;
     tasks: Array<Parameters<typeof toTask>[0]>;
   }>;
@@ -522,6 +688,8 @@ function toColumn(column: {
   id: string;
   title: string;
   order: number;
+  color: string;
+  category: ColumnCategory;
   boardId: string;
   tasks: Array<Parameters<typeof toTask>[0]>;
 }): KanbanColumn {
@@ -529,6 +697,8 @@ function toColumn(column: {
     id: column.id,
     title: column.title,
     order: column.order,
+    color: column.color,
+    category: column.category,
     boardId: column.boardId,
     tasks: column.tasks.map(toTask),
   };
@@ -536,12 +706,18 @@ function toColumn(column: {
 
 function toTask(task: {
   id: string;
+  code?: string;
   title: string;
   description: string | null;
   order: number;
   columnId: string;
   assigneeId: string | null;
+  priority?: TaskPriority;
+  dueDate?: Date | null;
+  storyPoints?: number | null;
+  sprintId?: string | null;
   createdAt: Date;
+  updatedAt?: Date;
   assignee?: {
     id: string;
     name: string;
@@ -551,12 +727,22 @@ function toTask(task: {
 }): KanbanTask {
   return {
     id: task.id,
+    code: task.code ?? 'TASK',
     title: task.title,
     description: task.description,
     order: task.order,
     columnId: task.columnId,
     assigneeId: task.assigneeId,
+    priority: task.priority ?? 'MEDIUM',
+    dueDate: task.dueDate?.toISOString().slice(0, 10) ?? null,
+    storyPoints: task.storyPoints ?? null,
+    sprintId: task.sprintId ?? null,
     createdAt: task.createdAt.toISOString(),
+    updatedAt: (task.updatedAt ?? task.createdAt).toISOString(),
     ...(task.assignee !== undefined ? { assignee: task.assignee } : {}),
   };
+}
+
+function toDatabaseDate(value: string | null | undefined): Date | null {
+  return value ? new Date(`${value}T00:00:00.000Z`) : null;
 }

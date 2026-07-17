@@ -215,6 +215,7 @@ export type SprintWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Sprint"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Sprint"> | Date | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
+  tasks?: Prisma.TaskListRelationFilter
 }
 
 export type SprintOrderByWithRelationInput = {
@@ -228,6 +229,7 @@ export type SprintOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   project?: Prisma.ProjectOrderByWithRelationInput
+  tasks?: Prisma.TaskOrderByRelationAggregateInput
 }
 
 export type SprintWhereUniqueInput = Prisma.AtLeast<{
@@ -244,6 +246,7 @@ export type SprintWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Sprint"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Sprint"> | Date | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
+  tasks?: Prisma.TaskListRelationFilter
 }, "id">
 
 export type SprintOrderByWithAggregationInput = {
@@ -286,6 +289,7 @@ export type SprintCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutSprintsInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutSprintInput
 }
 
 export type SprintUncheckedCreateInput = {
@@ -298,6 +302,7 @@ export type SprintUncheckedCreateInput = {
   status?: $Enums.SprintStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutSprintInput
 }
 
 export type SprintUpdateInput = {
@@ -310,6 +315,7 @@ export type SprintUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutSprintsNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutSprintNestedInput
 }
 
 export type SprintUncheckedUpdateInput = {
@@ -322,6 +328,7 @@ export type SprintUncheckedUpdateInput = {
   status?: Prisma.EnumSprintStatusFieldUpdateOperationsInput | $Enums.SprintStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutSprintNestedInput
 }
 
 export type SprintCreateManyInput = {
@@ -405,6 +412,11 @@ export type SprintMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type SprintNullableScalarRelationFilter = {
+  is?: Prisma.SprintWhereInput | null
+  isNot?: Prisma.SprintWhereInput | null
+}
+
 export type SprintCreateNestedManyWithoutProjectInput = {
   create?: Prisma.XOR<Prisma.SprintCreateWithoutProjectInput, Prisma.SprintUncheckedCreateWithoutProjectInput> | Prisma.SprintCreateWithoutProjectInput[] | Prisma.SprintUncheckedCreateWithoutProjectInput[]
   connectOrCreate?: Prisma.SprintCreateOrConnectWithoutProjectInput | Prisma.SprintCreateOrConnectWithoutProjectInput[]
@@ -451,6 +463,22 @@ export type EnumSprintStatusFieldUpdateOperationsInput = {
   set?: $Enums.SprintStatus
 }
 
+export type SprintCreateNestedOneWithoutTasksInput = {
+  create?: Prisma.XOR<Prisma.SprintCreateWithoutTasksInput, Prisma.SprintUncheckedCreateWithoutTasksInput>
+  connectOrCreate?: Prisma.SprintCreateOrConnectWithoutTasksInput
+  connect?: Prisma.SprintWhereUniqueInput
+}
+
+export type SprintUpdateOneWithoutTasksNestedInput = {
+  create?: Prisma.XOR<Prisma.SprintCreateWithoutTasksInput, Prisma.SprintUncheckedCreateWithoutTasksInput>
+  connectOrCreate?: Prisma.SprintCreateOrConnectWithoutTasksInput
+  upsert?: Prisma.SprintUpsertWithoutTasksInput
+  disconnect?: Prisma.SprintWhereInput | boolean
+  delete?: Prisma.SprintWhereInput | boolean
+  connect?: Prisma.SprintWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SprintUpdateToOneWithWhereWithoutTasksInput, Prisma.SprintUpdateWithoutTasksInput>, Prisma.SprintUncheckedUpdateWithoutTasksInput>
+}
+
 export type SprintCreateWithoutProjectInput = {
   id?: string
   name: string
@@ -460,6 +488,7 @@ export type SprintCreateWithoutProjectInput = {
   status?: $Enums.SprintStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tasks?: Prisma.TaskCreateNestedManyWithoutSprintInput
 }
 
 export type SprintUncheckedCreateWithoutProjectInput = {
@@ -471,6 +500,7 @@ export type SprintUncheckedCreateWithoutProjectInput = {
   status?: $Enums.SprintStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutSprintInput
 }
 
 export type SprintCreateOrConnectWithoutProjectInput = {
@@ -514,6 +544,70 @@ export type SprintScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Sprint"> | Date | string
 }
 
+export type SprintCreateWithoutTasksInput = {
+  id?: string
+  name: string
+  goal?: string
+  startDate: Date | string
+  endDate: Date | string
+  status?: $Enums.SprintStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  project: Prisma.ProjectCreateNestedOneWithoutSprintsInput
+}
+
+export type SprintUncheckedCreateWithoutTasksInput = {
+  id?: string
+  projectId: string
+  name: string
+  goal?: string
+  startDate: Date | string
+  endDate: Date | string
+  status?: $Enums.SprintStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type SprintCreateOrConnectWithoutTasksInput = {
+  where: Prisma.SprintWhereUniqueInput
+  create: Prisma.XOR<Prisma.SprintCreateWithoutTasksInput, Prisma.SprintUncheckedCreateWithoutTasksInput>
+}
+
+export type SprintUpsertWithoutTasksInput = {
+  update: Prisma.XOR<Prisma.SprintUpdateWithoutTasksInput, Prisma.SprintUncheckedUpdateWithoutTasksInput>
+  create: Prisma.XOR<Prisma.SprintCreateWithoutTasksInput, Prisma.SprintUncheckedCreateWithoutTasksInput>
+  where?: Prisma.SprintWhereInput
+}
+
+export type SprintUpdateToOneWithWhereWithoutTasksInput = {
+  where?: Prisma.SprintWhereInput
+  data: Prisma.XOR<Prisma.SprintUpdateWithoutTasksInput, Prisma.SprintUncheckedUpdateWithoutTasksInput>
+}
+
+export type SprintUpdateWithoutTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  goal?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumSprintStatusFieldUpdateOperationsInput | $Enums.SprintStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  project?: Prisma.ProjectUpdateOneRequiredWithoutSprintsNestedInput
+}
+
+export type SprintUncheckedUpdateWithoutTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  goal?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumSprintStatusFieldUpdateOperationsInput | $Enums.SprintStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type SprintCreateManyProjectInput = {
   id?: string
   name: string
@@ -534,6 +628,7 @@ export type SprintUpdateWithoutProjectInput = {
   status?: Prisma.EnumSprintStatusFieldUpdateOperationsInput | $Enums.SprintStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUpdateManyWithoutSprintNestedInput
 }
 
 export type SprintUncheckedUpdateWithoutProjectInput = {
@@ -545,6 +640,7 @@ export type SprintUncheckedUpdateWithoutProjectInput = {
   status?: Prisma.EnumSprintStatusFieldUpdateOperationsInput | $Enums.SprintStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutSprintNestedInput
 }
 
 export type SprintUncheckedUpdateManyWithoutProjectInput = {
@@ -559,6 +655,35 @@ export type SprintUncheckedUpdateManyWithoutProjectInput = {
 }
 
 
+/**
+ * Count Type SprintCountOutputType
+ */
+
+export type SprintCountOutputType = {
+  tasks: number
+}
+
+export type SprintCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tasks?: boolean | SprintCountOutputTypeCountTasksArgs
+}
+
+/**
+ * SprintCountOutputType without action
+ */
+export type SprintCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SprintCountOutputType
+   */
+  select?: Prisma.SprintCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * SprintCountOutputType without action
+ */
+export type SprintCountOutputTypeCountTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TaskWhereInput
+}
+
 
 export type SprintSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -571,6 +696,8 @@ export type SprintSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
+  tasks?: boolean | Prisma.Sprint$tasksArgs<ExtArgs>
+  _count?: boolean | Prisma.SprintCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sprint"]>
 
 export type SprintSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -614,6 +741,8 @@ export type SprintSelectScalar = {
 export type SprintOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "name" | "goal" | "startDate" | "endDate" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["sprint"]>
 export type SprintInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
+  tasks?: boolean | Prisma.Sprint$tasksArgs<ExtArgs>
+  _count?: boolean | Prisma.SprintCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SprintIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
@@ -626,6 +755,7 @@ export type $SprintPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "Sprint"
   objects: {
     project: Prisma.$ProjectPayload<ExtArgs>
+    tasks: Prisma.$TaskPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1032,6 +1162,7 @@ readonly fields: SprintFieldRefs;
 export interface Prisma__SprintClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   project<T extends Prisma.ProjectDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProjectDefaultArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  tasks<T extends Prisma.Sprint$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Sprint$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1468,6 +1599,30 @@ export type SprintDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Limit how many Sprints to delete.
    */
   limit?: number
+}
+
+/**
+ * Sprint.tasks
+ */
+export type Sprint$tasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Task
+   */
+  select?: Prisma.TaskSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Task
+   */
+  omit?: Prisma.TaskOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaskInclude<ExtArgs> | null
+  where?: Prisma.TaskWhereInput
+  orderBy?: Prisma.TaskOrderByWithRelationInput | Prisma.TaskOrderByWithRelationInput[]
+  cursor?: Prisma.TaskWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TaskScalarFieldEnum | Prisma.TaskScalarFieldEnum[]
 }
 
 /**

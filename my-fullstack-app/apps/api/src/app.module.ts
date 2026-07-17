@@ -9,6 +9,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { WikiModule } from './wiki/wiki.module';
 import { KanbanModule } from './kanban/kanban.module';
 import { SprintsModule } from './sprints/sprints.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { SprintsModule } from './sprints/sprints.module';
     WikiModule,
     KanbanModule,
     SprintsModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],

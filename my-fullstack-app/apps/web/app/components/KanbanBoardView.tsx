@@ -1,75 +1,55 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type {
+  ColumnCategory,
+  KanbanBoard,
+  KanbanColumn,
+  KanbanTask,
+  Sprint,
+  TaskPriority,
+  WorkspaceMember,
+} from "@repo/shared";
+import { ApiError, kanbanApi, workspaceApi } from "../../lib/api-client";
 import styles from "../page.module.css";
 import Icon from "./Icon";
 
-type KanbanColumnId = "backlog" | "ready" | "in-progress" | "in-review" | "done";
-type KanbanStatusId = KanbanColumnId | `custom-${number}`;
-type KanbanPriority = "urgent" | "high" | "medium" | "low";
-type KanbanAssignee = "Renbo" | "Alice" | "Bob" | "Unassigned";
-type TaskModalMode = "create" | "edit";
-type StatusModalMode = "create" | "edit";
-type KanbanColumnColor = "gray" | "blue" | "amber" | "purple" | "green" | "red";
-
-type KanbanColumn = {
-  id: KanbanStatusId;
-  label: string;
-  color: KanbanColumnColor;
-};
-
-type KanbanTask = {
-  id: string;
-  code: string;
-  title: string;
-  description: string;
-  priority: KanbanPriority;
-  assignee: KanbanAssignee;
-  dueDate: string | null;
-  status: KanbanStatusId;
-};
-
-type KanbanTaskForm = {
-  title: string;
-  description: string;
-  priority: KanbanPriority;
-  assignee: KanbanAssignee;
-  dueDate: string;
-  status: KanbanStatusId;
-};
-
-type StatusForm = {
-  name: string;
-  color: KanbanColumnColor;
-};
-
-type KanbanBoardViewProps = {
+type Props = {
   onNotify: (message: string) => void;
+  onDataChanged?: () => void;
   projectId?: string | null;
   workspaceId?: string;
   workspaceName?: string;
+  sprints?: Sprint[];
 };
 
-const INITIAL_KANBAN_COLUMNS: KanbanColumn[] = [
-  { id: "backlog", label: "Backlog", color: "gray" },
-  { id: "ready", label: "Ready", color: "blue" },
-  { id: "in-progress", label: "In progress", color: "amber" },
-  { id: "in-review", label: "In review", color: "purple" },
-  { id: "done", label: "Done", color: "green" },
-];
+type TaskForm = {
+  title: string;
+  description: string;
+  priority: TaskPriority;
+  assigneeId: string;
+  dueDate: string;
+  storyPoints: string;
+  sprintId: string;
+  columnId: string;
+};
 
-const DEFAULT_STATUS: KanbanStatusId = "ready";
-const priorities: KanbanPriority[] = ["urgent", "high", "medium", "low"];
-const assignees: KanbanAssignee[] = ["Renbo", "Alice", "Bob", "Unassigned"];
-const statusColorOptions: { value: KanbanColumnColor; label: string }[] = [
-  { value: "gray", label: "Gray" },
-  { value: "blue", label: "Blue" },
-  { value: "amber", label: "Amber" },
-  { value: "purple", label: "Purple" },
-  { value: "green", label: "Green" },
-  { value: "red", label: "Red" },
+type ColumnForm = {
+  title: string;
+  color: string;
+  category: ColumnCategory;
+};
+
+const priorities: TaskPriority[] = ["URGENT", "HIGH", "MEDIUM", "LOW"];
+const categories: ColumnCategory[] = [
+  "BACKLOG",
+  "TODO",
+  "IN_PROGRESS",
+  "REVIEW",
+  "DONE",
 ];
-const statusColorClass: Record<KanbanColumnColor, string> = {
+const colors = ["gray", "blue", "amber", "purple", "green", "red"];
+const colorClasses: Record<string, string> = {
   gray: "kanbanGray",
   blue: "kanbanBlue",
   amber: "kanbanAmber",
@@ -78,853 +58,719 @@ const statusColorClass: Record<KanbanColumnColor, string> = {
   red: "kanbanRed",
 };
 
-const initialTasks: KanbanTask[] = [
-  {
-    id: "task-fw-112",
-    code: "FW-112",
-    title: "Prepare stakeholder release notes",
-    description: "",
-    priority: "medium",
-    assignee: "Unassigned",
-    dueDate: "Jul 18, 2026",
-    status: "backlog",
-  },
-  {
-    id: "task-fw-109",
-    code: "FW-109",
-    title: "Review sprint analytics metrics",
-    description: "",
-    priority: "high",
-    assignee: "Alice",
-    dueDate: "Jul 15, 2026",
-    status: "ready",
-  },
-  {
-    id: "task-fw-105",
-    code: "FW-105",
-    title: "Finish dashboard data integration",
-    description: "",
-    priority: "urgent",
-    assignee: "Renbo",
-    dueDate: "Jul 12, 2026",
-    status: "in-progress",
-  },
-  {
-    id: "task-fw-103",
-    code: "FW-103",
-    title: "Kanban drag and drop interaction",
-    description: "",
-    priority: "high",
-    assignee: "Bob",
-    dueDate: null,
-    status: "in-review",
-  },
-  {
-    id: "task-fw-101",
-    code: "FW-101",
-    title: "Define reusable task status pipeline",
-    description: "",
-    priority: "medium",
-    assignee: "Alice",
-    dueDate: null,
-    status: "done",
-  },
-  {
-    id: "task-fw-102",
-    code: "FW-102",
-    title: "Implement workspace dashboard analytics",
-    description: "",
-    priority: "high",
-    assignee: "Renbo",
-    dueDate: null,
-    status: "done",
-  },
-];
-
-type StoredKanbanBoard = {
-  columns: KanbanColumn[];
-  tasks: KanbanTask[];
-};
-
-const emptyForm: KanbanTaskForm = {
-  title: "",
-  description: "",
-  priority: "medium",
-  assignee: "Unassigned",
-  dueDate: "",
-  status: DEFAULT_STATUS,
-};
-
-const emptyStatusForm: StatusForm = {
-  name: "",
-  color: "gray",
-};
-
-const KANBAN_STORAGE_PREFIX = "sprintforge:kanban";
-
-function getKanbanStorageKey(workspaceId?: string, projectId?: string | null) {
-  return `${KANBAN_STORAGE_PREFIX}:${workspaceId ?? "default"}:${projectId ?? "default"}`;
-}
-
-function readStoredKanbanBoard(storageKey: string): StoredKanbanBoard | null {
-  if (typeof window === "undefined") return null;
-
-  try {
-    const parsed = JSON.parse(window.localStorage.getItem(storageKey) ?? "null") as Partial<StoredKanbanBoard> | null;
-
-    if (!parsed || !Array.isArray(parsed.columns) || !Array.isArray(parsed.tasks)) return null;
-
-    return {
-      columns: parsed.columns as KanbanColumn[],
-      tasks: parsed.tasks as KanbanTask[],
-    };
-  } catch {
-    window.localStorage.removeItem(storageKey);
-    return null;
-  }
-}
-
-function writeStoredKanbanBoard(storageKey: string, board: StoredKanbanBoard) {
-  window.localStorage.setItem(storageKey, JSON.stringify(board));
-}
-
-function toTitleCase(value: KanbanPriority) {
-  return value.charAt(0).toUpperCase() + value.slice(1);
-}
-
-function formatInputDate(value: string) {
-  if (!value) return null;
-
-  const [year = 0, month = 1, day = 1] = value.split("-").map(Number);
-  const date = new Date(year, month - 1, day);
-
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
-
-function toInputDate(value: string | null) {
-  if (!value) return "";
-
-  const parsedDate = new Date(value);
-  if (Number.isNaN(parsedDate.getTime())) return "";
-
-  const year = parsedDate.getFullYear();
-  const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
-  const day = String(parsedDate.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
-
-function getAvatarLabel(assignee: KanbanAssignee) {
-  if (assignee === "Unassigned") return "?";
-
-  return assignee.charAt(0);
-}
-
-function getNextTaskCode(tasks: KanbanTask[]) {
-  const highest = tasks.reduce((max, task) => {
-    const match = /^FW-(\d+)$/.exec(task.code);
-
-    if (!match) return max;
-
-    return Math.max(max, Number(match[1]));
-  }, 0);
-
-  return `FW-${highest + 1}`;
-}
-
-function getTaskForm(task: KanbanTask): KanbanTaskForm {
+function emptyTask(columnId = ""): TaskForm {
   return {
-    title: task.title,
-    description: task.description,
-    priority: task.priority,
-    assignee: task.assignee,
-    dueDate: toInputDate(task.dueDate),
-    status: task.status,
+    title: "",
+    description: "",
+    priority: "MEDIUM",
+    assigneeId: "",
+    dueDate: "",
+    storyPoints: "",
+    sprintId: "",
+    columnId,
   };
 }
 
-function getNextCustomColumnId(columns: KanbanColumn[]): KanbanStatusId {
-  const highestCustomId = columns.reduce((highest, column) => {
-    const match = /^custom-(\d+)$/.exec(column.id);
-
-    if (!match) return highest;
-
-    return Math.max(highest, Number(match[1]));
-  }, 0);
-
-  return `custom-${highestCustomId + 1}`;
-}
-
-function isDuplicateStatusName(columns: KanbanColumn[], name: string, currentStatusId: KanbanStatusId | null) {
-  const normalizedName = name.trim().toLowerCase();
-
-  return columns.some((column) => column.id !== currentStatusId && column.label.trim().toLowerCase() === normalizedName);
+function label(value: string) {
+  return value
+    .toLowerCase()
+    .replaceAll("_", " ")
+    .replace(/^./, (letter) => letter.toUpperCase());
 }
 
 export default function KanbanBoardView({
   onNotify,
+  onDataChanged,
   projectId,
   workspaceId,
   workspaceName = "this workspace",
-}: KanbanBoardViewProps) {
-  const storageKey = getKanbanStorageKey(workspaceId, projectId);
-  const [columns, setColumns] = useState<KanbanColumn[]>(() => readStoredKanbanBoard(storageKey)?.columns ?? INITIAL_KANBAN_COLUMNS);
-  const [tasks, setTasks] = useState<KanbanTask[]>(() => readStoredKanbanBoard(storageKey)?.tasks ?? initialTasks);
-  const [hydratedStorageKey, setHydratedStorageKey] = useState(storageKey);
+  sprints = [],
+}: Props) {
+  const [board, setBoard] = useState<KanbanBoard | null>(null);
+  const [members, setMembers] = useState<WorkspaceMember[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
   const [search, setSearch] = useState("");
-  const [priorityFilter, setPriorityFilter] = useState<KanbanPriority | "all">("all");
+  const [priorityFilter, setPriorityFilter] = useState<TaskPriority | "all">(
+    "all",
+  );
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
-  const [dropTarget, setDropTarget] = useState<KanbanStatusId | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState<TaskModalMode>("create");
-  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
-  const [openMenuTaskId, setOpenMenuTaskId] = useState<string | null>(null);
-  const [deleteTaskId, setDeleteTaskId] = useState<string | null>(null);
-  const [openStatusMenuId, setOpenStatusMenuId] = useState<KanbanStatusId | null>(null);
-  const [statusModalOpen, setStatusModalOpen] = useState(false);
-  const [statusModalMode, setStatusModalMode] = useState<StatusModalMode>("create");
-  const [editingStatusId, setEditingStatusId] = useState<KanbanStatusId | null>(null);
-  const [statusForm, setStatusForm] = useState<StatusForm>(emptyStatusForm);
-  const [statusNameError, setStatusNameError] = useState("");
-  const [deleteStatusId, setDeleteStatusId] = useState<KanbanStatusId | null>(null);
-  const [deleteMoveTarget, setDeleteMoveTarget] = useState<KanbanStatusId | "">("");
-  const [form, setForm] = useState<KanbanTaskForm>(emptyForm);
-  const [titleError, setTitleError] = useState("");
-  const titleInputRef = useRef<HTMLInputElement>(null);
-  const statusNameInputRef = useRef<HTMLInputElement>(null);
+  const [dropTarget, setDropTarget] = useState<string | null>(null);
+  const [taskModalOpen, setTaskModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<KanbanTask | null>(null);
+  const [taskForm, setTaskForm] = useState<TaskForm>(emptyTask());
+  const [columnModalOpen, setColumnModalOpen] = useState(false);
+  const [editingColumn, setEditingColumn] = useState<KanbanColumn | null>(null);
+  const [columnForm, setColumnForm] = useState<ColumnForm>({
+    title: "",
+    color: "gray",
+    category: "TODO",
+  });
 
+  const load = useCallback(async () => {
+    if (!workspaceId || !projectId) {
+      setBoard(null);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const [loadedBoard, loadedMembers] = await Promise.all([
+        kanbanApi.get(workspaceId, projectId),
+        workspaceApi.members(workspaceId),
+      ]);
+      setBoard(loadedBoard);
+      setMembers(loadedMembers);
+    } catch (caught: unknown) {
+      setError(
+        caught instanceof ApiError
+          ? caught.message
+          : "Unable to load the board.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [projectId, workspaceId]);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const tasks = useMemo(
+    () => board?.columns.flatMap((column) => column.tasks) ?? [],
+    [board],
+  );
   const filteredTasks = useMemo(() => {
     const query = search.trim().toLowerCase();
-
     return tasks.filter((task) => {
-      const matchesSearch = query.length === 0
-        || task.title.toLowerCase().includes(query)
-        || task.code.toLowerCase().includes(query)
-        || task.assignee.toLowerCase().includes(query);
-      const matchesPriority = priorityFilter === "all" || task.priority === priorityFilter;
-
-      return matchesSearch && matchesPriority;
+      const assignee = task.assignee?.name ?? "Unassigned";
+      return (
+        (priorityFilter === "all" || task.priority === priorityFilter) &&
+        (!query ||
+          `${task.code} ${task.title} ${assignee}`
+            .toLowerCase()
+            .includes(query))
+      );
     });
   }, [priorityFilter, search, tasks]);
 
-  const taskToDelete = useMemo(
-    () => tasks.find((task) => task.id === deleteTaskId) ?? null,
-    [deleteTaskId, tasks],
-  );
-  const statusToDelete = useMemo(
-    () => columns.find((column) => column.id === deleteStatusId) ?? null,
-    [columns, deleteStatusId],
-  );
-  const deleteStatusTaskCount = useMemo(
-    () => (deleteStatusId === null ? 0 : tasks.filter((task) => task.status === deleteStatusId).length),
-    [deleteStatusId, tasks],
-  );
-  const availableMoveTargets = useMemo(
-    () => columns.filter((column) => column.id !== deleteStatusId),
-    [columns, deleteStatusId],
-  );
-
-  useEffect(() => {
-    const storedBoard = readStoredKanbanBoard(storageKey);
-
-    setColumns(storedBoard?.columns ?? INITIAL_KANBAN_COLUMNS);
-    setTasks(storedBoard?.tasks ?? initialTasks);
-    setHydratedStorageKey(storageKey);
-  }, [storageKey]);
-
-  useEffect(() => {
-    if (hydratedStorageKey !== storageKey) return;
-
-    writeStoredKanbanBoard(storageKey, { columns, tasks });
-  }, [columns, hydratedStorageKey, storageKey, tasks]);
-
-  useEffect(() => {
-    if (!modalOpen) return;
-
-    titleInputRef.current?.focus();
-  }, [modalOpen]);
-
-  useEffect(() => {
-    if (!statusModalOpen) return;
-
-    statusNameInputRef.current?.focus();
-  }, [statusModalOpen]);
-
-  useEffect(() => {
-    if (
-      !modalOpen
-      && !statusModalOpen
-      && openMenuTaskId === null
-      && openStatusMenuId === null
-      && deleteTaskId === null
-      && deleteStatusId === null
-    ) return;
-
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key !== "Escape") return;
-
-      if (deleteStatusId !== null) closeDeleteStatusDialog();
-      else if (deleteTaskId !== null) closeDeleteDialog();
-      else if (statusModalOpen) closeStatusModal();
-      else if (modalOpen) closeModal();
-      else if (openStatusMenuId !== null) setOpenStatusMenuId(null);
-      else setOpenMenuTaskId(null);
-    }
-
-    document.addEventListener("keydown", handleEscape);
-
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [deleteStatusId, deleteTaskId, modalOpen, openMenuTaskId, openStatusMenuId, statusModalOpen]);
-
-  function openCreateModal(status: KanbanStatusId = DEFAULT_STATUS) {
-    setForm({ ...emptyForm, status });
-    setModalMode("create");
-    setEditingTaskId(null);
-    setOpenMenuTaskId(null);
-    setTitleError("");
-    setModalOpen(true);
+  function changeTaskForm<K extends keyof TaskForm>(
+    key: K,
+    value: TaskForm[K],
+  ) {
+    setTaskForm((current) => ({ ...current, [key]: value }));
   }
 
-  function openEditModal(task: KanbanTask) {
-    setForm(getTaskForm(task));
-    setModalMode("edit");
-    setEditingTaskId(task.id);
-    setOpenMenuTaskId(null);
-    setTitleError("");
-    setModalOpen(true);
-  }
-
-  function openCreateStatusModal() {
-    setStatusForm(emptyStatusForm);
-    setStatusModalMode("create");
-    setEditingStatusId(null);
-    setStatusNameError("");
-    setOpenStatusMenuId(null);
-    setStatusModalOpen(true);
-  }
-
-  function openEditStatusModal(column: KanbanColumn) {
-    setStatusForm({ name: column.label, color: column.color });
-    setStatusModalMode("edit");
-    setEditingStatusId(column.id);
-    setStatusNameError("");
-    setOpenStatusMenuId(null);
-    setStatusModalOpen(true);
-  }
-
-  function closeStatusModal() {
-    setStatusModalOpen(false);
-    setStatusModalMode("create");
-    setEditingStatusId(null);
-    setStatusForm(emptyStatusForm);
-    setStatusNameError("");
-  }
-
-  function updateStatusForm<Value extends keyof StatusForm>(field: Value, value: StatusForm[Value]) {
-    setStatusForm((current) => ({ ...current, [field]: value }));
-
-    if (field === "name") setStatusNameError("");
-  }
-
-  function submitStatus(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const name = statusForm.name.trim();
-
-    if (!name) {
-      setStatusNameError("Status name is required.");
-      statusNameInputRef.current?.focus();
-      return;
-    }
-
-    if (isDuplicateStatusName(columns, name, editingStatusId)) {
-      setStatusNameError("A status with this name already exists.");
-      statusNameInputRef.current?.focus();
-      return;
-    }
-
-    if (statusModalMode === "edit" && editingStatusId !== null) {
-      setColumns((current) => current.map((column) => (
-        column.id === editingStatusId
-          ? { ...column, label: name, color: statusForm.color }
-          : column
-      )));
-      closeStatusModal();
-      onNotify("Status updated successfully.");
-      return;
-    }
-
-    const nextColumn: KanbanColumn = {
-      id: getNextCustomColumnId(columns),
-      label: name,
-      color: statusForm.color,
-    };
-
-    setColumns((current) => [...current, nextColumn]);
-    closeStatusModal();
-    onNotify("Status created successfully.");
-  }
-
-  function closeModal() {
-    setModalOpen(false);
-    setModalMode("create");
-    setEditingTaskId(null);
-    setForm(emptyForm);
-    setTitleError("");
-  }
-
-  function updateForm<Value extends keyof KanbanTaskForm>(field: Value, value: KanbanTaskForm[Value]) {
-    setForm((current) => ({ ...current, [field]: value }));
-
-    if (field === "title") setTitleError("");
-  }
-
-  function submitTask(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const title = form.title.trim();
-
-    if (!title) {
-      setTitleError("Title is required.");
-      titleInputRef.current?.focus();
-      return;
-    }
-
-    if (modalMode === "edit" && editingTaskId !== null) {
-      setTasks((current) => current.map((task) => (
-        task.id === editingTaskId
-          ? {
-            ...task,
-            title,
-            description: form.description.trim(),
-            priority: form.priority,
-            assignee: form.assignee,
-            dueDate: formatInputDate(form.dueDate),
-            status: form.status,
+  function openTask(columnId?: string, task?: KanbanTask) {
+    const selectedColumn =
+      columnId ?? task?.columnId ?? board?.columns[0]?.id ?? "";
+    setEditingTask(task ?? null);
+    setTaskForm(
+      task
+        ? {
+            title: task.title,
+            description: task.description ?? "",
+            priority: task.priority,
+            assigneeId: task.assigneeId ?? "",
+            dueDate: task.dueDate ?? "",
+            storyPoints: task.storyPoints?.toString() ?? "",
+            sprintId: task.sprintId ?? "",
+            columnId: selectedColumn,
           }
-          : task
-      )));
-      closeModal();
-      onNotify("Task updated successfully.");
+        : emptyTask(selectedColumn),
+    );
+    setTaskModalOpen(true);
+  }
+
+  async function submitTask(event: React.FormEvent) {
+    event.preventDefault();
+    if (
+      !workspaceId ||
+      !projectId ||
+      !taskForm.title.trim() ||
+      !taskForm.columnId
+    )
       return;
+    setPending(true);
+    try {
+      const input = {
+        title: taskForm.title.trim(),
+        description: taskForm.description.trim() || null,
+        priority: taskForm.priority,
+        assigneeId: taskForm.assigneeId || null,
+        dueDate: taskForm.dueDate || null,
+        storyPoints:
+          taskForm.storyPoints === "" ? null : Number(taskForm.storyPoints),
+        sprintId: taskForm.sprintId || null,
+      };
+      if (editingTask) {
+        await kanbanApi.updateTask(
+          workspaceId,
+          projectId,
+          editingTask.id,
+          input,
+        );
+        if (editingTask.columnId !== taskForm.columnId) {
+          await kanbanApi.moveTask(workspaceId, projectId, editingTask.id, {
+            columnId: taskForm.columnId,
+          });
+        }
+        onNotify("Task updated successfully.");
+      } else {
+        await kanbanApi.createTask(workspaceId, projectId, {
+          ...input,
+          columnId: taskForm.columnId,
+        });
+        onNotify("Task created successfully.");
+      }
+      setTaskModalOpen(false);
+      await load();
+      onDataChanged?.();
+    } catch (caught: unknown) {
+      onNotify(
+        caught instanceof ApiError ? caught.message : "Unable to save task.",
+      );
+    } finally {
+      setPending(false);
     }
-
-    const code = getNextTaskCode(tasks);
-    const nextTask: KanbanTask = {
-      id: `task-${code.toLowerCase()}`,
-      code,
-      title,
-      description: form.description.trim(),
-      priority: form.priority,
-      assignee: form.assignee,
-      dueDate: formatInputDate(form.dueDate),
-      status: form.status,
-    };
-
-    setTasks((current) => [...current, nextTask]);
-    closeModal();
-    onNotify("Task created successfully.");
   }
 
-  function toggleTaskMenu(taskId: string) {
-    setOpenMenuTaskId((current) => (current === taskId ? null : taskId));
-    setOpenStatusMenuId(null);
+  async function deleteTask(task: KanbanTask) {
+    if (
+      !workspaceId ||
+      !projectId ||
+      !window.confirm(`Delete ${task.code}: ${task.title}?`)
+    )
+      return;
+    setPending(true);
+    try {
+      await kanbanApi.deleteTask(workspaceId, projectId, task.id);
+      await load();
+      onDataChanged?.();
+      onNotify("Task deleted successfully.");
+    } catch (caught: unknown) {
+      onNotify(
+        caught instanceof ApiError ? caught.message : "Unable to delete task.",
+      );
+    } finally {
+      setPending(false);
+    }
   }
 
-  function toggleStatusMenu(statusId: KanbanStatusId) {
-    setOpenStatusMenuId((current) => (current === statusId ? null : statusId));
-    setOpenMenuTaskId(null);
+  function openColumn(column?: KanbanColumn) {
+    setEditingColumn(column ?? null);
+    setColumnForm(
+      column
+        ? {
+            title: column.title,
+            color: column.color,
+            category: column.category,
+          }
+        : { title: "", color: "gray", category: "TODO" },
+    );
+    setColumnModalOpen(true);
   }
 
-  function openDeleteDialog(taskId: string) {
-    setDeleteTaskId(taskId);
-    setOpenMenuTaskId(null);
-  }
-
-  function closeDeleteDialog() {
-    setDeleteTaskId(null);
-  }
-
-  function confirmDeleteTask() {
-    if (deleteTaskId === null) return;
-
-    setTasks((current) => current.filter((task) => task.id !== deleteTaskId));
-    closeDeleteDialog();
-    onNotify("Task deleted successfully.");
-  }
-
-  function openDeleteStatusDialog(statusId: KanbanStatusId) {
-    if (columns.length <= 1) return;
-
-    const firstMoveTarget = columns.find((column) => column.id !== statusId)?.id ?? "";
-
-    setDeleteStatusId(statusId);
-    setDeleteMoveTarget(firstMoveTarget);
-    setOpenStatusMenuId(null);
-  }
-
-  function closeDeleteStatusDialog() {
-    setDeleteStatusId(null);
-    setDeleteMoveTarget("");
-  }
-
-  function confirmDeleteStatus() {
-    if (deleteStatusId === null || columns.length <= 1) return;
-    if (deleteStatusTaskCount > 0 && deleteMoveTarget === "") return;
-
-    const nextDefaultStatus = deleteMoveTarget || availableMoveTargets[0]?.id || DEFAULT_STATUS;
-
-    setTasks((current) => current.map((task) => (
-      task.status === deleteStatusId ? { ...task, status: nextDefaultStatus } : task
-    )));
-    setColumns((current) => current.filter((column) => column.id !== deleteStatusId));
-    setForm((current) => (
-      current.status === deleteStatusId ? { ...current, status: nextDefaultStatus } : current
-    ));
-    closeDeleteStatusDialog();
-    onNotify("Status deleted successfully.");
-  }
-
-  function handleDragStart(event: React.DragEvent<HTMLElement>, taskId: string) {
-    setDraggedTaskId(taskId);
-    setOpenMenuTaskId(null);
-    event.dataTransfer.effectAllowed = "move";
-    event.dataTransfer.setData("text/plain", taskId);
-  }
-
-  function handleDragOver(event: React.DragEvent<HTMLElement>) {
+  async function submitColumn(event: React.FormEvent) {
     event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
+    if (!workspaceId || !projectId || !columnForm.title.trim()) return;
+    setPending(true);
+    try {
+      if (editingColumn) {
+        await kanbanApi.updateColumn(workspaceId, projectId, editingColumn.id, {
+          ...columnForm,
+          title: columnForm.title.trim(),
+        });
+        onNotify("Status updated successfully.");
+      } else {
+        await kanbanApi.createColumn(workspaceId, projectId, {
+          ...columnForm,
+          title: columnForm.title.trim(),
+        });
+        onNotify("Status created successfully.");
+      }
+      setColumnModalOpen(false);
+      await load();
+      onDataChanged?.();
+    } catch (caught: unknown) {
+      onNotify(
+        caught instanceof ApiError ? caught.message : "Unable to save status.",
+      );
+    } finally {
+      setPending(false);
+    }
   }
 
-  function handleDragEnter(event: React.DragEvent<HTMLElement>, columnId: KanbanStatusId) {
-    event.preventDefault();
-    setDropTarget(columnId);
+  async function deleteColumn(column: KanbanColumn) {
+    if (!workspaceId || !projectId || !board || board.columns.length <= 1)
+      return;
+    const target = board.columns.find((item) => item.id !== column.id);
+    if (
+      !target ||
+      !window.confirm(
+        `Delete status “${column.title}”? Its tasks will move to “${target.title}”.`,
+      )
+    )
+      return;
+    setPending(true);
+    try {
+      await kanbanApi.deleteColumn(
+        workspaceId,
+        projectId,
+        column.id,
+        column.tasks.length ? target.id : undefined,
+      );
+      await load();
+      onDataChanged?.();
+      onNotify("Status deleted successfully.");
+    } catch (caught: unknown) {
+      onNotify(
+        caught instanceof ApiError
+          ? caught.message
+          : "Unable to delete status.",
+      );
+    } finally {
+      setPending(false);
+    }
   }
 
-  function handleDrop(event: React.DragEvent<HTMLElement>, columnId: KanbanStatusId) {
-    event.preventDefault();
-
-    const taskId = draggedTaskId ?? event.dataTransfer.getData("text/plain");
-
-    if (!taskId) return;
-
-    setTasks((current) => current.map((task) => (
-      task.id === taskId ? { ...task, status: columnId } : task
-    )));
-    setDraggedTaskId(null);
+  async function dropTask(columnId: string) {
+    if (!workspaceId || !projectId || !draggedTaskId) return;
+    const task = tasks.find((item) => item.id === draggedTaskId);
     setDropTarget(null);
-  }
-
-  function handleDragEnd() {
     setDraggedTaskId(null);
-    setDropTarget(null);
+    if (!task || task.columnId === columnId) return;
+    try {
+      await kanbanApi.moveTask(workspaceId, projectId, task.id, { columnId });
+      await load();
+      onDataChanged?.();
+      onNotify("Task moved successfully.");
+    } catch (caught: unknown) {
+      onNotify(
+        caught instanceof ApiError ? caught.message : "Unable to move task.",
+      );
+    }
   }
 
-  const modalTitle = modalMode === "create" ? "Add Task" : "Edit Task";
-  const modalDescription = modalMode === "create"
-    ? "Create a task for the board."
-    : "Update this task.";
-  const submitLabel = modalMode === "create" ? "Create Task" : "Save Changes";
-  const statusModalTitle = statusModalMode === "create" ? "Add Status" : "Edit Status";
-  const statusSubmitLabel = statusModalMode === "create" ? "Create status" : "Save status";
+  if (!projectId)
+    return (
+      <main id="main" className={styles.workspaceState}>
+        <h2>Select a project</h2>
+        <p>Choose or create a project to open its Kanban board.</p>
+      </main>
+    );
+  if (loading && !board)
+    return (
+      <main id="main" className={styles.workspaceState}>
+        <div className={styles.workspaceSpinner} />
+        <h2>Loading Kanban board</h2>
+      </main>
+    );
+  if (error)
+    return (
+      <main id="main" className={styles.workspaceState}>
+        <Icon name="alert" size={28} />
+        <h2>Board unavailable</h2>
+        <p>{error}</p>
+        <button onClick={() => void load()}>Try again</button>
+      </main>
+    );
+  if (!board) return null;
 
-  return <main id="main" className={styles.main}>
-    <div className={styles.kanbanHero}>
-      <div>
-        <h1>Kanban Board</h1>
-        <p>Manage tasks across the {workspaceName} board</p>
+  return (
+    <main id="main" className={styles.main}>
+      <div className={styles.kanbanHero}>
+        <div>
+          <h1>Kanban Board</h1>
+          <p>Manage database-backed tasks across {workspaceName}</p>
+        </div>
+        <button
+          className={styles.reportButton}
+          onClick={() => openTask()}
+          disabled={pending}
+        >
+          <Icon name="plus" size={19} />
+          Add Task
+        </button>
       </div>
-      <button className={styles.reportButton} onClick={() => openCreateModal()} type="button">
-        <Icon name="plus" size={19} />Add Task
-      </button>
-    </div>
-
-    <section className={styles.kanbanToolbar} aria-label="Kanban filters">
-      <label className={styles.kanbanSearch}>
-        <span>Search</span>
-        <input
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search tasks by title, code, or assignee..."
-          type="search"
-        />
-      </label>
-      <label className={styles.kanbanSelectWrap}>
-        <span>Priority Filter</span>
-        <select
-          value={priorityFilter}
-          onChange={(event) => setPriorityFilter(event.target.value as KanbanPriority | "all")}
-        >
-          <option value="all">All Priorities</option>
-          {priorities.map((priority) => <option key={priority} value={priority}>{toTitleCase(priority)}</option>)}
-        </select>
-      </label>
-    </section>
-
-    <section
-      className={styles.kanbanBoard}
-      aria-label="Kanban board"
-      style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(245px, 1fr)) minmax(180px, 220px)` }}
-    >
-      {columns.map((column) => {
-        const columnTasks = filteredTasks.filter((task) => task.status === column.id);
-        const totalColumnTasks = tasks.filter((task) => task.status === column.id).length;
-        const isDropTarget = dropTarget === column.id && draggedTaskId !== null;
-
-        return <article
-          className={`${styles.kanbanColumn} ${isDropTarget ? styles.kanbanColumnActive : ""}`}
-          key={column.id}
-          onDragOver={handleDragOver}
-          onDragEnter={(event) => handleDragEnter(event, column.id)}
-          onDrop={(event) => handleDrop(event, column.id)}
-        >
-          <div className={styles.kanbanColumnHeader}>
-            <div>
-              <i className={`${styles.kanbanDot} ${styles[statusColorClass[column.color]]}`} />
-              <h2>{column.label}</h2>
-              <span>{totalColumnTasks}</span>
-            </div>
-            <div className={styles.kanbanColumnActions}>
-              <button type="button" onClick={() => openCreateModal(column.id)} aria-label={`Add task to ${column.label}`}>
-                <Icon name="plus" size={15} />
-              </button>
-              <div className={styles.kanbanStatusMenuWrap}>
-                <button
-                  className={styles.kanbanStatusMenuButton}
-                  type="button"
-                  aria-label={`Open settings for ${column.label}`}
-                  aria-expanded={openStatusMenuId === column.id}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    toggleStatusMenu(column.id);
-                  }}
-                >
-                  <span aria-hidden="true">...</span>
-                </button>
-                {openStatusMenuId === column.id && <>
-                  <button className={styles.kanbanMenuOverlay} type="button" aria-label="Close status actions" onClick={() => setOpenStatusMenuId(null)} />
-                  <div className={styles.kanbanStatusMenu} role="menu">
-                    <button type="button" role="menuitem" onClick={() => openEditStatusModal(column)}>Edit status</button>
-                    <button
-                      type="button"
-                      role="menuitem"
-                      disabled={columns.length <= 1}
-                      title={columns.length <= 1 ? "At least one status is required." : undefined}
-                      onClick={() => openDeleteStatusDialog(column.id)}
-                    >
-                      Delete status
-                    </button>
-                    {columns.length <= 1 && <p>At least one status is required.</p>}
-                  </div>
-                </>}
-              </div>
-            </div>
-          </div>
-          <div className={styles.kanbanCards}>
-            {columnTasks.map((task) => <article
-              className={`${styles.kanbanCard} ${draggedTaskId === task.id ? styles.kanbanCardDragging : ""}`}
-              draggable
-              key={task.id}
-              onDragStart={(event) => handleDragStart(event, task.id)}
-              onDragEnd={handleDragEnd}
+      <section className={styles.kanbanToolbar} aria-label="Kanban filters">
+        <label className={styles.kanbanSearch}>
+          <span>Search</span>
+          <input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Search tasks by title, code, or assignee..."
+          />
+        </label>
+        <label className={styles.kanbanSelectWrap}>
+          <span>Priority Filter</span>
+          <select
+            value={priorityFilter}
+            onChange={(event) =>
+              setPriorityFilter(event.target.value as TaskPriority | "all")
+            }
+          >
+            <option value="all">All Priorities</option>
+            {priorities.map((priority) => (
+              <option key={priority} value={priority}>
+                {label(priority)}
+              </option>
+            ))}
+          </select>
+        </label>
+      </section>
+      <section
+        className={styles.kanbanBoard}
+        style={{
+          gridTemplateColumns: `repeat(${board.columns.length}, minmax(245px, 1fr)) minmax(180px, 220px)`,
+        }}
+      >
+        {board.columns.map((column) => {
+          const columnTasks = filteredTasks.filter(
+            (task) => task.columnId === column.id,
+          );
+          return (
+            <article
+              key={column.id}
+              className={`${styles.kanbanColumn} ${dropTarget === column.id ? styles.kanbanColumnActive : ""}`}
+              onDragOver={(event) => event.preventDefault()}
+              onDragEnter={() => setDropTarget(column.id)}
+              onDrop={() => void dropTask(column.id)}
             >
-              <div className={styles.kanbanCardTop}>
-                <span className={styles.kanbanCode}>{task.code}</span>
-                <div className={styles.kanbanCardTopRight}>
-                  <span className={`${styles.kanbanPriority} ${styles[`kanbanPriority${toTitleCase(task.priority)}`]}`}>
-                    {toTitleCase(task.priority)}
-                  </span>
-                  <div className={styles.kanbanTaskMenuWrap}>
-                    <button
-                      className={styles.kanbanTaskMenuButton}
-                      type="button"
-                      aria-label={`Open actions for ${task.code}`}
-                      aria-expanded={openMenuTaskId === task.id}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        toggleTaskMenu(task.id);
-                      }}
-                    >
-                      <span aria-hidden="true">...</span>
-                    </button>
-                    {openMenuTaskId === task.id && <>
-                      <button className={styles.kanbanMenuOverlay} type="button" aria-label="Close task actions" onClick={() => setOpenMenuTaskId(null)} />
-                      <div className={styles.kanbanTaskMenu} role="menu">
-                        <button type="button" role="menuitem" onClick={() => openEditModal(task)}>Edit task</button>
-                        <button type="button" role="menuitem" onClick={() => openDeleteDialog(task.id)}>Delete task</button>
-                      </div>
-                    </>}
-                  </div>
+              <div className={styles.kanbanColumnHeader}>
+                <div>
+                  <i
+                    className={`${styles.kanbanDot} ${styles[colorClasses[column.color] ?? "kanbanGray"]}`}
+                  />
+                  <h2>{column.title}</h2>
+                  <span>{column.tasks.length}</span>
+                </div>
+                <div className={styles.kanbanColumnActions}>
+                  <button
+                    onClick={() => openTask(column.id)}
+                    aria-label={`Add task to ${column.title}`}
+                  >
+                    <Icon name="plus" size={15} />
+                  </button>
+                  <button
+                    onClick={() => openColumn(column)}
+                    aria-label={`Edit ${column.title}`}
+                  >
+                    •••
+                  </button>
                 </div>
               </div>
-              <h3>{task.title}</h3>
-              {task.description && <p>{task.description}</p>}
-              <div className={styles.kanbanMeta}>
-                <span className={styles.kanbanAvatar}>{getAvatarLabel(task.assignee)}</span>
-                <b>{task.assignee}</b>
+              <div className={styles.kanbanCards}>
+                {columnTasks.map((task) => (
+                  <article
+                    key={task.id}
+                    draggable
+                    className={`${styles.kanbanCard} ${draggedTaskId === task.id ? styles.kanbanCardDragging : ""}`}
+                    onDragStart={() => setDraggedTaskId(task.id)}
+                    onDragEnd={() => {
+                      setDraggedTaskId(null);
+                      setDropTarget(null);
+                    }}
+                  >
+                    <div className={styles.kanbanCardTop}>
+                      <span className={styles.kanbanCode}>{task.code}</span>
+                      <div className={styles.kanbanCardTopRight}>
+                        <span
+                          className={`${styles.kanbanPriority} ${styles[`kanbanPriority${label(task.priority).replaceAll(" ", "")}`]}`}
+                        >
+                          {label(task.priority)}
+                        </span>
+                        <button
+                          className={styles.kanbanTaskMenuButton}
+                          onClick={() => openTask(undefined, task)}
+                          aria-label={`Edit ${task.code}`}
+                        >
+                          •••
+                        </button>
+                      </div>
+                    </div>
+                    <h3>{task.title}</h3>
+                    {task.description && <p>{task.description}</p>}
+                    <div className={styles.kanbanMeta}>
+                      <span className={styles.kanbanAvatar}>
+                        {task.assignee?.name.charAt(0).toUpperCase() ?? "?"}
+                      </span>
+                      <b>{task.assignee?.name ?? "Unassigned"}</b>
+                      {task.storyPoints !== null && (
+                        <small>{task.storyPoints} SP</small>
+                      )}
+                    </div>
+                    {task.dueDate && (
+                      <time className={styles.kanbanDue}>
+                        Due{" "}
+                        {new Date(
+                          `${task.dueDate}T00:00:00`,
+                        ).toLocaleDateString()}
+                      </time>
+                    )}
+                    <button
+                      type="button"
+                      className={styles.kanbanDeleteInline}
+                      onClick={() => void deleteTask(task)}
+                    >
+                      Delete
+                    </button>
+                  </article>
+                ))}
               </div>
-              {task.dueDate && <time className={styles.kanbanDue}>Due {task.dueDate}</time>}
-            </article>)}
-          </div>
-        </article>;
-      })}
-      <button className={styles.kanbanAddStatusButton} type="button" onClick={openCreateStatusModal}>
-        <Icon name="plus" size={17} />Add status
-      </button>
-    </section>
-
-    {modalOpen && <div className={styles.kanbanModalBackdrop} onMouseDown={closeModal}>
-      <section className={styles.kanbanModal} role="dialog" aria-modal="true" aria-labelledby="kanban-modal-title" onMouseDown={(event) => event.stopPropagation()}>
-        <div className={styles.kanbanModalHeader}>
-          <div>
-            <h2 id="kanban-modal-title">{modalTitle}</h2>
-            <p>{modalDescription}</p>
-          </div>
-          <button type="button" onClick={closeModal} aria-label="Close modal"><Icon name="plus" size={18} /></button>
-        </div>
-        <form className={styles.kanbanForm} onSubmit={submitTask}>
-          <label>
-            <span>Title</span>
-            <input
-              ref={titleInputRef}
-              value={form.title}
-              onChange={(event) => updateForm("title", event.target.value)}
-              aria-invalid={titleError ? "true" : "false"}
-            />
-            {titleError && <small>{titleError}</small>}
-          </label>
-          <label>
-            <span>Description</span>
-            <textarea value={form.description} onChange={(event) => updateForm("description", event.target.value)} rows={3} />
-          </label>
-          <div className={styles.kanbanFormGrid}>
-            <label>
-              <span>Priority</span>
-              <select value={form.priority} onChange={(event) => updateForm("priority", event.target.value as KanbanPriority)}>
-                {priorities.map((priority) => <option key={priority} value={priority}>{toTitleCase(priority)}</option>)}
-              </select>
-            </label>
-            <label>
-              <span>Assignee</span>
-              <select value={form.assignee} onChange={(event) => updateForm("assignee", event.target.value as KanbanAssignee)}>
-                {assignees.map((assignee) => <option key={assignee} value={assignee}>{assignee}</option>)}
-              </select>
-            </label>
-            <label>
-              <span>Due Date</span>
-              <input type="date" value={form.dueDate} onChange={(event) => updateForm("dueDate", event.target.value)} />
-            </label>
-            <label>
-              <span>Status</span>
-              <select value={form.status} onChange={(event) => updateForm("status", event.target.value as KanbanStatusId)}>
-                {columns.map((column) => <option key={column.id} value={column.id}>{column.label}</option>)}
-              </select>
-            </label>
-          </div>
-          <div className={styles.kanbanModalActions}>
-            <button type="button" onClick={closeModal}>Cancel</button>
-            <button type="submit">{submitLabel}</button>
-          </div>
-        </form>
+            </article>
+          );
+        })}
+        <button
+          className={styles.kanbanAddStatusButton}
+          onClick={() => openColumn()}
+        >
+          <Icon name="plus" size={17} />
+          Add status
+        </button>
       </section>
-    </div>}
 
-    {statusModalOpen && <div className={styles.kanbanModalBackdrop} onMouseDown={closeStatusModal}>
-      <section className={styles.kanbanStatusModal} role="dialog" aria-modal="true" aria-labelledby="kanban-status-modal-title" onMouseDown={(event) => event.stopPropagation()}>
-        <div className={styles.kanbanModalHeader}>
-          <div>
-            <h2 id="kanban-status-modal-title">{statusModalTitle}</h2>
-            <p>{statusModalMode === "create" ? "Create a board status." : "Update this status."}</p>
-          </div>
-          <button type="button" onClick={closeStatusModal} aria-label="Close status modal"><Icon name="plus" size={18} /></button>
-        </div>
-        <form className={styles.kanbanForm} onSubmit={submitStatus}>
-          <label>
-            <span>Status name</span>
-            <input
-              ref={statusNameInputRef}
-              value={statusForm.name}
-              onChange={(event) => updateStatusForm("name", event.target.value)}
-              aria-invalid={statusNameError ? "true" : "false"}
-            />
-            {statusNameError && <small>{statusNameError}</small>}
-          </label>
-          <fieldset className={styles.kanbanColorPicker}>
-            <legend>Status color</legend>
-            <div>
-              {statusColorOptions.map((option) => (
-                <label key={option.value}>
-                  <input
-                    type="radio"
-                    name="status-color"
-                    value={option.value}
-                    checked={statusForm.color === option.value}
-                    onChange={() => updateStatusForm("color", option.value)}
-                  />
-                  <span className={`${styles.kanbanColorDot} ${styles[statusColorClass[option.value]]}`} />
-                  <b>{option.label}</b>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-          <div className={styles.kanbanModalActions}>
-            <button type="button" onClick={closeStatusModal}>Cancel</button>
-            <button type="submit">{statusSubmitLabel}</button>
-          </div>
-        </form>
-      </section>
-    </div>}
-
-    {statusToDelete && <div className={styles.kanbanModalBackdrop} onMouseDown={closeDeleteStatusDialog}>
-      <section className={styles.kanbanConfirmDialog} role="dialog" aria-modal="true" aria-labelledby="kanban-delete-status-title" onMouseDown={(event) => event.stopPropagation()}>
-        <div className={styles.kanbanModalHeader}>
-          <div>
-            <h2 id="kanban-delete-status-title">Delete status?</h2>
-            <p>{statusToDelete.label}</p>
-          </div>
-        </div>
-        <div className={styles.kanbanStatusDeleteBody}>
-          <p>Current tasks: <strong>{deleteStatusTaskCount}</strong></p>
-          {deleteStatusTaskCount > 0 && <label>
-            <span>Move tasks to:</span>
-            <select value={deleteMoveTarget} onChange={(event) => setDeleteMoveTarget(event.target.value as KanbanStatusId)}>
-              {availableMoveTargets.map((column) => <option key={column.id} value={column.id}>{column.label}</option>)}
-            </select>
-          </label>}
-          {columns.length <= 1 && <small>At least one status is required.</small>}
-        </div>
-        <div className={styles.kanbanModalActions}>
-          <button type="button" onClick={closeDeleteStatusDialog}>Cancel</button>
-          <button
-            className={styles.kanbanDangerButton}
-            type="button"
-            disabled={columns.length <= 1 || (deleteStatusTaskCount > 0 && deleteMoveTarget === "")}
-            onClick={confirmDeleteStatus}
+      {taskModalOpen && (
+        <div
+          className={styles.kanbanModalBackdrop}
+          onMouseDown={() => !pending && setTaskModalOpen(false)}
+        >
+          <section
+            className={styles.kanbanModal}
+            role="dialog"
+            aria-modal="true"
+            onMouseDown={(event) => event.stopPropagation()}
           >
-            Delete status
-          </button>
+            <div className={styles.kanbanModalHeader}>
+              <div>
+                <h2>{editingTask ? "Edit Task" : "Add Task"}</h2>
+                <p>Task details are shared with the workspace dashboard.</p>
+              </div>
+              <button onClick={() => setTaskModalOpen(false)}>
+                <Icon name="plus" size={18} />
+              </button>
+            </div>
+            <form className={styles.kanbanForm} onSubmit={submitTask}>
+              <label>
+                <span>Title</span>
+                <input
+                  required
+                  maxLength={160}
+                  value={taskForm.title}
+                  onChange={(event) =>
+                    changeTaskForm("title", event.target.value)
+                  }
+                />
+              </label>
+              <label>
+                <span>Description</span>
+                <textarea
+                  rows={3}
+                  value={taskForm.description}
+                  onChange={(event) =>
+                    changeTaskForm("description", event.target.value)
+                  }
+                />
+              </label>
+              <div className={styles.kanbanFormGrid}>
+                <label>
+                  <span>Priority</span>
+                  <select
+                    value={taskForm.priority}
+                    onChange={(event) =>
+                      changeTaskForm(
+                        "priority",
+                        event.target.value as TaskPriority,
+                      )
+                    }
+                  >
+                    {priorities.map((item) => (
+                      <option key={item}>{item}</option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span>Assignee</span>
+                  <select
+                    value={taskForm.assigneeId}
+                    onChange={(event) =>
+                      changeTaskForm("assigneeId", event.target.value)
+                    }
+                  >
+                    <option value="">Unassigned</option>
+                    {members.map((member) => (
+                      <option key={member.userId} value={member.userId}>
+                        {member.user.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span>Due Date</span>
+                  <input
+                    type="date"
+                    value={taskForm.dueDate}
+                    onChange={(event) =>
+                      changeTaskForm("dueDate", event.target.value)
+                    }
+                  />
+                </label>
+                <label>
+                  <span>Story Points</span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={taskForm.storyPoints}
+                    onChange={(event) =>
+                      changeTaskForm("storyPoints", event.target.value)
+                    }
+                  />
+                </label>
+                <label>
+                  <span>Status</span>
+                  <select
+                    value={taskForm.columnId}
+                    onChange={(event) =>
+                      changeTaskForm("columnId", event.target.value)
+                    }
+                  >
+                    {board.columns.map((column) => (
+                      <option key={column.id} value={column.id}>
+                        {column.title}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span>Sprint</span>
+                  <select
+                    value={taskForm.sprintId}
+                    onChange={(event) =>
+                      changeTaskForm("sprintId", event.target.value)
+                    }
+                  >
+                    <option value="">No sprint</option>
+                    {sprints.map((sprint) => (
+                      <option key={sprint.id} value={sprint.id}>
+                        {sprint.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              <div className={styles.kanbanModalActions}>
+                <button type="button" onClick={() => setTaskModalOpen(false)}>
+                  Cancel
+                </button>
+                <button type="submit" disabled={pending}>
+                  {pending ? "Saving..." : "Save Task"}
+                </button>
+              </div>
+            </form>
+          </section>
         </div>
-      </section>
-    </div>}
+      )}
 
-    {taskToDelete && <div className={styles.kanbanModalBackdrop} onMouseDown={closeDeleteDialog}>
-      <section className={styles.kanbanConfirmDialog} role="dialog" aria-modal="true" aria-labelledby="kanban-delete-title" onMouseDown={(event) => event.stopPropagation()}>
-        <div className={styles.kanbanModalHeader}>
-          <div>
-            <h2 id="kanban-delete-title">Delete task?</h2>
-            <p>{taskToDelete.code}: {taskToDelete.title}</p>
-          </div>
+      {columnModalOpen && (
+        <div
+          className={styles.kanbanModalBackdrop}
+          onMouseDown={() => !pending && setColumnModalOpen(false)}
+        >
+          <section
+            className={styles.kanbanStatusModal}
+            role="dialog"
+            aria-modal="true"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className={styles.kanbanModalHeader}>
+              <div>
+                <h2>{editingColumn ? "Edit Status" : "Add Status"}</h2>
+                <p>Category controls how Dashboard metrics classify tasks.</p>
+              </div>
+              <button onClick={() => setColumnModalOpen(false)}>
+                <Icon name="plus" size={18} />
+              </button>
+            </div>
+            <form className={styles.kanbanForm} onSubmit={submitColumn}>
+              <label>
+                <span>Status name</span>
+                <input
+                  required
+                  value={columnForm.title}
+                  onChange={(event) =>
+                    setColumnForm((current) => ({
+                      ...current,
+                      title: event.target.value,
+                    }))
+                  }
+                />
+              </label>
+              <label>
+                <span>Dashboard category</span>
+                <select
+                  value={columnForm.category}
+                  onChange={(event) =>
+                    setColumnForm((current) => ({
+                      ...current,
+                      category: event.target.value as ColumnCategory,
+                    }))
+                  }
+                >
+                  {categories.map((item) => (
+                    <option key={item} value={item}>
+                      {label(item)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <fieldset className={styles.kanbanColorPicker}>
+                <legend>Status color</legend>
+                <div>
+                  {colors.map((color) => (
+                    <label key={color}>
+                      <input
+                        type="radio"
+                        checked={columnForm.color === color}
+                        onChange={() =>
+                          setColumnForm((current) => ({ ...current, color }))
+                        }
+                      />
+                      <span
+                        className={`${styles.kanbanColorDot} ${styles[colorClasses[color] ?? "kanbanGray"]}`}
+                      />
+                      <b>{label(color)}</b>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+              {editingColumn && (
+                <button
+                  type="button"
+                  className={styles.kanbanDangerButton}
+                  disabled={board.columns.length <= 1 || pending}
+                  onClick={() => {
+                    setColumnModalOpen(false);
+                    void deleteColumn(editingColumn);
+                  }}
+                >
+                  Delete status
+                </button>
+              )}
+              <div className={styles.kanbanModalActions}>
+                <button type="button" onClick={() => setColumnModalOpen(false)}>
+                  Cancel
+                </button>
+                <button type="submit" disabled={pending}>
+                  {pending ? "Saving..." : "Save status"}
+                </button>
+              </div>
+            </form>
+          </section>
         </div>
-        <div className={styles.kanbanModalActions}>
-          <button type="button" onClick={closeDeleteDialog}>Cancel</button>
-          <button className={styles.kanbanDangerButton} type="button" onClick={confirmDeleteTask}>Delete</button>
-        </div>
-      </section>
-    </div>}
-  </main>;
+      )}
+    </main>
+  );
 }

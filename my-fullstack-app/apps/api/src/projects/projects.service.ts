@@ -2,14 +2,19 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  Optional,
 } from '@nestjs/common';
 import type { CreateProjectInput, Project } from '@repo/shared';
 import { PrismaService } from '../prisma/prisma.service';
 import { assertWorkspacePermission } from '../workspaces/workspace.permissions';
+import { ActivityService } from '../dashboard/activity.service';
 
 @Injectable()
 export class ProjectsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Optional() private readonly activity?: ActivityService,
+  ) {}
 
   async list(userId: string, workspaceId: string): Promise<Project[]> {
     await this.findMembership(userId, workspaceId);
@@ -36,6 +41,15 @@ export class ProjectsService {
           description: input.description ?? null,
           color: input.color,
         },
+      });
+      await this.activity?.record({
+        workspaceId,
+        actorId: userId,
+        projectId: project.id,
+        action: 'created project',
+        resourceType: 'PROJECT',
+        resourceId: project.id,
+        summary: project.name,
       });
       return toProject(project);
     } catch (error: unknown) {

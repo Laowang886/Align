@@ -16,6 +16,16 @@ import type {
   AuthenticatedUser,
   LoginInput,
   RegisterInput,
+  WorkspaceDashboard,
+  WeeklyReport,
+  KanbanBoard,
+  KanbanColumn,
+  KanbanTask,
+  CreateKanbanColumnInput,
+  UpdateKanbanColumnInput,
+  CreateKanbanTaskInput,
+  UpdateKanbanTaskInput,
+  MoveKanbanTaskInput,
 } from "@repo/shared";
 
 const API_URL = (
@@ -183,6 +193,105 @@ export const sprintApi = {
     ),
 };
 
+export const dashboardApi = {
+  get: (workspaceId: string) =>
+    apiRequest<WorkspaceDashboard>(`/workspaces/${workspaceId}/dashboard`),
+  generateWeeklyReport: (workspaceId: string) =>
+    apiRequest<WeeklyReport>(`/workspaces/${workspaceId}/reports/weekly`, {
+      method: "POST",
+    }),
+};
+
+export const kanbanApi = {
+  get: (workspaceId: string, projectId: string) =>
+    apiRequest<KanbanBoard>(
+      `/workspaces/${workspaceId}/projects/${projectId}/kanban`,
+    ),
+  createColumn: (
+    workspaceId: string,
+    projectId: string,
+    input: CreateKanbanColumnInput,
+  ) =>
+    apiRequest<KanbanColumn>(
+      `/workspaces/${workspaceId}/projects/${projectId}/kanban/columns`,
+      {
+        method: "POST",
+        body: JSON.stringify(input),
+      },
+    ),
+  updateColumn: (
+    workspaceId: string,
+    projectId: string,
+    columnId: string,
+    input: UpdateKanbanColumnInput,
+  ) =>
+    apiRequest<KanbanColumn>(
+      `/workspaces/${workspaceId}/projects/${projectId}/kanban/columns/${columnId}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(input),
+      },
+    ),
+  deleteColumn: (
+    workspaceId: string,
+    projectId: string,
+    columnId: string,
+    moveTasksToColumnId?: string,
+  ) =>
+    apiRequest<void>(
+      `/workspaces/${workspaceId}/projects/${projectId}/kanban/columns/${columnId}`,
+      {
+        method: "DELETE",
+        body: JSON.stringify(
+          moveTasksToColumnId ? { moveTasksToColumnId } : {},
+        ),
+      },
+    ),
+  createTask: (
+    workspaceId: string,
+    projectId: string,
+    input: CreateKanbanTaskInput,
+  ) =>
+    apiRequest<KanbanTask>(
+      `/workspaces/${workspaceId}/projects/${projectId}/kanban/tasks`,
+      {
+        method: "POST",
+        body: JSON.stringify(input),
+      },
+    ),
+  updateTask: (
+    workspaceId: string,
+    projectId: string,
+    taskId: string,
+    input: UpdateKanbanTaskInput,
+  ) =>
+    apiRequest<KanbanTask>(
+      `/workspaces/${workspaceId}/projects/${projectId}/kanban/tasks/${taskId}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(input),
+      },
+    ),
+  deleteTask: (workspaceId: string, projectId: string, taskId: string) =>
+    apiRequest<void>(
+      `/workspaces/${workspaceId}/projects/${projectId}/kanban/tasks/${taskId}`,
+      { method: "DELETE" },
+    ),
+  moveTask: (
+    workspaceId: string,
+    projectId: string,
+    taskId: string,
+    input: MoveKanbanTaskInput,
+  ) =>
+    apiRequest<KanbanTask>(
+      `/workspaces/${workspaceId}/projects/${projectId}/kanban/tasks/${taskId}/move`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(input),
+      },
+    ),
+};
+
 export const wikiApi = {
   list: (workspaceId: string, projectId: string) =>
     apiRequest<WikiDocument[]>(
@@ -235,4 +344,3 @@ export const authApi = {
 
   me: () => apiRequest<CurrentUser>("/auth/me"),
 };
-
