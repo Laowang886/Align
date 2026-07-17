@@ -39,7 +39,9 @@ model User {
   id           String   @id @default(uuid())
   email        String   @unique
   name         String
-  passwordHash String
+  passwordHash String?
+  provider     String?
+  providerId   String?
   avatarUrl    String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -51,6 +53,8 @@ model User {
   createdWikiDocuments WikiDocument[]    @relation("WikiDocumentCreator")
   updatedWikiDocuments WikiDocument[]    @relation("WikiDocumentUpdater")
   activities           ActivityLog[]     @relation("ActivityActor")
+
+  @@unique([provider, providerId])
 }
 
 model Workspace {

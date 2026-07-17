@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "../page.module.css";
 import { ApiError, authApi } from "../../lib/api-client";
+import OAuthButtons from "./OAuthButtons";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -95,6 +96,8 @@ export default function RegisterForm() {
         <button type="submit" disabled={submitting}>
           {submitting ? "Creating account..." : "Create account"}
         </button>
+
+        <OAuthButtons mode="sign up" />
 
         <p className={styles.authSwitch}>
           Already have an account? <Link href="/login">Login</Link>

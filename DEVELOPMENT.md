@@ -201,3 +201,9 @@ API 和 Web 使用的是 `@repo/shared` 的构建产物，修改 `packages/share
 
 
 For test:pnpm run test:e2e
+
+
+For google and github auth
+cd apps/api
+pnpm add passport-google-oauth20 passport-github2
+pnpm add -D @types/passport-google-oauth20 @types/passport-github2

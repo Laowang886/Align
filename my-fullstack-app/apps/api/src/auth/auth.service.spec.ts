@@ -16,10 +16,13 @@ describe('AuthService', () => {
   };
 
   const findUnique = jest.fn();
+  const findFirst = jest.fn();
   const create = jest.fn();
   let capturedPasswordHash = '';
   const signAsync = jest.fn().mockResolvedValue('signed-token');
-  const prisma = { user: { findUnique, create } } as unknown as PrismaService;
+  const prisma = {
+    user: { findUnique, findFirst, create },
+  } as unknown as PrismaService;
   const jwt = { signAsync } as unknown as JwtService;
   const service = new AuthService(prisma, jwt);
 
@@ -93,6 +96,67 @@ describe('AuthService', () => {
         email: 'missing@example.com',
         password: 'wrong-password',
       }),
+    ).rejects.toMatchObject<Partial<UnauthorizedException>>({
+      message: 'Invalid email or password',
+    });
+  });
+
+  it('creates a user when a new Google identity signs in', async () => {
+    findFirst.mockResolvedValue(null);
+    findUnique.mockResolvedValue(null);
+    create.mockResolvedValue({
+      ...user,
+      passwordHash: null,
+      provider: 'google',
+      providerId: 'google-user-1',
+    });
+
+    const result = await service.loginWithOAuth({
+      provider: 'google',
+      providerId: 'google-user-1',
+      email: user.email.toUpperCase(),
+      name: user.name,
+      avatarUrl: 'https://example.com/avatar.png',
+    });
+
+    expect(create).toHaveBeenCalledWith({
+      data: {
+        email: user.email,
+        name: user.name,
+        avatarUrl: 'https://example.com/avatar.png',
+        provider: 'google',
+        providerId: 'google-user-1',
+      },
+    });
+    expect(result.accessToken).toBe('signed-token');
+  });
+
+  it('signs in an existing OAuth user by provider identity', async () => {
+    findFirst.mockResolvedValue({
+      ...user,
+      passwordHash: null,
+      provider: 'github',
+      providerId: 'github-user-1',
+    });
+
+    const result = await service.loginWithOAuth({
+      provider: 'github',
+      providerId: 'github-user-1',
+      email: user.email,
+      name: user.name,
+      avatarUrl: null,
+    });
+
+    expect(findUnique).not.toHaveBeenCalled();
+    expect(create).not.toHaveBeenCalled();
+    expect(result.user).toMatchObject({ id: user.id, email: user.email });
+  });
+
+  it('rejects password login for an OAuth-only account', async () => {
+    findUnique.mockResolvedValue({ ...user, passwordHash: null });
+
+    await expect(
+      service.login({ email: user.email, password: 'correct-password' }),
     ).rejects.toMatchObject<Partial<UnauthorizedException>>({
       message: 'Invalid email or password',
     });

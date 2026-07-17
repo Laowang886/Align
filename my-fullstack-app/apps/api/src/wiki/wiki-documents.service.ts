@@ -90,6 +90,22 @@ export class WikiDocumentsService {
     return toWikiDocument(document);
   }
 
+  async delete(
+    userId: string,
+    workspaceId: string,
+    projectId: string,
+    documentId: string,
+  ): Promise<void> {
+    const role = await this.assertProjectAccess(userId, workspaceId, projectId);
+    assertWorkspacePermission(role, 'edit_wiki_document');
+    const existing = await this.prisma.wikiDocument.findFirst({
+      where: { id: documentId, workspaceId, projectId },
+      select: { id: true },
+    });
+    if (!existing) throw new NotFoundException('Wiki document not found');
+    await this.prisma.wikiDocument.delete({ where: { id: documentId } });
+  }
+
   private async assertProjectAccess(
     userId: string,
     workspaceId: string,

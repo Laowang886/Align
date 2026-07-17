@@ -5,6 +5,8 @@ import type { JwtModuleOptions } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { GithubStrategy } from './strategies/github.strategy';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
@@ -33,6 +35,8 @@ const jwtExpiresIn = (process.env.JWT_EXPIRATION_TIME ?? '7d') as NonNullable<
   providers: [
     AuthService,
     JwtStrategy,
+    GoogleStrategy, //GoogleStrategy,
+    GithubStrategy, //GihubStrategy,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

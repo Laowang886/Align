@@ -29,8 +29,14 @@ import type {
 } from "@repo/shared";
 
 const API_URL = (
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"
 ).replace(/\/$/, "");
+
+export type OAuthProvider = "google" | "github";
+
+export function getOAuthUrl(provider: OAuthProvider): string {
+  return `${API_URL}/auth/${provider}`;
+}
 
 export class ApiError extends Error {
   constructor(
@@ -309,6 +315,11 @@ export const wikiApi = {
     apiRequest<WikiDocument>(
       `/workspaces/${workspaceId}/projects/${projectId}/wiki-documents/${documentId}`,
       { method: "PATCH", body: JSON.stringify(input) },
+    ),
+  delete: (workspaceId: string, projectId: string, documentId: string) =>
+    apiRequest<void>(
+      `/workspaces/${workspaceId}/projects/${projectId}/wiki-documents/${documentId}`,
+      { method: "DELETE" },
     ),
 };
 

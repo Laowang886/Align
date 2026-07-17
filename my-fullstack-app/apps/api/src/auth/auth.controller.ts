@@ -17,9 +17,15 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Throttle } from '@nestjs/throttler';
+import { AuthGuard } from '@nestjs/passport';
+import type { OAuthUser } from './types/oauth-user';
 
 interface AuthenticatedRequest extends Request {
   user: { id: string; email: string; name: string; avatarUrl: string | null };
+}
+
+interface OAuthRequest extends Request {
+  user: OAuthUser;
 }
 
 @Controller('auth')
@@ -67,6 +73,36 @@ export class AuthController {
     return { user: result.user };
   }
 
+  @Get('google')
+  @UseGuards(AuthGuard('google')) //This Guard will automatically activate Google Strategy.
+  googleLogin(): void {
+    // Passport redirects the browser to Google's consent screen.
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleCallback(
+    @Req() request: OAuthRequest,
+    @Res() response: Response,
+  ): Promise<void> {
+    await this.completeOAuthLogin(request, response);
+  }
+
+  @Get('github')
+  @UseGuards(AuthGuard('github')) //This Guard will automatically activate Google Strategy.
+  githubLogin(): void {
+    // Passport redirects the browser to GitHub's authorization screen.
+  }
+
+  @Get('github/callback')
+  @UseGuards(AuthGuard('github'))
+  async githubCallback(
+    @Req() request: OAuthRequest,
+    @Res() response: Response,
+  ): Promise<void> {
+    await this.completeOAuthLogin(request, response);
+  }
+
   @Post('logout') //@Post('logout'): Defines this as a route for a POST request with the path /auth/logout.
   @HttpCode(HttpStatus.NO_CONTENT) //Set the response status code to 204. 204 means "success, but no data was returned".
   logout(@Res({ passthrough: true }) res: Response): void {
@@ -86,5 +122,16 @@ export class AuthController {
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+  }
+
+  private async completeOAuthLogin(
+    request: OAuthRequest, //So when you write req.user, you are actually reading the return value of GithubStrategy's validate() method.
+    response: Response,
+  ): Promise<void> {
+    const result = await this.authService.loginWithOAuth(request.user);
+    this.setAuthCookie(response, result.accessToken);
+
+    const frontendUrl = process.env.FRONTEND_URL ?? 'http://localhost:3000';
+    response.redirect(new URL('/workspaces', frontendUrl).toString());
   }
 }

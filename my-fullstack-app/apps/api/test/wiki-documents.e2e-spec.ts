@@ -73,6 +73,36 @@ describe('Wiki documents (database)', () => {
     expect(updated.content).toBe('# Updated system');
     expect(updated.updatedById).toBe(member.id);
     expect(listed).toEqual([expect.objectContaining({ id: document.id })]);
+
+    await wiki.delete(member.id, workspace.id, project.id, document.id);
+
+    await expect(wiki.list(member.id, workspace.id, project.id)).resolves.toEqual(
+      [],
+    );
+    await expect(
+      prisma.wikiDocument.findUnique({ where: { id: document.id } }),
+    ).resolves.toBeNull();
+    await expect(
+      prisma.wikiDocument.count({
+        where: {
+          OR: [
+            { workspaceId: workspace.id },
+            { projectId: project.id },
+            { createdById: member.id },
+            { updatedById: member.id },
+          ],
+        },
+      }),
+    ).resolves.toBe(0);
+    await expect(
+      prisma.workspace.findUnique({ where: { id: workspace.id } }),
+    ).resolves.not.toBeNull();
+    await expect(
+      prisma.project.findUnique({ where: { id: project.id } }),
+    ).resolves.not.toBeNull();
+    await expect(
+      prisma.user.findUnique({ where: { id: member.id } }),
+    ).resolves.not.toBeNull();
   });
 
   it('does not expose projects outside the member workspace', async () => {
