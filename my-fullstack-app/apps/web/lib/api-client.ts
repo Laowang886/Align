@@ -19,8 +19,14 @@ import type {
 } from "@repo/shared";
 
 const API_URL = (
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"
 ).replace(/\/$/, "");
+
+export type OAuthProvider = "google" | "github";
+
+export function getOAuthUrl(provider: OAuthProvider): string {
+  return `${API_URL}/auth/${provider}`;
+}
 
 export class ApiError extends Error {
   constructor(
@@ -224,5 +230,4 @@ export const authApi = {
 
   me: () => apiRequest<CurrentUser>("/auth/me"),
 };
-
 
