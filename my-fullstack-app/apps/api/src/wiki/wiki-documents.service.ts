@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Optional } from '@nestjs/common';
 import type {
   CreateWikiDocumentInput,
   UpdateWikiDocumentInput,
@@ -7,10 +7,14 @@ import type {
 } from '@repo/shared';
 import { PrismaService } from '../prisma/prisma.service';
 import { assertWorkspacePermission } from '../workspaces/workspace.permissions';
+import { ActivityService } from '../dashboard/activity.service';
 
 @Injectable()
 export class WikiDocumentsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Optional() private readonly activity?: ActivityService,
+  ) {}
 
   async list(
     userId: string,
@@ -43,6 +47,15 @@ export class WikiDocumentsService {
         updatedById: userId,
       },
     });
+    await this.activity?.record({
+      workspaceId,
+      actorId: userId,
+      projectId,
+      action: 'created wiki document',
+      resourceType: 'WIKI_DOCUMENT',
+      resourceId: document.id,
+      summary: document.title,
+    });
     return toWikiDocument(document);
   }
 
@@ -64,6 +77,15 @@ export class WikiDocumentsService {
     const document = await this.prisma.wikiDocument.update({
       where: { id: documentId },
       data: { ...input, updatedById: userId },
+    });
+    await this.activity?.record({
+      workspaceId,
+      actorId: userId,
+      projectId,
+      action: 'updated wiki document',
+      resourceType: 'WIKI_DOCUMENT',
+      resourceId: document.id,
+      summary: document.title,
     });
     return toWikiDocument(document);
   }

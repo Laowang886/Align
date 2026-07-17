@@ -63,6 +63,11 @@ export type Column = Prisma.ColumnModel
  */
 export type Task = Prisma.TaskModel
 /**
+ * Model ActivityLog
+ * 
+ */
+export type ActivityLog = Prisma.ActivityLogModel
+/**
  * Model Channel
  * 
  */

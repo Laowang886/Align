@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
+  Optional,
 } from '@nestjs/common';
 import type {
   CreateSprintInput,
@@ -13,10 +14,14 @@ import type {
 } from '@repo/shared';
 import { PrismaService } from '../prisma/prisma.service';
 import { assertWorkspacePermission } from '../workspaces/workspace.permissions';
+import { ActivityService } from '../dashboard/activity.service';
 
 @Injectable()
 export class SprintsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Optional() private readonly activity?: ActivityService,
+  ) {}
 
   async list(
     userId: string,
@@ -47,6 +52,15 @@ export class SprintsService {
         startDate: toDatabaseDate(input.startDate),
         endDate: toDatabaseDate(input.endDate),
       },
+    });
+    await this.activity?.record({
+      workspaceId,
+      actorId: userId,
+      projectId,
+      action: 'created sprint',
+      resourceType: 'SPRINT',
+      resourceId: sprint.id,
+      summary: sprint.name,
     });
     return toSprint(sprint);
   }
@@ -87,6 +101,16 @@ export class SprintsService {
       const sprint = await this.prisma.sprint.update({
         where: { id: sprintId },
         data: { status: input.status },
+      });
+      await this.activity?.record({
+        workspaceId,
+        actorId: userId,
+        projectId,
+        action:
+          input.status === 'ACTIVE' ? 'started sprint' : 'completed sprint',
+        resourceType: 'SPRINT',
+        resourceId: sprint.id,
+        summary: sprint.name,
       });
       return toSprint(sprint);
     } catch (error: unknown) {

@@ -25,3 +25,24 @@ export const SprintStatus = {
 } as const
 
 export type SprintStatus = (typeof SprintStatus)[keyof typeof SprintStatus]
+
+
+export const TaskPriority = {
+  URGENT: 'URGENT',
+  HIGH: 'HIGH',
+  MEDIUM: 'MEDIUM',
+  LOW: 'LOW'
+} as const
+
+export type TaskPriority = (typeof TaskPriority)[keyof typeof TaskPriority]
+
+
+export const ColumnCategory = {
+  BACKLOG: 'BACKLOG',
+  TODO: 'TODO',
+  IN_PROGRESS: 'IN_PROGRESS',
+  REVIEW: 'REVIEW',
+  DONE: 'DONE'
+} as const
+
+export type ColumnCategory = (typeof ColumnCategory)[keyof typeof ColumnCategory]

@@ -63,6 +63,7 @@ export default function WorkspaceApp({
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [dashboardRefresh, setDashboardRefresh] = useState(0);
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [membersOpen, setMembersOpen] = useState(false);
   const [projects, setProjects] = useState<WorkspaceProject[]>([]);
@@ -210,6 +211,7 @@ export default function WorkspaceApp({
       view === "Wiki Documents"
     ) {
       setActiveView(view);
+      if (view === "Dashboard") setDashboardRefresh((value) => value + 1);
       return;
     }
 
@@ -265,6 +267,7 @@ export default function WorkspaceApp({
         : workspace,
     );
     showToast(`${project.name} created successfully.`);
+    setDashboardRefresh((value) => value + 1);
   }
 
   async function addSprint(input: CreateSprintInput): Promise<void> {
@@ -281,6 +284,7 @@ export default function WorkspaceApp({
       setSprints((items) => [sprint, ...items]);
     }
     showToast(`${sprint.name} planned successfully.`);
+    setDashboardRefresh((value) => value + 1);
   }
 
   async function updateSprintStatus(
@@ -303,6 +307,7 @@ export default function WorkspaceApp({
       );
     }
     showToast(status === "ACTIVE" ? "Sprint started." : "Sprint completed.");
+    setDashboardRefresh((value) => value + 1);
   }
 
   const selector = (
@@ -376,10 +381,9 @@ export default function WorkspaceApp({
               <button onClick={() => void load()}>Try again</button>
             </div>
             <DashboardView
+              workspaceId={currentWorkspace?.id}
               workspaceName={currentWorkspace?.name ?? "FormatWeaver HQ"}
-              onGenerateReport={() =>
-                showToast("Weekly report generation started.")
-              }
+              refreshKey={dashboardRefresh}
             />
           </>
         )}
@@ -387,10 +391,13 @@ export default function WorkspaceApp({
           currentWorkspace &&
           (activeView === "Dashboard" ? (
             <DashboardView
+              workspaceId={currentWorkspace.id}
               workspaceName={currentWorkspace.name}
-              onGenerateReport={() =>
-                showToast("Weekly report generation started.")
-              }
+              refreshKey={dashboardRefresh}
+              onOpenProject={(projectId) => {
+                setActiveProjectId(projectId);
+                setActiveView("Kanban Board");
+              }}
             />
           ) : activeView === "Kanban Board" ? (
             <KanbanBoardView
@@ -398,6 +405,8 @@ export default function WorkspaceApp({
               workspaceId={currentWorkspace.id}
               workspaceName={currentWorkspace.name}
               onNotify={showToast}
+              onDataChanged={() => setDashboardRefresh((value) => value + 1)}
+              sprints={sprints}
             />
           ) : activeView === "Sprints" ? (
             <SprintsView
