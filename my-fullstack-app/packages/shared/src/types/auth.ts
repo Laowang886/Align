@@ -17,6 +17,8 @@ export interface AuthenticatedUser {
   name: string;
   email: string;
   avatarUrl: string | null;
+  avatarColor: string | null;
+  provider: "google" | "github" | null;
 }
 
 export interface AuthResponse {
