@@ -27,6 +27,10 @@ import type {
   UpdateKanbanTaskInput,
   MoveKanbanTaskInput,
   UpdateProfileInput,
+  CreateFeedbackInput,
+  CreateSafetyReportInput,
+  FeedbackSubmission,
+  SafetyReport,
 } from "@repo/shared";
 
 const API_URL = (
@@ -353,4 +357,18 @@ export const userApi = {
       body: JSON.stringify(input),
     }),
   deleteAccount: () => apiRequest<void>("/users/me", { method: "DELETE" }),
+};
+
+export const supportApi = {
+  submitFeedback: (input: CreateFeedbackInput) =>
+    apiRequest<FeedbackSubmission>("/feedback", {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
+
+  submitSafetyReport: (input: CreateSafetyReportInput) =>
+    apiRequest<SafetyReport>("/safety-reports", {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
 };

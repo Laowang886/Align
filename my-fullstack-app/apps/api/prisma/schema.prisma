@@ -55,6 +55,9 @@ model User {
   updatedWikiDocuments WikiDocument[]    @relation("WikiDocumentUpdater")
   activities           ActivityLog[]     @relation("ActivityActor")
 
+  feedbackSubmissions FeedbackSubmission[]
+  safetyReports       SafetyReport[]
+
   @@unique([provider, providerId])
 }
 
@@ -247,4 +250,27 @@ model Message {
 
   @@index([channelId])
   @@index([authorId])
+}
+
+// apps/api/prisma/schema.prisma
+
+model FeedbackSubmission {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String   // "general" | "bug" | "feature" | "usability"
+  content   String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SafetyReport {
+  id          String   @id @default(uuid())
+  userId      String
+  category    String   // "harassment" | "exploit" | "privacy" | "other"
+  description String
+  status      String   @default("open")
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

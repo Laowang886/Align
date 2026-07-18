@@ -395,7 +395,9 @@ export const ModelName = {
   Task: 'Task',
   ActivityLog: 'ActivityLog',
   Channel: 'Channel',
-  Message: 'Message'
+  Message: 'Message',
+  FeedbackSubmission: 'FeedbackSubmission',
+  SafetyReport: 'SafetyReport'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -411,7 +413,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "workspace" | "workspaceMember" | "project" | "sprint" | "wikiDocument" | "board" | "column" | "task" | "activityLog" | "channel" | "message"
+    modelProps: "user" | "workspace" | "workspaceMember" | "project" | "sprint" | "wikiDocument" | "board" | "column" | "task" | "activityLog" | "channel" | "message" | "feedbackSubmission" | "safetyReport"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1303,6 +1305,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    FeedbackSubmission: {
+      payload: Prisma.$FeedbackSubmissionPayload<ExtArgs>
+      fields: Prisma.FeedbackSubmissionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FeedbackSubmissionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackSubmissionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FeedbackSubmissionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackSubmissionPayload>
+        }
+        findFirst: {
+          args: Prisma.FeedbackSubmissionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackSubmissionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FeedbackSubmissionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackSubmissionPayload>
+        }
+        findMany: {
+          args: Prisma.FeedbackSubmissionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackSubmissionPayload>[]
+        }
+        create: {
+          args: Prisma.FeedbackSubmissionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackSubmissionPayload>
+        }
+        createMany: {
+          args: Prisma.FeedbackSubmissionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FeedbackSubmissionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackSubmissionPayload>[]
+        }
+        delete: {
+          args: Prisma.FeedbackSubmissionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackSubmissionPayload>
+        }
+        update: {
+          args: Prisma.FeedbackSubmissionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackSubmissionPayload>
+        }
+        deleteMany: {
+          args: Prisma.FeedbackSubmissionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FeedbackSubmissionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FeedbackSubmissionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackSubmissionPayload>[]
+        }
+        upsert: {
+          args: Prisma.FeedbackSubmissionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackSubmissionPayload>
+        }
+        aggregate: {
+          args: Prisma.FeedbackSubmissionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFeedbackSubmission>
+        }
+        groupBy: {
+          args: Prisma.FeedbackSubmissionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FeedbackSubmissionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FeedbackSubmissionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FeedbackSubmissionCountAggregateOutputType> | number
+        }
+      }
+    }
+    SafetyReport: {
+      payload: Prisma.$SafetyReportPayload<ExtArgs>
+      fields: Prisma.SafetyReportFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SafetyReportFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SafetyReportPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SafetyReportFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SafetyReportPayload>
+        }
+        findFirst: {
+          args: Prisma.SafetyReportFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SafetyReportPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SafetyReportFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SafetyReportPayload>
+        }
+        findMany: {
+          args: Prisma.SafetyReportFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SafetyReportPayload>[]
+        }
+        create: {
+          args: Prisma.SafetyReportCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SafetyReportPayload>
+        }
+        createMany: {
+          args: Prisma.SafetyReportCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SafetyReportCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SafetyReportPayload>[]
+        }
+        delete: {
+          args: Prisma.SafetyReportDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SafetyReportPayload>
+        }
+        update: {
+          args: Prisma.SafetyReportUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SafetyReportPayload>
+        }
+        deleteMany: {
+          args: Prisma.SafetyReportDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SafetyReportUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SafetyReportUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SafetyReportPayload>[]
+        }
+        upsert: {
+          args: Prisma.SafetyReportUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SafetyReportPayload>
+        }
+        aggregate: {
+          args: Prisma.SafetyReportAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSafetyReport>
+        }
+        groupBy: {
+          args: Prisma.SafetyReportGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SafetyReportGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SafetyReportCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SafetyReportCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1499,6 +1649,29 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const FeedbackSubmissionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type FeedbackSubmissionScalarFieldEnum = (typeof FeedbackSubmissionScalarFieldEnum)[keyof typeof FeedbackSubmissionScalarFieldEnum]
+
+
+export const SafetyReportScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  category: 'category',
+  description: 'description',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type SafetyReportScalarFieldEnum = (typeof SafetyReportScalarFieldEnum)[keyof typeof SafetyReportScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1764,6 +1937,8 @@ export type GlobalOmitConfig = {
   activityLog?: Prisma.ActivityLogOmit
   channel?: Prisma.ChannelOmit
   message?: Prisma.MessageOmit
+  feedbackSubmission?: Prisma.FeedbackSubmissionOmit
+  safetyReport?: Prisma.SafetyReportOmit
 }
 
 /* Types for Logging */

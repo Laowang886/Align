@@ -99,3 +99,13 @@ export type Channel = Prisma.ChannelModel
  * 
  */
 export type Message = Prisma.MessageModel
+/**
+ * Model FeedbackSubmission
+ * 
+ */
+export type FeedbackSubmission = Prisma.FeedbackSubmissionModel
+/**
+ * Model SafetyReport
+ * 
+ */
+export type SafetyReport = Prisma.SafetyReportModel

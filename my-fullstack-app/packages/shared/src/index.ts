@@ -6,3 +6,4 @@ export * from "./types/sprints";
 export * from "./types/dashboard";
 export * from "./types/auth";
 export * from "./types/user";
+export * from "./types/support"; 

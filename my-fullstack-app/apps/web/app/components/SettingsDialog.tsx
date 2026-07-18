@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import type { FeedbackType, SafetyCategory } from "@repo/shared";
 import styles from "../page.module.css";
 import Icon from "./Icon";
 import {
   authApi,
   clearClientAuthState,
   userApi,
+  supportApi,
   ApiError,
 } from "../../lib/api-client";
 
@@ -35,8 +37,10 @@ export default function SettingsDialog({
 }) {
   const [activeTab, setActiveTab] = useState<SettingsTab>("account");
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [emailDigestEnabled, setEmailDigestEnabled] = useState(true);
-  const [aiRecommendationsEnabled, setAiRecommendationsEnabled] = useState(true);
+  const [kanbanNotificationsEnabled, setKanbanNotificationsEnabled] =
+    useState(true);
+  const [chatNotificationsEnabled, setChatNotificationsEnabled] =
+    useState(true);
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [deleteConfirmationText, setDeleteConfirmationText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -58,6 +62,18 @@ export default function SettingsDialog({
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [copiedEmail, setCopiedEmail] = useState(false);
+  const [safetyCategory, setSafetyCategory] =
+    useState<SafetyCategory>("harassment");
+  const [safetyText, setSafetyText] = useState("");
+  const [isSubmittingSafety, setIsSubmittingSafety] = useState(false);
+  const [safetySuccessId, setSafetySuccessId] = useState<string | null>(null);
+  const [safetyError, setSafetyError] = useState<string | null>(null);
+  const [feedbackType, setFeedbackType] = useState<FeedbackType>("general");
+  const [feedbackText, setFeedbackText] = useState("");
+  const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+  const [feedbackSuccess, setFeedbackSuccess] = useState(false);
+  const [feedbackError, setFeedbackError] = useState<string | null>(null);
 
   //When the currentUser data is updated, it will automatically "fill" the user information into the form's input boxes.
   useEffect(() => {
@@ -79,6 +95,17 @@ export default function SettingsDialog({
     document.addEventListener("keydown", closeOnEscape);
     return () => document.removeEventListener("keydown", closeOnEscape);
   }, [onClose, open]);
+
+  useEffect(() => {
+    if (open) return;
+    setCopiedEmail(false);
+    setSafetyText("");
+    setSafetySuccessId(null);
+    setSafetyError(null);
+    setFeedbackText("");
+    setFeedbackSuccess(false);
+    setFeedbackError(null);
+  }, [open]);
 
   if (!open) return null;
 
@@ -111,6 +138,51 @@ export default function SettingsDialog({
           : "Unable to delete your account.",
       );
       setIsDeleting(false);
+    }
+  }
+
+  async function handleCopyEmail() {
+    try {
+      await navigator.clipboard.writeText("support@sprintforge.co");
+      setCopiedEmail(true);
+      window.setTimeout(() => setCopiedEmail(false), 1800);
+    } catch {
+      setCopiedEmail(false);
+    }
+  }
+
+  async function handleSubmitSafetyReport(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!safetyText.trim()) return;
+    setIsSubmittingSafety(true);
+    setSafetyError(null);
+    try {
+      const report = await supportApi.submitSafetyReport({
+        category: safetyCategory,
+        description: safetyText.trim(),
+      });
+      setSafetySuccessId(report.id);
+      setSafetyText("");
+    } catch (caught: unknown) {
+      setSafetyError(caught instanceof ApiError ? caught.message : "Unable to submit the report.");
+    } finally {
+      setIsSubmittingSafety(false);
+    }
+  }
+
+  async function handleSubmitFeedback(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!feedbackText.trim()) return;
+    setIsSubmittingFeedback(true);
+    setFeedbackError(null);
+    try {
+      await supportApi.submitFeedback({ type: feedbackType, content: feedbackText.trim() });
+      setFeedbackSuccess(true);
+      setFeedbackText("");
+    } catch (caught: unknown) {
+      setFeedbackError(caught instanceof ApiError ? caught.message : "Unable to submit feedback.");
+    } finally {
+      setIsSubmittingFeedback(false);
     }
   }
 
@@ -251,31 +323,143 @@ export default function SettingsDialog({
             )}
 
             {activeTab === "preferences" && (
-              <section className={styles.settingsPanel}>
-                <h4 className={styles.settingsSectionTitle}>Notification settings</h4>
-                {[
-                  ["Workspace notification alerts", "Receive high-priority alerts for tasks assigned to you.", notificationsEnabled, setNotificationsEnabled],
-                  ["Weekly sprint email digests", "Receive summaries of active sprints and team progress.", emailDigestEnabled, setEmailDigestEnabled],
-                  ["AI smart task suggestions", "Allow AI-assisted sprint task breakdown suggestions.", aiRecommendationsEnabled, setAiRecommendationsEnabled],
-                ].map(([label, description, enabled, setEnabled]) => (
-                  <div className={styles.settingsPreferenceCard} key={label as string}>
-                    <span><b>{label as string}</b><small>{description as string}</small></span>
-                    <button className={`${styles.settingsToggle} ${enabled ? styles.settingsToggleOn : ""}`} type="button" role="switch" aria-checked={enabled as boolean} aria-label={label as string} onClick={() => (setEnabled as React.Dispatch<React.SetStateAction<boolean>>)(value => !value)}><i /></button>
+              <section className={styles.settingsPreferences}>
+                <div className={styles.settingsPreferenceIntro}>
+                  <h4>Workspace preferences</h4>
+                  <p>
+                    Manage how you receive alerts and update events across your
+                    collaborative workspace boards.
+                  </p>
+                </div>
+
+                <article className={styles.settingsPreferenceMaster}>
+                  <div className={styles.settingsPreferenceCopy}>
+                    <span className={styles.settingsPreferenceIcon}>
+                      <Icon name="bell" size={17} />
+                    </span>
+                    <div>
+                      <p>
+                        <b>Main notification alerts</b>
+                        <em className={notificationsEnabled ? styles.settingsStatusActive : styles.settingsStatusMuted}>
+                          {notificationsEnabled ? "Active" : "Muted"}
+                        </em>
+                      </p>
+                      <small>
+                        Master switch for all workspace notifications. Turning it
+                        off disables every channel below.
+                      </small>
+                    </div>
                   </div>
-                ))}
+                  <button
+                    className={`${styles.settingsToggle} ${notificationsEnabled ? styles.settingsToggleOn : ""}`}
+                    type="button"
+                    role="switch"
+                    aria-checked={notificationsEnabled}
+                    aria-label="Enable main notification alerts"
+                    onClick={() => setNotificationsEnabled((value) => !value)}
+                  ><i /></button>
+                </article>
+
+                <div className={styles.settingsPreferenceChannels}>
+                  {[
+                    ["board", "Kanban board notifications", "Receive notifications when tasks are added, moved, or updated on the active sprint board.", kanbanNotificationsEnabled, setKanbanNotificationsEnabled],
+                    ["chat", "Workspace chat notifications", "Get notified when teammates ping you or post new messages in workspace channels.", chatNotificationsEnabled, setChatNotificationsEnabled],
+                  ].map(([icon, label, description, enabled, setEnabled]) => (
+                    <article className={`${styles.settingsPreferenceChannel} ${!notificationsEnabled ? styles.settingsPreferenceDisabled : ""}`} key={label as string}>
+                      <div className={styles.settingsPreferenceCopy}>
+                        <span className={styles.settingsPreferenceIcon}>
+                          <Icon name={icon as "board" | "chat"} size={16} />
+                        </span>
+                        <div>
+                          <p><b>{label as string}</b></p>
+                          <small>{description as string}</small>
+                        </div>
+                      </div>
+                      <div className={styles.settingsPreferenceControl}>
+                        {!notificationsEnabled && <em>Muted</em>}
+                        <button
+                          className={`${styles.settingsToggle} ${enabled ? styles.settingsToggleOn : ""}`}
+                          type="button"
+                          disabled={!notificationsEnabled}
+                          role="switch"
+                          aria-checked={notificationsEnabled && (enabled as boolean)}
+                          aria-label={`Enable ${label as string}`}
+                          onClick={() => (setEnabled as React.Dispatch<React.SetStateAction<boolean>>)((value) => !value)}
+                        ><i /></button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
               </section>
             )}
 
             {activeTab === "support" && (
-              <section className={styles.settingsPanel}>
-                <div className={styles.settingsSupportSection}>
-                  <h4><Icon name="book" size={16} />Help &amp; support documentation</h4>
-                  <p>If you need technical assistance or want to report a service issue, our team is here to help.</p>
-                  <a className={styles.settingsSupportContact} href="mailto:support@sprintforge.co"><Icon name="mail" size={17} /><span><b>Direct operations email</b><small>support@sprintforge.co</small></span></a>
+              <section className={styles.settingsSupport}>
+                <div className={styles.settingsSupportHeading}>
+                  <Icon name="book" size={17} />
+                  <h4>Help &amp; support</h4>
                 </div>
-                <div className={styles.settingsSupportSection}>
-                  <h4><Icon name="file" size={16} />Terms &amp; policies summary</h4>
-                  <div className={styles.settingsPolicyCopy}><b>1. Data storage &amp; privacy</b><p>Workspace records, documents, comments, and chat history are stored securely and are not shared outside your organization.</p><b>2. Collaborative operations</b><p>Workspace owners are responsible for invitations and access. Revoking permissions restricts tenant modifications immediately.</p><b>3. AI context usage</b><p>AI features exclude sensitive credentials from prompt templates and operate only on the context required for the requested task.</p></div>
+
+                <article className={styles.settingsSupportCard}>
+                  <span className={styles.settingsSupportIcon}><Icon name="mail" size={16} /></span>
+                  <div className={styles.settingsSupportCardContent}>
+                    <b>Email support</b>
+                    <p>Get help with account configuration, integrations, and billing questions.</p>
+                    <div className={styles.settingsSupportEmail}>
+                      <code>support@sprintforge.co</code>
+                      <button type="button" onClick={() => void handleCopyEmail()} aria-label="Copy support email">
+                        <Icon name={copiedEmail ? "check" : "clipboard"} size={14} />
+                      </button>
+                      <a href="mailto:support@sprintforge.co" aria-label="Email support"><Icon name="external" size={14} /></a>
+                    </div>
+                    {copiedEmail && <small className={styles.settingsSupportSuccess}>Copied to clipboard.</small>}
+                  </div>
+                </article>
+
+                <article className={styles.settingsSupportCard}>
+                  <span className={`${styles.settingsSupportIcon} ${styles.settingsSafetyIcon}`}><Icon name="alert" size={16} /></span>
+                  <div className={styles.settingsSupportCardContent}>
+                    <b>Safety center</b>
+                    <p>Report harassment, security exploits, privacy violations, or other urgent concerns.</p>
+                    <div className={styles.settingsSupportFormShell}>
+                      <strong><Icon name="alert" size={13} />File an incident report</strong>
+                      {safetySuccessId ? (
+                        <div className={styles.settingsSubmissionSuccess}><Icon name="check" size={17} /><b>Report transmitted safely</b><small>Reference: #{safetySuccessId.slice(0, 8)}</small></div>
+                      ) : (
+                        <form onSubmit={handleSubmitSafetyReport} className={styles.settingsSupportForm}>
+                          <label>Incident category<select value={safetyCategory} onChange={(event) => setSafetyCategory(event.target.value as SafetyCategory)}><option value="harassment">Harassment / code of conduct</option><option value="exploit">Security vulnerability / exploit</option><option value="privacy">Privacy / data leakage</option><option value="other">Other emergency concern</option></select></label>
+                          <label>Incident description<textarea required rows={3} value={safetyText} onChange={(event) => setSafetyText(event.target.value)} placeholder="Provide relevant details, usernames, or vulnerability vectors..." /></label>
+                          {safetyError && <p className={styles.settingsError}>{safetyError}</p>}
+                          <button type="submit" disabled={isSubmittingSafety || !safetyText.trim()}><Icon name="alert" size={13} />{isSubmittingSafety ? "Transmitting..." : "Submit incident report"}</button>
+                        </form>
+                      )}
+                    </div>
+                  </div>
+                </article>
+
+                <article className={styles.settingsSupportCard}>
+                  <span className={`${styles.settingsSupportIcon} ${styles.settingsFeedbackIcon}`}><Icon name="chat" size={16} /></span>
+                  <div className={styles.settingsSupportCardContent}>
+                    <b>Submit feedback</b>
+                    <p>Share bug reports, suggestions, or design feedback with the SprintForge team.</p>
+                    <div className={styles.settingsSupportFormShell}>
+                      {feedbackSuccess ? (
+                        <div className={styles.settingsSubmissionSuccess}><Icon name="check" size={17} /><b>Feedback submitted successfully</b><small>Thank you for helping us improve SprintForge.</small></div>
+                      ) : (
+                        <form onSubmit={handleSubmitFeedback} className={styles.settingsSupportForm}>
+                          <label>Feedback category<select value={feedbackType} onChange={(event) => setFeedbackType(event.target.value as FeedbackType)}><option value="general">General suggestion</option><option value="bug">Bug report / defect</option><option value="feature">New feature idea</option><option value="usability">Usability / design critique</option></select></label>
+                          <label>Your feedback<textarea required rows={3} value={feedbackText} onChange={(event) => setFeedbackText(event.target.value)} placeholder="Describe the issue, idea, or review..." /></label>
+                          {feedbackError && <p className={styles.settingsError}>{feedbackError}</p>}
+                          <button type="submit" disabled={isSubmittingFeedback || !feedbackText.trim()}><Icon name="external" size={13} />{isSubmittingFeedback ? "Submitting..." : "Submit feedback"}</button>
+                        </form>
+                      )}
+                    </div>
+                  </div>
+                </article>
+
+                <div className={styles.settingsPolicies}>
+                  <div className={styles.settingsSupportHeading}><Icon name="file" size={17} /><h4>Terms &amp; policies summary</h4></div>
+                  <div className={styles.settingsPolicyCopy}><section><b>1. Data storage &amp; privacy shield</b><p>Workspace records, wiki documents, and conversations are securely stored and isolated by workspace tenant.</p></section><section><b>2. Collaborative workspace authority</b><p>Workspace administrators manage membership, permissions, and board deletion. Revoked members lose access immediately.</p></section><section><b>3. Respectful workspace environments</b><p>Harassment, intentional denial of service, and data tampering are prohibited and may result in permanent suspension.</p></section></div>
                 </div>
               </section>
             )}

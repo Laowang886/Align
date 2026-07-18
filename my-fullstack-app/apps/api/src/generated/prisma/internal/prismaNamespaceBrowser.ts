@@ -62,7 +62,9 @@ export const ModelName = {
   Task: 'Task',
   ActivityLog: 'ActivityLog',
   Channel: 'Channel',
-  Message: 'Message'
+  Message: 'Message',
+  FeedbackSubmission: 'FeedbackSubmission',
+  SafetyReport: 'SafetyReport'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -238,6 +240,29 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const FeedbackSubmissionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type FeedbackSubmissionScalarFieldEnum = (typeof FeedbackSubmissionScalarFieldEnum)[keyof typeof FeedbackSubmissionScalarFieldEnum]
+
+
+export const SafetyReportScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  category: 'category',
+  description: 'description',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type SafetyReportScalarFieldEnum = (typeof SafetyReportScalarFieldEnum)[keyof typeof SafetyReportScalarFieldEnum]
 
 
 export const SortOrder = {
