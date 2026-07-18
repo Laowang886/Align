@@ -40,3 +40,17 @@ export class ProjectsController {
     );
   }
 }
+
+@Controller('projects')
+@UseGuards(JwtAuthGuard)
+export class ProjectController {
+  constructor(private readonly projectsService: ProjectsService) {}
+
+  @Get(':projectId')
+  get(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('projectId', new ParseUUIDPipe()) projectId: string,
+  ): Promise<Project> {
+    return this.projectsService.get(user.id, projectId);
+  }
+}

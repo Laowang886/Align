@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -118,6 +120,7 @@ export class KanbanController {
   }
 
   @Delete('tasks/:taskId')
+  @HttpCode(HttpStatus.NO_CONTENT)
   deleteTask(
     @CurrentUser() user: AuthenticatedUser,
     @Param('workspaceId', new ParseUUIDPipe()) workspaceId: string,

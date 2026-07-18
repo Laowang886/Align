@@ -28,11 +28,13 @@ export default function AppShell() {
       {sidebarOpen && <Sidebar activeView={activeView} onNavigate={navigate} />}
       <div className={styles.shell}>
         <Header onToggleSidebar={() => setSidebarOpen((open) => !open)} />
-        {activeView === "Dashboard" ? (
-          <DashboardView />
-        ) : (
-          <KanbanBoardView onNotify={notify} />
-        )}
+        <div className={styles.mainContent}>
+          {activeView === "Dashboard" ? (
+            <DashboardView />
+          ) : (
+            <KanbanBoardView onNotify={notify} />
+          )}
+        </div>
       </div>
       {toast && (
         <div className={styles.toast}>

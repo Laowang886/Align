@@ -25,6 +25,17 @@ export class ProjectsService {
     return projects.map(toProject);
   }
 
+  async get(userId: string, projectId: string): Promise<Project> {
+    const project = await this.prisma.project.findFirst({
+      where: {
+        id: projectId,
+        workspace: { members: { some: { userId } } },
+      },
+    });
+    if (!project) throw new NotFoundException('Project not found');
+    return toProject(project);
+  }
+
   async create(
     userId: string,
     workspaceId: string,

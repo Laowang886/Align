@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   ColumnCategory,
   KanbanBoard,
@@ -107,12 +107,15 @@ export default function KanbanBoardView({
     color: "gray",
     category: "TODO",
   });
+  const boardRequestVersion = useRef(0);
 
   const load = useCallback(async () => {
     if (!workspaceId || !projectId) {
+      boardRequestVersion.current += 1;
       setBoard(null);
       return;
     }
+    const requestVersion = ++boardRequestVersion.current;
     setLoading(true);
     setError(null);
     try {
@@ -120,16 +123,18 @@ export default function KanbanBoardView({
         kanbanApi.get(workspaceId, projectId),
         workspaceApi.members(workspaceId),
       ]);
+      if (requestVersion !== boardRequestVersion.current) return;
       setBoard(loadedBoard);
       setMembers(loadedMembers);
     } catch (caught: unknown) {
+      if (requestVersion !== boardRequestVersion.current) return;
       setError(
         caught instanceof ApiError
           ? caught.message
           : "Unable to load the board.",
       );
     } finally {
-      setLoading(false);
+      if (requestVersion === boardRequestVersion.current) setLoading(false);
     }
   }, [projectId, workspaceId]);
 
@@ -237,6 +242,7 @@ export default function KanbanBoardView({
   }
 
   async function deleteTask(task: KanbanTask) {
+    const taskId = task.id;
     if (
       !workspaceId ||
       !projectId ||
@@ -245,8 +251,23 @@ export default function KanbanBoardView({
       return;
     setPending(true);
     try {
-      await kanbanApi.deleteTask(workspaceId, projectId, task.id);
-      await load();
+      await kanbanApi.deleteTask(workspaceId, projectId, taskId);
+
+      // A board request started before the DELETE can contain the deleted task.
+      // Invalidate it before committing the server-confirmed local change.
+      boardRequestVersion.current += 1;
+      setLoading(false);
+      setBoard((currentBoard) => {
+        if (!currentBoard) return currentBoard;
+        const nextBoard = {
+          ...currentBoard,
+          columns: currentBoard.columns.map((column) => ({
+            ...column,
+            tasks: column.tasks.filter((item) => item.id !== taskId),
+          })),
+        };
+        return nextBoard;
+      });
       onDataChanged?.();
       onNotify("Task deleted successfully.");
     } catch (caught: unknown) {
@@ -379,7 +400,7 @@ export default function KanbanBoardView({
   if (!board) return null;
 
   return (
-    <main id="main" className={styles.main}>
+    <main id="main" className={`${styles.main} ${styles.kanbanMain}`}>
       <div className={styles.kanbanHero}>
         <div>
           <h1>Kanban Board</h1>

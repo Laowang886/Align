@@ -162,6 +162,7 @@ export const workspaceApi = {
 };
 
 export const projectApi = {
+  get: (projectId: string) => apiRequest<Project>(`/projects/${projectId}`),
   list: (workspaceId: string) =>
     apiRequest<Project[]>(`/workspaces/${workspaceId}/projects`),
   create: (workspaceId: string, input: CreateProjectInput) =>
@@ -272,11 +273,10 @@ export const kanbanApi = {
         body: JSON.stringify(input),
       },
     ),
-  deleteTask: (workspaceId: string, projectId: string, taskId: string) =>
-    apiRequest<void>(
-      `/workspaces/${workspaceId}/projects/${projectId}/kanban/tasks/${taskId}`,
-      { method: "DELETE" },
-    ),
+  deleteTask: (workspaceId: string, projectId: string, taskId: string) => {
+    const path = `/workspaces/${workspaceId}/projects/${projectId}/kanban/tasks/${taskId}`;
+    return apiRequest<void>(path, { method: "DELETE" });
+  },
   moveTask: (
     workspaceId: string,
     projectId: string,

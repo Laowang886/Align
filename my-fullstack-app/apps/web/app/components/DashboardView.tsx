@@ -295,7 +295,7 @@ export default function DashboardView({
             </div>
           )}
         </article>
-        <article className={styles.panel}>
+        <article className={`${styles.panel} ${styles.taskStatusPanel}`}>
           <h2>Task Status Metrics</h2>
           <p>Task category breakdown inside workspace pipeline</p>
           <div className={styles.donutWrap}>
