@@ -27,18 +27,21 @@ export type AggregateChannel = {
 export type ChannelMinAggregateOutputType = {
   id: string | null
   name: string | null
+  notice: string | null
   workspaceId: string | null
 }
 
 export type ChannelMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  notice: string | null
   workspaceId: string | null
 }
 
 export type ChannelCountAggregateOutputType = {
   id: number
   name: number
+  notice: number
   workspaceId: number
   _all: number
 }
@@ -47,18 +50,21 @@ export type ChannelCountAggregateOutputType = {
 export type ChannelMinAggregateInputType = {
   id?: true
   name?: true
+  notice?: true
   workspaceId?: true
 }
 
 export type ChannelMaxAggregateInputType = {
   id?: true
   name?: true
+  notice?: true
   workspaceId?: true
 }
 
 export type ChannelCountAggregateInputType = {
   id?: true
   name?: true
+  notice?: true
   workspaceId?: true
   _all?: true
 }
@@ -138,6 +144,7 @@ export type ChannelGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type ChannelGroupByOutputType = {
   id: string
   name: string
+  notice: string | null
   workspaceId: string
   _count: ChannelCountAggregateOutputType | null
   _min: ChannelMinAggregateOutputType | null
@@ -165,6 +172,7 @@ export type ChannelWhereInput = {
   NOT?: Prisma.ChannelWhereInput | Prisma.ChannelWhereInput[]
   id?: Prisma.StringFilter<"Channel"> | string
   name?: Prisma.StringFilter<"Channel"> | string
+  notice?: Prisma.StringNullableFilter<"Channel"> | string | null
   workspaceId?: Prisma.StringFilter<"Channel"> | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   messages?: Prisma.MessageListRelationFilter
@@ -173,6 +181,7 @@ export type ChannelWhereInput = {
 export type ChannelOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  notice?: Prisma.SortOrderInput | Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
@@ -180,18 +189,21 @@ export type ChannelOrderByWithRelationInput = {
 
 export type ChannelWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  workspaceId_name?: Prisma.ChannelWorkspaceIdNameCompoundUniqueInput
   AND?: Prisma.ChannelWhereInput | Prisma.ChannelWhereInput[]
   OR?: Prisma.ChannelWhereInput[]
   NOT?: Prisma.ChannelWhereInput | Prisma.ChannelWhereInput[]
   name?: Prisma.StringFilter<"Channel"> | string
+  notice?: Prisma.StringNullableFilter<"Channel"> | string | null
   workspaceId?: Prisma.StringFilter<"Channel"> | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   messages?: Prisma.MessageListRelationFilter
-}, "id">
+}, "id" | "workspaceId_name">
 
 export type ChannelOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  notice?: Prisma.SortOrderInput | Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
   _count?: Prisma.ChannelCountOrderByAggregateInput
   _max?: Prisma.ChannelMaxOrderByAggregateInput
@@ -204,12 +216,14 @@ export type ChannelScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ChannelScalarWhereWithAggregatesInput | Prisma.ChannelScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Channel"> | string
   name?: Prisma.StringWithAggregatesFilter<"Channel"> | string
+  notice?: Prisma.StringNullableWithAggregatesFilter<"Channel"> | string | null
   workspaceId?: Prisma.StringWithAggregatesFilter<"Channel"> | string
 }
 
 export type ChannelCreateInput = {
   id?: string
   name: string
+  notice?: string | null
   workspace: Prisma.WorkspaceCreateNestedOneWithoutChannelsInput
   messages?: Prisma.MessageCreateNestedManyWithoutChannelInput
 }
@@ -217,6 +231,7 @@ export type ChannelCreateInput = {
 export type ChannelUncheckedCreateInput = {
   id?: string
   name: string
+  notice?: string | null
   workspaceId: string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutChannelInput
 }
@@ -224,6 +239,7 @@ export type ChannelUncheckedCreateInput = {
 export type ChannelUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  notice?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutChannelsNestedInput
   messages?: Prisma.MessageUpdateManyWithoutChannelNestedInput
 }
@@ -231,6 +247,7 @@ export type ChannelUpdateInput = {
 export type ChannelUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  notice?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutChannelNestedInput
 }
@@ -238,17 +255,20 @@ export type ChannelUncheckedUpdateInput = {
 export type ChannelCreateManyInput = {
   id?: string
   name: string
+  notice?: string | null
   workspaceId: string
 }
 
 export type ChannelUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  notice?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ChannelUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  notice?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -262,21 +282,29 @@ export type ChannelOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type ChannelWorkspaceIdNameCompoundUniqueInput = {
+  workspaceId: string
+  name: string
+}
+
 export type ChannelCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  notice?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
 }
 
 export type ChannelMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  notice?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
 }
 
 export type ChannelMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  notice?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
 }
 
@@ -344,12 +372,14 @@ export type ChannelUpdateOneRequiredWithoutMessagesNestedInput = {
 export type ChannelCreateWithoutWorkspaceInput = {
   id?: string
   name: string
+  notice?: string | null
   messages?: Prisma.MessageCreateNestedManyWithoutChannelInput
 }
 
 export type ChannelUncheckedCreateWithoutWorkspaceInput = {
   id?: string
   name: string
+  notice?: string | null
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutChannelInput
 }
 
@@ -385,18 +415,21 @@ export type ChannelScalarWhereInput = {
   NOT?: Prisma.ChannelScalarWhereInput | Prisma.ChannelScalarWhereInput[]
   id?: Prisma.StringFilter<"Channel"> | string
   name?: Prisma.StringFilter<"Channel"> | string
+  notice?: Prisma.StringNullableFilter<"Channel"> | string | null
   workspaceId?: Prisma.StringFilter<"Channel"> | string
 }
 
 export type ChannelCreateWithoutMessagesInput = {
   id?: string
   name: string
+  notice?: string | null
   workspace: Prisma.WorkspaceCreateNestedOneWithoutChannelsInput
 }
 
 export type ChannelUncheckedCreateWithoutMessagesInput = {
   id?: string
   name: string
+  notice?: string | null
   workspaceId: string
 }
 
@@ -419,35 +452,41 @@ export type ChannelUpdateToOneWithWhereWithoutMessagesInput = {
 export type ChannelUpdateWithoutMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  notice?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutChannelsNestedInput
 }
 
 export type ChannelUncheckedUpdateWithoutMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  notice?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ChannelCreateManyWorkspaceInput = {
   id?: string
   name: string
+  notice?: string | null
 }
 
 export type ChannelUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  notice?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messages?: Prisma.MessageUpdateManyWithoutChannelNestedInput
 }
 
 export type ChannelUncheckedUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  notice?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messages?: Prisma.MessageUncheckedUpdateManyWithoutChannelNestedInput
 }
 
 export type ChannelUncheckedUpdateManyWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  notice?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -484,6 +523,7 @@ export type ChannelCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Type
 export type ChannelSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  notice?: boolean
   workspaceId?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   messages?: boolean | Prisma.Channel$messagesArgs<ExtArgs>
@@ -493,6 +533,7 @@ export type ChannelSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 export type ChannelSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  notice?: boolean
   workspaceId?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["channel"]>
@@ -500,6 +541,7 @@ export type ChannelSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
 export type ChannelSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  notice?: boolean
   workspaceId?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["channel"]>
@@ -507,10 +549,11 @@ export type ChannelSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
 export type ChannelSelectScalar = {
   id?: boolean
   name?: boolean
+  notice?: boolean
   workspaceId?: boolean
 }
 
-export type ChannelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "workspaceId", ExtArgs["result"]["channel"]>
+export type ChannelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "notice" | "workspaceId", ExtArgs["result"]["channel"]>
 export type ChannelInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   messages?: boolean | Prisma.Channel$messagesArgs<ExtArgs>
@@ -532,6 +575,7 @@ export type $ChannelPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
+    notice: string | null
     workspaceId: string
   }, ExtArgs["result"]["channel"]>
   composites: {}
@@ -960,6 +1004,7 @@ export interface Prisma__ChannelClient<T, Null = never, ExtArgs extends runtime.
 export interface ChannelFieldRefs {
   readonly id: Prisma.FieldRef<"Channel", 'String'>
   readonly name: Prisma.FieldRef<"Channel", 'String'>
+  readonly notice: Prisma.FieldRef<"Channel", 'String'>
   readonly workspaceId: Prisma.FieldRef<"Channel", 'String'>
 }
     

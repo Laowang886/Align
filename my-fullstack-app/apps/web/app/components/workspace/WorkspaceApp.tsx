@@ -34,6 +34,7 @@ import CurrentUserSelector from "./CurrentUserSelector";
 import CreateProjectDialog from "./CreateProjectDialog";
 import SprintsView from "../SprintsView";
 import WikiDocumentsView from "./WikiDocumentsView";
+import WorkspaceChatView from "./WorkspaceChatView";
 import type { WorkspaceProject } from "./project-planning-types";
 
 type ViewState = "loading" | "ready" | "empty" | "error";
@@ -41,7 +42,8 @@ type WorkspaceView =
   | "Dashboard"
   | "Kanban Board"
   | "Sprints"
-  | "Wiki Documents";
+  | "Wiki Documents"
+  | "Workspace Chat";
 
 export default function WorkspaceApp({
   workspaceId,
@@ -239,11 +241,16 @@ export default function WorkspaceApp({
       view === "Dashboard" ||
       view === "Kanban Board" ||
       view === "Sprints" ||
-      view === "Wiki Documents"
+      view === "Wiki Documents" ||
+      view === "Workspace Chat"
     ) {
       if (!currentWorkspace) return;
       if (view === "Dashboard") {
         router.push(`/workspaces/${currentWorkspace.id}`);
+        return;
+      }
+      if (view === "Workspace Chat") {
+        router.push(`/workspaces/${currentWorkspace.id}/chat`);
         return;
       }
       if (!activeProjectId) {
@@ -479,7 +486,7 @@ export default function WorkspaceApp({
                 }
                 loading={sprintsLoading}
               />
-            ) : (
+            ) : activeView === "Wiki Documents" ? (
               <WikiDocumentsView
                 workspaceId={currentWorkspace.id}
                 project={
@@ -489,6 +496,14 @@ export default function WorkspaceApp({
                 onOpenProjects={() => setProjectDialogOpen(true)}
                 onNotify={showToast}
               />
+            ) : currentUser ? (
+              <WorkspaceChatView
+                workspaceId={currentWorkspace.id}
+                workspaceName={currentWorkspace.name}
+                currentUser={currentUser}
+              />
+            ) : (
+              <WorkspaceLoadingState />
             ))}
         </div>
       </div>

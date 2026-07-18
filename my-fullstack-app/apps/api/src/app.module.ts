@@ -11,6 +11,7 @@ import { KanbanModule } from './kanban/kanban.module';
 import { SprintsModule } from './sprints/sprints.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { UsersModule } from './users/users.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { UsersModule } from './users/users.module';
     SprintsModule,
     DashboardModule,
     UsersModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

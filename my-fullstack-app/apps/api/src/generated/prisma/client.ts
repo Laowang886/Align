@@ -99,3 +99,8 @@ export type Channel = Prisma.ChannelModel
  * 
  */
 export type Message = Prisma.MessageModel
+/**
+ * Model MessageAttachment
+ * 
+ */
+export type MessageAttachment = Prisma.MessageAttachmentModel
