@@ -1,8 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import styles from "../page.module.css";
 import Icon from "./Icon";
+import {
+  authApi,
+  clearClientAuthState,
+  userApi,
+  ApiError,
+} from "../../lib/api-client";
 
 type SettingsTab = "account" | "preferences" | "support" | "danger";
 
@@ -17,6 +24,8 @@ const settingsTabs: {
   { id: "danger", label: "Danger zone", icon: "alert" },
 ];
 
+const avatarColors = ["#4f46e5", "#0f766e", "#0284c7", "#b45309", "#be123c", "#7e22ce"];
+
 export default function SettingsDialog({
   open,
   onClose,
@@ -26,8 +35,40 @@ export default function SettingsDialog({
 }) {
   const [activeTab, setActiveTab] = useState<SettingsTab>("account");
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [emailDigestEnabled, setEmailDigestEnabled] = useState(true);
+  const [aiRecommendationsEnabled, setAiRecommendationsEnabled] = useState(true);
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [deleteConfirmationText, setDeleteConfirmationText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
+  //Once the save is successful, the cached "currentUser" is immediately invalidated, which triggers useQuery to automatically re-initiate a network request to obtain the latest modified user information.
+  const queryClient = useQueryClient();
+  
+  const { data: currentUser } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: authApi.me,
+    enabled: open,
+  });
+
+  //If this variable changes, please refresh the page automatically to update the interface to the latest version.
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [avatarColor, setAvatarColor] = useState(avatarColors[0]);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  //When the currentUser data is updated, it will automatically "fill" the user information into the form's input boxes.
+  useEffect(() => {
+    if (currentUser) {
+      setName(currentUser.name);
+      setEmail(currentUser.email);
+      setAvatarColor(currentUser.avatarColor ?? avatarColors[0]);
+    }
+  }, [currentUser]);
+
+  //It performs actions for you after the component has finished rendering and cleans up the process when the component no longer needs those actions.
   useEffect(() => {
     if (!open) return;
 
@@ -51,7 +92,53 @@ export default function SettingsDialog({
   function selectTab(tab: SettingsTab) {
     setActiveTab(tab);
     setDeleteConfirmationOpen(false);
+    setDeleteConfirmationText("");
+    setDeleteError(null);
   }
+
+  async function handleDeleteAccount() {
+    if (deleteConfirmationText !== "DELETE") return;
+    setIsDeleting(true);
+    setDeleteError(null);
+    try {
+      await userApi.deleteAccount();
+      clearClientAuthState();
+      window.location.assign("/login");
+    } catch (caught: unknown) {
+      setDeleteError(
+        caught instanceof ApiError
+          ? caught.message
+          : "Unable to delete your account.",
+      );
+      setIsDeleting(false);
+    }
+  }
+
+  async function handleSaveAccount(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsSaving(true);
+    setSaveError(null);
+    setSaveSuccess(false);
+
+    try {
+      //The PATCH request is actually sent to the backend server.
+      await userApi.updateProfile({
+        name,
+        ...(currentUser?.provider ? {} : { avatarColor }),
+      });
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      //Tell the user, "The operation was successful!" Then, change the status back after 2 seconds to restore the interface to its original state.
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 2000);
+    } catch (caught: unknown) {
+      setSaveError(
+        caught instanceof ApiError ? caught.message : "Unable to save changes.",
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
 
   return (
     <div
@@ -107,52 +194,88 @@ export default function SettingsDialog({
           <div className={styles.settingsContentBody}>
             {activeTab === "account" && (
               <section className={styles.settingsPanel}>
-                <div className={styles.settingsPanelHeading}>
-                  <b>Personal Information</b>
-                  <p>Manage your profile name, email, and avatar.</p>
-                </div>
-                <div className={styles.settingsInformationCard}>
-                  <span>Profile editing will be available when the account API is added.</span>
-                  <small>Coming soon</small>
-                </div>
+                <form onSubmit={handleSaveAccount} className={styles.settingsForm}>
+                  <label>
+                    Full Name
+                    <input
+                      type="text"
+                      required
+                      placeholder="Enter your name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </label>
+
+                  <label>
+                    Email Address
+                    <input
+                      type="email"
+                      readOnly
+                      placeholder="Enter email address"
+                      value={email}
+                    />
+                  </label>
+
+                  {!currentUser?.provider && (
+                    <fieldset className={styles.settingsAvatarField}>
+                      <legend>Avatar profile color</legend>
+                      <div>
+                        {avatarColors.map((color) => (
+                          <button
+                            key={color}
+                            type="button"
+                            className={avatarColor === color ? styles.settingsColorSelected : ""}
+                            style={{ backgroundColor: color }}
+                            aria-label={`Use ${color} for your profile color`}
+                            aria-pressed={avatarColor === color}
+                            onClick={() => setAvatarColor(color)}
+                          />
+                        ))}
+                      </div>
+                    </fieldset>
+                  )}
+
+                  {saveError && (
+                    <p className={styles.settingsError}>{saveError}</p>
+                  )}
+
+                  <div className={styles.settingsFormActions}>
+                    <p>Changes will synchronize across the workspace.</p>
+                    <button type="submit" disabled={isSaving}>
+                      <Icon name={saveSuccess ? "check" : "save"} size={15} />
+                      {isSaving ? "Saving..." : saveSuccess ? "Changes saved" : "Save changes"}
+                    </button>
+                  </div>
+                </form>
               </section>
             )}
 
             {activeTab === "preferences" && (
               <section className={styles.settingsPanel}>
-                <div className={styles.settingsPanelHeading}>
-                  <b>Notification Settings</b>
-                  <p>Choose how SprintForge communicates workspace activity.</p>
-                </div>
-                <label className={styles.settingsPreferenceCard}>
-                  <span>
-                    <b>Workspace notification alerts</b>
-                    <small>Receive activity updates from your workspace.</small>
-                  </span>
-                  <input
-                    className={styles.settingsToggle}
-                    type="checkbox"
-                    checked={notificationsEnabled}
-                    onChange={(event) => setNotificationsEnabled(event.target.checked)}
-                    aria-label="Enable workspace notifications"
-                  />
-                </label>
+                <h4 className={styles.settingsSectionTitle}>Notification settings</h4>
+                {[
+                  ["Workspace notification alerts", "Receive high-priority alerts for tasks assigned to you.", notificationsEnabled, setNotificationsEnabled],
+                  ["Weekly sprint email digests", "Receive summaries of active sprints and team progress.", emailDigestEnabled, setEmailDigestEnabled],
+                  ["AI smart task suggestions", "Allow AI-assisted sprint task breakdown suggestions.", aiRecommendationsEnabled, setAiRecommendationsEnabled],
+                ].map(([label, description, enabled, setEnabled]) => (
+                  <div className={styles.settingsPreferenceCard} key={label as string}>
+                    <span><b>{label as string}</b><small>{description as string}</small></span>
+                    <button className={`${styles.settingsToggle} ${enabled ? styles.settingsToggleOn : ""}`} type="button" role="switch" aria-checked={enabled as boolean} aria-label={label as string} onClick={() => (setEnabled as React.Dispatch<React.SetStateAction<boolean>>)(value => !value)}><i /></button>
+                  </div>
+                ))}
               </section>
             )}
 
             {activeTab === "support" && (
               <section className={styles.settingsPanel}>
-                <div className={styles.settingsPanelHeading}>
-                  <b>Support & Policies</b>
-                  <p>Find assistance and review workspace policies.</p>
+                <div className={styles.settingsSupportSection}>
+                  <h4><Icon name="book" size={16} />Help &amp; support documentation</h4>
+                  <p>If you need technical assistance or want to report a service issue, our team is here to help.</p>
+                  <a className={styles.settingsSupportContact} href="mailto:support@sprintforge.co"><Icon name="mail" size={17} /><span><b>Direct operations email</b><small>support@sprintforge.co</small></span></a>
                 </div>
-                <div className={styles.settingsInformationCard}>
-                  <span>Help &amp; Support</span>
-                  <small>Coming soon</small>
-                </div>
-                <div className={styles.settingsInformationCard}>
-                  <span>Terms &amp; Policies</span>
-                  <small>Coming soon</small>
+                <div className={styles.settingsSupportSection}>
+                  <h4><Icon name="file" size={16} />Terms &amp; policies summary</h4>
+                  <div className={styles.settingsPolicyCopy}><b>1. Data storage &amp; privacy</b><p>Workspace records, documents, comments, and chat history are stored securely and are not shared outside your organization.</p><b>2. Collaborative operations</b><p>Workspace owners are responsible for invitations and access. Revoking permissions restricts tenant modifications immediately.</p><b>3. AI context usage</b><p>AI features exclude sensitive credentials from prompt templates and operate only on the context required for the requested task.</p></div>
                 </div>
               </section>
             )}
@@ -160,15 +283,19 @@ export default function SettingsDialog({
             {activeTab === "danger" && (
               <section className={styles.settingsPanel}>
                 <div className={styles.settingsDangerHeading}>
-                  <b>Delete Account</b>
-                  <p>This removes your personal account and requires a dedicated backend endpoint.</p>
+                  <b><Icon name="alert" size={16} />Warning: irreversible action</b>
+                  <p>Deleting your account removes your profile, revokes workspace memberships, and signs you out. This cannot be undone.</p>
                 </div>
                 <button
                   className={styles.deleteAccountButton}
                   type="button"
-                  onClick={() => setDeleteConfirmationOpen(true)}
+                  onClick={() => {
+                    setDeleteConfirmationText("");
+                    setDeleteError(null);
+                    setDeleteConfirmationOpen(true);
+                  }}
                 >
-                  Delete Account
+                  <Icon name="trash" size={15} />Delete account permanently
                 </button>
               </section>
             )}
@@ -183,14 +310,14 @@ export default function SettingsDialog({
               aria-modal="true"
               aria-labelledby="delete-account-title"
             >
-              <h3 id="delete-account-title">Delete account?</h3>
+              <h3 id="delete-account-title">Confirm account deletion</h3>
               <p>
-                Account deletion needs a dedicated backend endpoint before it can
-                be safely enabled.
+                To confirm deletion, type <b>DELETE</b> below. Your profile,
+                owned workspaces, and all associated data will be permanently removed.
               </p>
-              <button type="button" onClick={() => setDeleteConfirmationOpen(false)}>
-                Close
-              </button>
+              <input value={deleteConfirmationText} onChange={(event) => setDeleteConfirmationText(event.target.value)} placeholder="Type ‘DELETE’ to confirm" />
+              {deleteError && <p className={styles.settingsError}>{deleteError}</p>}
+              <div><button type="button" disabled={isDeleting} onClick={() => { setDeleteConfirmationOpen(false); setDeleteConfirmationText(""); setDeleteError(null); }}>Cancel</button><button type="button" disabled={deleteConfirmationText !== "DELETE" || isDeleting} onClick={() => void handleDeleteAccount()}>{isDeleting ? "Deleting…" : "I understand, delete my account"}</button></div>
             </section>
           </div>
         )}

@@ -32,6 +32,7 @@ export type UserMinAggregateOutputType = {
   provider: string | null
   providerId: string | null
   avatarUrl: string | null
+  avatarColor: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -44,6 +45,7 @@ export type UserMaxAggregateOutputType = {
   provider: string | null
   providerId: string | null
   avatarUrl: string | null
+  avatarColor: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -56,6 +58,7 @@ export type UserCountAggregateOutputType = {
   provider: number
   providerId: number
   avatarUrl: number
+  avatarColor: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -70,6 +73,7 @@ export type UserMinAggregateInputType = {
   provider?: true
   providerId?: true
   avatarUrl?: true
+  avatarColor?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +86,7 @@ export type UserMaxAggregateInputType = {
   provider?: true
   providerId?: true
   avatarUrl?: true
+  avatarColor?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -94,6 +99,7 @@ export type UserCountAggregateInputType = {
   provider?: true
   providerId?: true
   avatarUrl?: true
+  avatarColor?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -179,6 +185,7 @@ export type UserGroupByOutputType = {
   provider: string | null
   providerId: string | null
   avatarUrl: string | null
+  avatarColor: string | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -212,6 +219,7 @@ export type UserWhereInput = {
   provider?: Prisma.StringNullableFilter<"User"> | string | null
   providerId?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  avatarColor?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   ownedWorkspaces?: Prisma.WorkspaceListRelationFilter
@@ -231,6 +239,7 @@ export type UserOrderByWithRelationInput = {
   provider?: Prisma.SortOrderInput | Prisma.SortOrder
   providerId?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  avatarColor?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   ownedWorkspaces?: Prisma.WorkspaceOrderByRelationAggregateInput
@@ -254,6 +263,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   provider?: Prisma.StringNullableFilter<"User"> | string | null
   providerId?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  avatarColor?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   ownedWorkspaces?: Prisma.WorkspaceListRelationFilter
@@ -273,6 +283,7 @@ export type UserOrderByWithAggregationInput = {
   provider?: Prisma.SortOrderInput | Prisma.SortOrder
   providerId?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  avatarColor?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -291,6 +302,7 @@ export type UserScalarWhereWithAggregatesInput = {
   provider?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   providerId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  avatarColor?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -303,6 +315,7 @@ export type UserCreateInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -322,6 +335,7 @@ export type UserUncheckedCreateInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -341,6 +355,7 @@ export type UserUpdateInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -360,6 +375,7 @@ export type UserUncheckedUpdateInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -379,6 +395,7 @@ export type UserCreateManyInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -391,6 +408,7 @@ export type UserUpdateManyMutationInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -403,6 +421,7 @@ export type UserUncheckedUpdateManyInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -420,6 +439,7 @@ export type UserCountOrderByAggregateInput = {
   provider?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  avatarColor?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -432,6 +452,7 @@ export type UserMaxOrderByAggregateInput = {
   provider?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  avatarColor?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -444,6 +465,7 @@ export type UserMinOrderByAggregateInput = {
   provider?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  avatarColor?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -580,6 +602,7 @@ export type UserCreateWithoutOwnedWorkspacesInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
@@ -598,6 +621,7 @@ export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
@@ -632,6 +656,7 @@ export type UserUpdateWithoutOwnedWorkspacesInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
@@ -650,6 +675,7 @@ export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -668,6 +694,7 @@ export type UserCreateWithoutWorkspaceMembershipsInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -686,6 +713,7 @@ export type UserUncheckedCreateWithoutWorkspaceMembershipsInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -720,6 +748,7 @@ export type UserUpdateWithoutWorkspaceMembershipsInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -738,6 +767,7 @@ export type UserUncheckedUpdateWithoutWorkspaceMembershipsInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -756,6 +786,7 @@ export type UserCreateWithoutCreatedWikiDocumentsInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -774,6 +805,7 @@ export type UserUncheckedCreateWithoutCreatedWikiDocumentsInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -797,6 +829,7 @@ export type UserCreateWithoutUpdatedWikiDocumentsInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -815,6 +848,7 @@ export type UserUncheckedCreateWithoutUpdatedWikiDocumentsInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -849,6 +883,7 @@ export type UserUpdateWithoutCreatedWikiDocumentsInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -867,6 +902,7 @@ export type UserUncheckedUpdateWithoutCreatedWikiDocumentsInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -896,6 +932,7 @@ export type UserUpdateWithoutUpdatedWikiDocumentsInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -914,6 +951,7 @@ export type UserUncheckedUpdateWithoutUpdatedWikiDocumentsInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -932,6 +970,7 @@ export type UserCreateWithoutTasksInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -950,6 +989,7 @@ export type UserUncheckedCreateWithoutTasksInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -984,6 +1024,7 @@ export type UserUpdateWithoutTasksInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -1002,6 +1043,7 @@ export type UserUncheckedUpdateWithoutTasksInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1020,6 +1062,7 @@ export type UserCreateWithoutActivitiesInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -1038,6 +1081,7 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -1072,6 +1116,7 @@ export type UserUpdateWithoutActivitiesInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -1090,6 +1135,7 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1108,6 +1154,7 @@ export type UserCreateWithoutMessagesInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -1126,6 +1173,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   provider?: string | null
   providerId?: string | null
   avatarUrl?: string | null
+  avatarColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -1160,6 +1208,7 @@ export type UserUpdateWithoutMessagesInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -1178,6 +1227,7 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1281,6 +1331,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   provider?: boolean
   providerId?: boolean
   avatarUrl?: boolean
+  avatarColor?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   ownedWorkspaces?: boolean | Prisma.User$ownedWorkspacesArgs<ExtArgs>
@@ -1301,6 +1352,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   provider?: boolean
   providerId?: boolean
   avatarUrl?: boolean
+  avatarColor?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1313,6 +1365,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   provider?: boolean
   providerId?: boolean
   avatarUrl?: boolean
+  avatarColor?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1325,11 +1378,12 @@ export type UserSelectScalar = {
   provider?: boolean
   providerId?: boolean
   avatarUrl?: boolean
+  avatarColor?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "passwordHash" | "provider" | "providerId" | "avatarUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "passwordHash" | "provider" | "providerId" | "avatarUrl" | "avatarColor" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   ownedWorkspaces?: boolean | Prisma.User$ownedWorkspacesArgs<ExtArgs>
   workspaceMemberships?: boolean | Prisma.User$workspaceMembershipsArgs<ExtArgs>
@@ -1362,6 +1416,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     provider: string | null
     providerId: string | null
     avatarUrl: string | null
+    avatarColor: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1801,6 +1856,7 @@ export interface UserFieldRefs {
   readonly provider: Prisma.FieldRef<"User", 'String'>
   readonly providerId: Prisma.FieldRef<"User", 'String'>
   readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
+  readonly avatarColor: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

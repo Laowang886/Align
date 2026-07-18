@@ -10,6 +10,7 @@ import { WikiModule } from './wiki/wiki.module';
 import { KanbanModule } from './kanban/kanban.module';
 import { SprintsModule } from './sprints/sprints.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     KanbanModule,
     SprintsModule,
     DashboardModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
