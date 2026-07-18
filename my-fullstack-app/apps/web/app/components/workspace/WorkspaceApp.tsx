@@ -45,12 +45,16 @@ type WorkspaceView =
 
 export default function WorkspaceApp({
   workspaceId,
+  projectId,
+  initialView = "Dashboard",
 }: {
   workspaceId?: string;
+  projectId?: string;
+  initialView?: WorkspaceView;
 }) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [activeView, setActiveView] = useState<WorkspaceView>("Dashboard");
+  const activeView = initialView;
   const [viewState, setViewState] = useState<ViewState>("loading");
   const [workspaces, setWorkspaces] = useState<WorkspaceSummary[]>([]);
   const [currentWorkspace, setCurrentWorkspace] =
@@ -78,9 +82,10 @@ export default function WorkspaceApp({
     setViewState("loading");
     setError(null);
     try {
-      const [list, user] = await Promise.all([
+      const [list, user, requestedProject] = await Promise.all([
         workspaceApi.list(),
         authApi.me(),
+        projectId ? projectApi.get(projectId) : Promise.resolve(null),
       ]);
       setCurrentUser(user);
       setWorkspaces(list);
@@ -89,7 +94,8 @@ export default function WorkspaceApp({
         setViewState("empty");
         return;
       }
-      if (!workspaceId) {
+      const requestedWorkspaceId = requestedProject?.workspaceId ?? workspaceId;
+      if (!requestedWorkspaceId) {
         const savedId = window.localStorage.getItem("currentWorkspaceId");
         const nextWorkspace =
           list.find((workspace) => workspace.id === savedId) ?? list.at(0);
@@ -100,8 +106,19 @@ export default function WorkspaceApp({
         router.replace(`/workspaces/${nextWorkspace.id}`);
         return;
       }
-      const details = await workspaceApi.get(workspaceId);
+      if (
+        workspaceId &&
+        requestedProject &&
+        requestedProject.workspaceId !== workspaceId
+      ) {
+        router.replace(`/projects/${requestedProject.id}/kanban`);
+        return;
+      }
+      const details = await workspaceApi.get(requestedWorkspaceId);
       setCurrentWorkspace(details);
+      if (requestedProject) {
+        setActiveProjectId(requestedProject.id);
+      }
       window.localStorage.setItem("currentWorkspaceId", details.id);
       setViewState("ready");
     } catch (caught: unknown) {
@@ -114,13 +131,22 @@ export default function WorkspaceApp({
         router.replace("/login");
         return;
       }
+      if (
+        projectId &&
+        (apiError.status === 400 ||
+          apiError.status === 403 ||
+          apiError.status === 404)
+      ) {
+        router.replace("/workspaces");
+        return;
+      }
       setError({
         message: apiError.message,
         unauthorized: apiError.status === 401,
       });
       setViewState("error");
     }
-  }, [router, workspaceId]);
+  }, [projectId, router, workspaceId]);
 
   useEffect(() => {
     void load();
@@ -136,18 +162,23 @@ export default function WorkspaceApp({
     projectLoadWorkspaceId.current = currentWorkspace.id;
     setProjects([]);
     setSprints([]);
-    setActiveProjectId(null);
+    if (!projectId) setActiveProjectId(null);
     void projectApi
       .list(currentWorkspace.id)
       .then((items) => {
         if (projectLoadWorkspaceId.current !== currentWorkspace.id) return;
         const loadedProjects = items as WorkspaceProject[];
         setProjects(loadedProjects);
-        setActiveProjectId((selectedId) =>
-          loadedProjects.some((project) => project.id === selectedId)
-            ? selectedId
-            : (loadedProjects[0]?.id ?? null),
-        );
+        setActiveProjectId((selectedId) => {
+          if (loadedProjects.some((project) => project.id === selectedId)) {
+            return selectedId;
+          }
+          if (projectId) {
+            router.replace("/workspaces");
+            return null;
+          }
+          return loadedProjects[0]?.id ?? null;
+        });
       })
       .catch((caught: unknown) => {
         if (projectLoadWorkspaceId.current !== currentWorkspace.id) return;
@@ -159,7 +190,7 @@ export default function WorkspaceApp({
             : "Unable to load projects.",
         );
       });
-  }, [currentWorkspace, viewState]);
+  }, [currentWorkspace, projectId, router, viewState]);
 
   useEffect(() => {
     const project = projects.find((item) => item.id === activeProjectId);
@@ -210,12 +241,36 @@ export default function WorkspaceApp({
       view === "Sprints" ||
       view === "Wiki Documents"
     ) {
-      setActiveView(view);
-      if (view === "Dashboard") setDashboardRefresh((value) => value + 1);
+      if (!currentWorkspace) return;
+      if (view === "Dashboard") {
+        router.push(`/workspaces/${currentWorkspace.id}`);
+        return;
+      }
+      if (!activeProjectId) {
+        showToast("Select a project first.");
+        return;
+      }
+      const projectRoute = {
+        "Kanban Board": "kanban",
+        Sprints: "sprints",
+        "Wiki Documents": "wiki",
+      }[view];
+      if (projectRoute)
+        router.push(`/projects/${activeProjectId}/${projectRoute}`);
       return;
     }
 
     showToast(`${view} view is coming next.`);
+  }
+
+  function selectProject(id: string) {
+    const projectRoute =
+      activeView === "Sprints"
+        ? "sprints"
+        : activeView === "Wiki Documents"
+          ? "wiki"
+          : "kanban";
+    router.push(`/projects/${id}/${projectRoute}`);
   }
 
   function selectWorkspace(id: string) {
@@ -345,7 +400,7 @@ export default function WorkspaceApp({
           onOpenMembers={openMembers}
           projects={projects}
           activeProjectId={activeProjectId}
-          onSelectProject={setActiveProjectId}
+          onSelectProject={selectProject}
           onAddProject={() => setProjectDialogOpen(true)}
         />
       )}
@@ -360,81 +415,82 @@ export default function WorkspaceApp({
           userEmail={currentUser?.email}
           userAvatarUrl={currentUser?.avatarUrl}
         />
-        {viewState === "loading" && <WorkspaceLoadingState />}
-        {viewState === "empty" && (
-          <WorkspaceEmptyState onCreate={() => setDialogOpen(true)} />
-        )}
-        {viewState === "error" && error && (
-          <>
-            <div className={styles.workspaceConnectionBanner}>
-              <Icon name="alert" size={17} />
-              <span>
-                <b>
+        <div className={styles.mainContent}>
+          {viewState === "loading" && <WorkspaceLoadingState />}
+          {viewState === "empty" && (
+            <WorkspaceEmptyState onCreate={() => setDialogOpen(true)} />
+          )}
+          {viewState === "error" && error && (
+            <>
+              <div className={styles.workspaceConnectionBanner}>
+                <Icon name="alert" size={17} />
+                <span>
+                  <b>
+                    {error.unauthorized
+                      ? "Authentication required"
+                      : "Workspace API unavailable"}
+                  </b>
                   {error.unauthorized
-                    ? "Authentication required"
-                    : "Workspace API unavailable"}
-                </b>
-                {error.unauthorized
-                  ? " Your session has expired. Sign in again to continue."
-                  : ` ${error.message} The dashboard remains available in preview mode.`}
-              </span>
-              <button onClick={() => void load()}>Try again</button>
-            </div>
-            <DashboardView
-              workspaceId={currentWorkspace?.id}
-              workspaceName={currentWorkspace?.name ?? "FormatWeaver HQ"}
-              refreshKey={dashboardRefresh}
-            />
-          </>
-        )}
-        {viewState === "ready" &&
-          currentWorkspace &&
-          (activeView === "Dashboard" ? (
-            <DashboardView
-              workspaceId={currentWorkspace.id}
-              workspaceName={currentWorkspace.name}
-              refreshKey={dashboardRefresh}
-              onOpenProject={(projectId) => {
-                setActiveProjectId(projectId);
-                setActiveView("Kanban Board");
-              }}
-            />
-          ) : activeView === "Kanban Board" ? (
-            <KanbanBoardView
-              projectId={activeProjectId}
-              workspaceId={currentWorkspace.id}
-              workspaceName={currentWorkspace.name}
-              onNotify={showToast}
-              onDataChanged={() => setDashboardRefresh((value) => value + 1)}
-              sprints={sprints}
-            />
-          ) : activeView === "Sprints" ? (
-            <SprintsView
-              project={
-                projects.find((project) => project.id === activeProjectId) ??
-                null
-              }
-              sprints={sprints}
-              onAddSprint={addSprint}
-              onUpdateSprintStatus={updateSprintStatus}
-              onOpenProjects={() => setProjectDialogOpen(true)}
-              canManage={
-                currentWorkspace.currentUserRole === "OWNER" ||
-                currentWorkspace.currentUserRole === "ADMIN"
-              }
-              loading={sprintsLoading}
-            />
-          ) : (
-            <WikiDocumentsView
-              workspaceId={currentWorkspace.id}
-              project={
-                projects.find((project) => project.id === activeProjectId) ??
-                null
-              }
-              onOpenProjects={() => setProjectDialogOpen(true)}
-              onNotify={showToast}
-            />
-          ))}
+                    ? " Your session has expired. Sign in again to continue."
+                    : ` ${error.message} The dashboard remains available in preview mode.`}
+                </span>
+                <button onClick={() => void load()}>Try again</button>
+              </div>
+              <DashboardView
+                workspaceId={currentWorkspace?.id}
+                workspaceName={currentWorkspace?.name ?? "FormatWeaver HQ"}
+                refreshKey={dashboardRefresh}
+              />
+            </>
+          )}
+          {viewState === "ready" &&
+            currentWorkspace &&
+            (activeView === "Dashboard" ? (
+              <DashboardView
+                workspaceId={currentWorkspace.id}
+                workspaceName={currentWorkspace.name}
+                refreshKey={dashboardRefresh}
+                onOpenProject={(projectId) => {
+                  router.push(`/projects/${projectId}/kanban`);
+                }}
+              />
+            ) : activeView === "Kanban Board" ? (
+              <KanbanBoardView
+                projectId={activeProjectId}
+                workspaceId={currentWorkspace.id}
+                workspaceName={currentWorkspace.name}
+                onNotify={showToast}
+                onDataChanged={() => setDashboardRefresh((value) => value + 1)}
+                sprints={sprints}
+              />
+            ) : activeView === "Sprints" ? (
+              <SprintsView
+                project={
+                  projects.find((project) => project.id === activeProjectId) ??
+                  null
+                }
+                sprints={sprints}
+                onAddSprint={addSprint}
+                onUpdateSprintStatus={updateSprintStatus}
+                onOpenProjects={() => setProjectDialogOpen(true)}
+                canManage={
+                  currentWorkspace.currentUserRole === "OWNER" ||
+                  currentWorkspace.currentUserRole === "ADMIN"
+                }
+                loading={sprintsLoading}
+              />
+            ) : (
+              <WikiDocumentsView
+                workspaceId={currentWorkspace.id}
+                project={
+                  projects.find((project) => project.id === activeProjectId) ??
+                  null
+                }
+                onOpenProjects={() => setProjectDialogOpen(true)}
+                onNotify={showToast}
+              />
+            ))}
+        </div>
       </div>
       <CreateWorkspaceDialog
         open={dialogOpen}

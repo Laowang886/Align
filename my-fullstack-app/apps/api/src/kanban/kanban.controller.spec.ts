@@ -1,4 +1,5 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, HttpStatus } from '@nestjs/common';
+import { HTTP_CODE_METADATA } from '@nestjs/common/constants';
 import { KanbanController } from './kanban.controller';
 
 const user = {
@@ -14,6 +15,16 @@ const columnId = '33333333-3333-4333-8333-333333333333';
 const taskId = '44444444-4444-4444-8444-444444444444';
 
 describe('KanbanController', () => {
+  it('returns no content after deleting a task', () => {
+    const deleteTaskHandler = Object.getOwnPropertyDescriptor(
+      KanbanController.prototype,
+      'deleteTask',
+    )?.value as object;
+    expect(Reflect.getMetadata(HTTP_CODE_METADATA, deleteTaskHandler)).toBe(
+      HttpStatus.NO_CONTENT,
+    );
+  });
+
   it('parses create task input and forwards the authenticated user', async () => {
     const service = {
       createTask: jest.fn().mockResolvedValue({ id: taskId }),
