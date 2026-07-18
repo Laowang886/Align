@@ -26,6 +26,7 @@ import type {
   CreateKanbanTaskInput,
   UpdateKanbanTaskInput,
   MoveKanbanTaskInput,
+  UpdateProfileInput,
 } from "@repo/shared";
 
 const API_URL = (
@@ -343,4 +344,13 @@ export const authApi = {
   logout: () => apiRequest<void>("/auth/logout", { method: "POST" }),
 
   me: () => apiRequest<CurrentUser>("/auth/me"),
+};
+
+export const userApi = {
+  updateProfile: (input: UpdateProfileInput) =>
+    apiRequest<AuthenticatedUser>("/users/me", {
+      method: "PATCH",
+      body: JSON.stringify(input),
+    }),
+  deleteAccount: () => apiRequest<void>("/users/me", { method: "DELETE" }),
 };

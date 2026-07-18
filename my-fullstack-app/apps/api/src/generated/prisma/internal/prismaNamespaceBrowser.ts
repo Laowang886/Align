@@ -89,6 +89,7 @@ export const UserScalarFieldEnum = {
   provider: 'provider',
   providerId: 'providerId',
   avatarUrl: 'avatarUrl',
+  avatarColor: 'avatarColor',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
