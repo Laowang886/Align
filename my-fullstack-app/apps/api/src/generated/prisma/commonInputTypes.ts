@@ -257,6 +257,159 @@ export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedIntNullableFilter<$PrismaModel>
 }
 
+export type EnumWorkspaceChatMessageRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkspaceChatMessageRole | Prisma.EnumWorkspaceChatMessageRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkspaceChatMessageRole[] | Prisma.ListEnumWorkspaceChatMessageRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkspaceChatMessageRole[] | Prisma.ListEnumWorkspaceChatMessageRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkspaceChatMessageRoleFilter<$PrismaModel> | $Enums.WorkspaceChatMessageRole
+}
+
+export type JsonNullableFilter<$PrismaModel = never> =
+| Prisma.PatchUndefined<
+    Prisma.Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+    Required<JsonNullableFilterBase<$PrismaModel>>
+  >
+| Prisma.OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+export type JsonNullableFilterBase<$PrismaModel = never> = {
+  equals?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+  path?: string[]
+  mode?: Prisma.QueryMode | Prisma.EnumQueryModeFieldRefInput<$PrismaModel>
+  string_contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  string_starts_with?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  string_ends_with?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  array_starts_with?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  array_ends_with?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  array_contains?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  lt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  lte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+}
+
+export type EnumWorkspaceChatMessageRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkspaceChatMessageRole | Prisma.EnumWorkspaceChatMessageRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkspaceChatMessageRole[] | Prisma.ListEnumWorkspaceChatMessageRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkspaceChatMessageRole[] | Prisma.ListEnumWorkspaceChatMessageRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkspaceChatMessageRoleWithAggregatesFilter<$PrismaModel> | $Enums.WorkspaceChatMessageRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkspaceChatMessageRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkspaceChatMessageRoleFilter<$PrismaModel>
+}
+
+export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+| Prisma.PatchUndefined<
+    Prisma.Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+    Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+  >
+| Prisma.OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+  equals?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+  path?: string[]
+  mode?: Prisma.QueryMode | Prisma.EnumQueryModeFieldRefInput<$PrismaModel>
+  string_contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  string_starts_with?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  string_ends_with?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  array_starts_with?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  array_ends_with?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  array_contains?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  lt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  lte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedJsonNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedJsonNullableFilter<$PrismaModel>
+}
+
+export type EnumWorkspaceChatActionTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkspaceChatActionType | Prisma.EnumWorkspaceChatActionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkspaceChatActionType[] | Prisma.ListEnumWorkspaceChatActionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkspaceChatActionType[] | Prisma.ListEnumWorkspaceChatActionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkspaceChatActionTypeFilter<$PrismaModel> | $Enums.WorkspaceChatActionType
+}
+
+export type JsonFilter<$PrismaModel = never> =
+| Prisma.PatchUndefined<
+    Prisma.Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+    Required<JsonFilterBase<$PrismaModel>>
+  >
+| Prisma.OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+export type JsonFilterBase<$PrismaModel = never> = {
+  equals?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+  path?: string[]
+  mode?: Prisma.QueryMode | Prisma.EnumQueryModeFieldRefInput<$PrismaModel>
+  string_contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  string_starts_with?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  string_ends_with?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  array_starts_with?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  array_ends_with?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  array_contains?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  lt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  lte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+}
+
+export type EnumWorkspaceChatActionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkspaceChatActionStatus | Prisma.EnumWorkspaceChatActionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkspaceChatActionStatus[] | Prisma.ListEnumWorkspaceChatActionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkspaceChatActionStatus[] | Prisma.ListEnumWorkspaceChatActionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkspaceChatActionStatusFilter<$PrismaModel> | $Enums.WorkspaceChatActionStatus
+}
+
+export type EnumWorkspaceChatActionTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkspaceChatActionType | Prisma.EnumWorkspaceChatActionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkspaceChatActionType[] | Prisma.ListEnumWorkspaceChatActionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkspaceChatActionType[] | Prisma.ListEnumWorkspaceChatActionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkspaceChatActionTypeWithAggregatesFilter<$PrismaModel> | $Enums.WorkspaceChatActionType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkspaceChatActionTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkspaceChatActionTypeFilter<$PrismaModel>
+}
+
+export type JsonWithAggregatesFilter<$PrismaModel = never> =
+| Prisma.PatchUndefined<
+    Prisma.Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+    Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+  >
+| Prisma.OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+  equals?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+  path?: string[]
+  mode?: Prisma.QueryMode | Prisma.EnumQueryModeFieldRefInput<$PrismaModel>
+  string_contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  string_starts_with?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  string_ends_with?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  array_starts_with?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  array_ends_with?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  array_contains?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  lt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  lte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedJsonFilter<$PrismaModel>
+  _max?: Prisma.NestedJsonFilter<$PrismaModel>
+}
+
+export type EnumWorkspaceChatActionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkspaceChatActionStatus | Prisma.EnumWorkspaceChatActionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkspaceChatActionStatus[] | Prisma.ListEnumWorkspaceChatActionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkspaceChatActionStatus[] | Prisma.ListEnumWorkspaceChatActionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkspaceChatActionStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkspaceChatActionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkspaceChatActionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkspaceChatActionStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -511,6 +664,105 @@ export type NestedFloatNullableFilter<$PrismaModel = never> = {
   gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   not?: Prisma.NestedFloatNullableFilter<$PrismaModel> | number | null
+}
+
+export type NestedEnumWorkspaceChatMessageRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkspaceChatMessageRole | Prisma.EnumWorkspaceChatMessageRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkspaceChatMessageRole[] | Prisma.ListEnumWorkspaceChatMessageRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkspaceChatMessageRole[] | Prisma.ListEnumWorkspaceChatMessageRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkspaceChatMessageRoleFilter<$PrismaModel> | $Enums.WorkspaceChatMessageRole
+}
+
+export type NestedEnumWorkspaceChatMessageRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkspaceChatMessageRole | Prisma.EnumWorkspaceChatMessageRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkspaceChatMessageRole[] | Prisma.ListEnumWorkspaceChatMessageRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkspaceChatMessageRole[] | Prisma.ListEnumWorkspaceChatMessageRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkspaceChatMessageRoleWithAggregatesFilter<$PrismaModel> | $Enums.WorkspaceChatMessageRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkspaceChatMessageRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkspaceChatMessageRoleFilter<$PrismaModel>
+}
+
+export type NestedJsonNullableFilter<$PrismaModel = never> =
+| Prisma.PatchUndefined<
+    Prisma.Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+    Required<NestedJsonNullableFilterBase<$PrismaModel>>
+  >
+| Prisma.OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+  equals?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+  path?: string[]
+  mode?: Prisma.QueryMode | Prisma.EnumQueryModeFieldRefInput<$PrismaModel>
+  string_contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  string_starts_with?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  string_ends_with?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  array_starts_with?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  array_ends_with?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  array_contains?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  lt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  lte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+}
+
+export type NestedEnumWorkspaceChatActionTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkspaceChatActionType | Prisma.EnumWorkspaceChatActionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkspaceChatActionType[] | Prisma.ListEnumWorkspaceChatActionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkspaceChatActionType[] | Prisma.ListEnumWorkspaceChatActionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkspaceChatActionTypeFilter<$PrismaModel> | $Enums.WorkspaceChatActionType
+}
+
+export type NestedEnumWorkspaceChatActionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkspaceChatActionStatus | Prisma.EnumWorkspaceChatActionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkspaceChatActionStatus[] | Prisma.ListEnumWorkspaceChatActionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkspaceChatActionStatus[] | Prisma.ListEnumWorkspaceChatActionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkspaceChatActionStatusFilter<$PrismaModel> | $Enums.WorkspaceChatActionStatus
+}
+
+export type NestedEnumWorkspaceChatActionTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkspaceChatActionType | Prisma.EnumWorkspaceChatActionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkspaceChatActionType[] | Prisma.ListEnumWorkspaceChatActionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkspaceChatActionType[] | Prisma.ListEnumWorkspaceChatActionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkspaceChatActionTypeWithAggregatesFilter<$PrismaModel> | $Enums.WorkspaceChatActionType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkspaceChatActionTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkspaceChatActionTypeFilter<$PrismaModel>
+}
+
+export type NestedJsonFilter<$PrismaModel = never> =
+| Prisma.PatchUndefined<
+    Prisma.Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+    Required<NestedJsonFilterBase<$PrismaModel>>
+  >
+| Prisma.OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+export type NestedJsonFilterBase<$PrismaModel = never> = {
+  equals?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+  path?: string[]
+  mode?: Prisma.QueryMode | Prisma.EnumQueryModeFieldRefInput<$PrismaModel>
+  string_contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  string_starts_with?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  string_ends_with?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  array_starts_with?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  array_ends_with?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  array_contains?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | null
+  lt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  lte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
+  not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+}
+
+export type NestedEnumWorkspaceChatActionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkspaceChatActionStatus | Prisma.EnumWorkspaceChatActionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkspaceChatActionStatus[] | Prisma.ListEnumWorkspaceChatActionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkspaceChatActionStatus[] | Prisma.ListEnumWorkspaceChatActionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkspaceChatActionStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkspaceChatActionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkspaceChatActionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkspaceChatActionStatusFilter<$PrismaModel>
 }
 
 

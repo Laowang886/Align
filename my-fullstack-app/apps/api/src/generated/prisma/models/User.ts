@@ -218,9 +218,13 @@ export type UserWhereInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
   messages?: Prisma.MessageListRelationFilter
+  sentDirectMessages?: Prisma.DirectMessageListRelationFilter
+  directConversationsAsFirst?: Prisma.DirectMessageConversationListRelationFilter
+  directConversationsAsSecond?: Prisma.DirectMessageConversationListRelationFilter
   createdWikiDocuments?: Prisma.WikiDocumentListRelationFilter
   updatedWikiDocuments?: Prisma.WikiDocumentListRelationFilter
   activities?: Prisma.ActivityLogListRelationFilter
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -237,9 +241,13 @@ export type UserOrderByWithRelationInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberOrderByRelationAggregateInput
   tasks?: Prisma.TaskOrderByRelationAggregateInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
+  sentDirectMessages?: Prisma.DirectMessageOrderByRelationAggregateInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationOrderByRelationAggregateInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationOrderByRelationAggregateInput
   createdWikiDocuments?: Prisma.WikiDocumentOrderByRelationAggregateInput
   updatedWikiDocuments?: Prisma.WikiDocumentOrderByRelationAggregateInput
   activities?: Prisma.ActivityLogOrderByRelationAggregateInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -260,9 +268,13 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   workspaceMemberships?: Prisma.WorkspaceMemberListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
   messages?: Prisma.MessageListRelationFilter
+  sentDirectMessages?: Prisma.DirectMessageListRelationFilter
+  directConversationsAsFirst?: Prisma.DirectMessageConversationListRelationFilter
+  directConversationsAsSecond?: Prisma.DirectMessageConversationListRelationFilter
   createdWikiDocuments?: Prisma.WikiDocumentListRelationFilter
   updatedWikiDocuments?: Prisma.WikiDocumentListRelationFilter
   activities?: Prisma.ActivityLogListRelationFilter
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationListRelationFilter
 }, "id" | "email" | "provider_providerId">
 
 export type UserOrderByWithAggregationInput = {
@@ -309,9 +321,13 @@ export type UserCreateInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationCreateNestedManyWithoutSecondUserInput
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -328,9 +344,13 @@ export type UserUncheckedCreateInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutSecondUserInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -347,9 +367,13 @@ export type UserUpdateInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUpdateManyWithoutSecondUserNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -366,9 +390,13 @@ export type UserUncheckedUpdateInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutSecondUserNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -572,6 +600,62 @@ export type UserUpdateOneRequiredWithoutMessagesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMessagesInput, Prisma.UserUpdateWithoutMessagesInput>, Prisma.UserUncheckedUpdateWithoutMessagesInput>
 }
 
+export type UserCreateNestedOneWithoutDirectConversationsAsFirstInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDirectConversationsAsFirstInput, Prisma.UserUncheckedCreateWithoutDirectConversationsAsFirstInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDirectConversationsAsFirstInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutDirectConversationsAsSecondInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDirectConversationsAsSecondInput, Prisma.UserUncheckedCreateWithoutDirectConversationsAsSecondInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDirectConversationsAsSecondInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDirectConversationsAsFirstNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDirectConversationsAsFirstInput, Prisma.UserUncheckedCreateWithoutDirectConversationsAsFirstInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDirectConversationsAsFirstInput
+  upsert?: Prisma.UserUpsertWithoutDirectConversationsAsFirstInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDirectConversationsAsFirstInput, Prisma.UserUpdateWithoutDirectConversationsAsFirstInput>, Prisma.UserUncheckedUpdateWithoutDirectConversationsAsFirstInput>
+}
+
+export type UserUpdateOneRequiredWithoutDirectConversationsAsSecondNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDirectConversationsAsSecondInput, Prisma.UserUncheckedCreateWithoutDirectConversationsAsSecondInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDirectConversationsAsSecondInput
+  upsert?: Prisma.UserUpsertWithoutDirectConversationsAsSecondInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDirectConversationsAsSecondInput, Prisma.UserUpdateWithoutDirectConversationsAsSecondInput>, Prisma.UserUncheckedUpdateWithoutDirectConversationsAsSecondInput>
+}
+
+export type UserCreateNestedOneWithoutSentDirectMessagesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSentDirectMessagesInput, Prisma.UserUncheckedCreateWithoutSentDirectMessagesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSentDirectMessagesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSentDirectMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSentDirectMessagesInput, Prisma.UserUncheckedCreateWithoutSentDirectMessagesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSentDirectMessagesInput
+  upsert?: Prisma.UserUpsertWithoutSentDirectMessagesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSentDirectMessagesInput, Prisma.UserUpdateWithoutSentDirectMessagesInput>, Prisma.UserUncheckedUpdateWithoutSentDirectMessagesInput>
+}
+
+export type UserCreateNestedOneWithoutWorkspaceChatConversationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWorkspaceChatConversationsInput, Prisma.UserUncheckedCreateWithoutWorkspaceChatConversationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWorkspaceChatConversationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutWorkspaceChatConversationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWorkspaceChatConversationsInput, Prisma.UserUncheckedCreateWithoutWorkspaceChatConversationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWorkspaceChatConversationsInput
+  upsert?: Prisma.UserUpsertWithoutWorkspaceChatConversationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWorkspaceChatConversationsInput, Prisma.UserUpdateWithoutWorkspaceChatConversationsInput>, Prisma.UserUncheckedUpdateWithoutWorkspaceChatConversationsInput>
+}
+
 export type UserCreateWithoutOwnedWorkspacesInput = {
   id?: string
   email: string
@@ -585,9 +669,13 @@ export type UserCreateWithoutOwnedWorkspacesInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationCreateNestedManyWithoutSecondUserInput
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
@@ -603,9 +691,13 @@ export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutSecondUserInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOwnedWorkspacesInput = {
@@ -637,9 +729,13 @@ export type UserUpdateWithoutOwnedWorkspacesInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUpdateManyWithoutSecondUserNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
@@ -655,9 +751,13 @@ export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutSecondUserNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutWorkspaceMembershipsInput = {
@@ -673,9 +773,13 @@ export type UserCreateWithoutWorkspaceMembershipsInput = {
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationCreateNestedManyWithoutSecondUserInput
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutWorkspaceMembershipsInput = {
@@ -691,9 +795,13 @@ export type UserUncheckedCreateWithoutWorkspaceMembershipsInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutSecondUserInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutWorkspaceMembershipsInput = {
@@ -725,9 +833,13 @@ export type UserUpdateWithoutWorkspaceMembershipsInput = {
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUpdateManyWithoutSecondUserNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkspaceMembershipsInput = {
@@ -743,9 +855,13 @@ export type UserUncheckedUpdateWithoutWorkspaceMembershipsInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutSecondUserNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedWikiDocumentsInput = {
@@ -762,8 +878,12 @@ export type UserCreateWithoutCreatedWikiDocumentsInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationCreateNestedManyWithoutSecondUserInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedWikiDocumentsInput = {
@@ -780,8 +900,12 @@ export type UserUncheckedCreateWithoutCreatedWikiDocumentsInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutSecondUserInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedWikiDocumentsInput = {
@@ -803,8 +927,12 @@ export type UserCreateWithoutUpdatedWikiDocumentsInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationCreateNestedManyWithoutSecondUserInput
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUpdatedWikiDocumentsInput = {
@@ -821,8 +949,12 @@ export type UserUncheckedCreateWithoutUpdatedWikiDocumentsInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutSecondUserInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUpdatedWikiDocumentsInput = {
@@ -855,8 +987,12 @@ export type UserUpdateWithoutCreatedWikiDocumentsInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUpdateManyWithoutSecondUserNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedWikiDocumentsInput = {
@@ -873,8 +1009,12 @@ export type UserUncheckedUpdateWithoutCreatedWikiDocumentsInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutSecondUserNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutUpdatedWikiDocumentsInput = {
@@ -902,8 +1042,12 @@ export type UserUpdateWithoutUpdatedWikiDocumentsInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUpdateManyWithoutSecondUserNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUpdatedWikiDocumentsInput = {
@@ -920,8 +1064,12 @@ export type UserUncheckedUpdateWithoutUpdatedWikiDocumentsInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutSecondUserNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTasksInput = {
@@ -937,9 +1085,13 @@ export type UserCreateWithoutTasksInput = {
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationCreateNestedManyWithoutSecondUserInput
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTasksInput = {
@@ -955,9 +1107,13 @@ export type UserUncheckedCreateWithoutTasksInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutSecondUserInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTasksInput = {
@@ -989,9 +1145,13 @@ export type UserUpdateWithoutTasksInput = {
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUpdateManyWithoutSecondUserNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTasksInput = {
@@ -1007,9 +1167,13 @@ export type UserUncheckedUpdateWithoutTasksInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutSecondUserNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutActivitiesInput = {
@@ -1026,8 +1190,12 @@ export type UserCreateWithoutActivitiesInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationCreateNestedManyWithoutSecondUserInput
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutActivitiesInput = {
@@ -1044,8 +1212,12 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutSecondUserInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutActivitiesInput = {
@@ -1078,8 +1250,12 @@ export type UserUpdateWithoutActivitiesInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUpdateManyWithoutSecondUserNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivitiesInput = {
@@ -1096,8 +1272,12 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutSecondUserNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMessagesInput = {
@@ -1113,9 +1293,13 @@ export type UserCreateWithoutMessagesInput = {
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  sentDirectMessages?: Prisma.DirectMessageCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationCreateNestedManyWithoutSecondUserInput
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMessagesInput = {
@@ -1131,9 +1315,13 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutSecondUserInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMessagesInput = {
@@ -1165,9 +1353,13 @@ export type UserUpdateWithoutMessagesInput = {
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUpdateManyWithoutSecondUserNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -1183,6 +1375,426 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutSecondUserNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutDirectConversationsAsFirstInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageCreateNestedManyWithoutAuthorInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationCreateNestedManyWithoutSecondUserInput
+  createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutDirectConversationsAsFirstInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutAuthorInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutSecondUserInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutDirectConversationsAsFirstInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDirectConversationsAsFirstInput, Prisma.UserUncheckedCreateWithoutDirectConversationsAsFirstInput>
+}
+
+export type UserCreateWithoutDirectConversationsAsSecondInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationCreateNestedManyWithoutFirstUserInput
+  createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutDirectConversationsAsSecondInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutFirstUserInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutDirectConversationsAsSecondInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDirectConversationsAsSecondInput, Prisma.UserUncheckedCreateWithoutDirectConversationsAsSecondInput>
+}
+
+export type UserUpsertWithoutDirectConversationsAsFirstInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDirectConversationsAsFirstInput, Prisma.UserUncheckedUpdateWithoutDirectConversationsAsFirstInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDirectConversationsAsFirstInput, Prisma.UserUncheckedCreateWithoutDirectConversationsAsFirstInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDirectConversationsAsFirstInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDirectConversationsAsFirstInput, Prisma.UserUncheckedUpdateWithoutDirectConversationsAsFirstInput>
+}
+
+export type UserUpdateWithoutDirectConversationsAsFirstInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUpdateManyWithoutAuthorNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUpdateManyWithoutSecondUserNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDirectConversationsAsFirstInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutSecondUserNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUpsertWithoutDirectConversationsAsSecondInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDirectConversationsAsSecondInput, Prisma.UserUncheckedUpdateWithoutDirectConversationsAsSecondInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDirectConversationsAsSecondInput, Prisma.UserUncheckedCreateWithoutDirectConversationsAsSecondInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDirectConversationsAsSecondInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDirectConversationsAsSecondInput, Prisma.UserUncheckedUpdateWithoutDirectConversationsAsSecondInput>
+}
+
+export type UserUpdateWithoutDirectConversationsAsSecondInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUpdateManyWithoutFirstUserNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDirectConversationsAsSecondInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutFirstUserNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutSentDirectMessagesInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationCreateNestedManyWithoutSecondUserInput
+  createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutSentDirectMessagesInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutSecondUserInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutSentDirectMessagesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSentDirectMessagesInput, Prisma.UserUncheckedCreateWithoutSentDirectMessagesInput>
+}
+
+export type UserUpsertWithoutSentDirectMessagesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSentDirectMessagesInput, Prisma.UserUncheckedUpdateWithoutSentDirectMessagesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSentDirectMessagesInput, Prisma.UserUncheckedCreateWithoutSentDirectMessagesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSentDirectMessagesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSentDirectMessagesInput, Prisma.UserUncheckedUpdateWithoutSentDirectMessagesInput>
+}
+
+export type UserUpdateWithoutSentDirectMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUpdateManyWithoutSecondUserNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSentDirectMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutSecondUserNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  workspaceChatConversations?: Prisma.WorkspaceChatConversationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutWorkspaceChatConversationsInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationCreateNestedManyWithoutSecondUserInput
+  createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+}
+
+export type UserUncheckedCreateWithoutWorkspaceChatConversationsInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutAuthorInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutFirstUserInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedCreateNestedManyWithoutSecondUserInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+}
+
+export type UserCreateOrConnectWithoutWorkspaceChatConversationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutWorkspaceChatConversationsInput, Prisma.UserUncheckedCreateWithoutWorkspaceChatConversationsInput>
+}
+
+export type UserUpsertWithoutWorkspaceChatConversationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutWorkspaceChatConversationsInput, Prisma.UserUncheckedUpdateWithoutWorkspaceChatConversationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutWorkspaceChatConversationsInput, Prisma.UserUncheckedCreateWithoutWorkspaceChatConversationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutWorkspaceChatConversationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutWorkspaceChatConversationsInput, Prisma.UserUncheckedUpdateWithoutWorkspaceChatConversationsInput>
+}
+
+export type UserUpdateWithoutWorkspaceChatConversationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUpdateManyWithoutSecondUserNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutWorkspaceChatConversationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  sentDirectMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  directConversationsAsFirst?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutFirstUserNestedInput
+  directConversationsAsSecond?: Prisma.DirectMessageConversationUncheckedUpdateManyWithoutSecondUserNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
@@ -1198,9 +1810,13 @@ export type UserCountOutputType = {
   workspaceMemberships: number
   tasks: number
   messages: number
+  sentDirectMessages: number
+  directConversationsAsFirst: number
+  directConversationsAsSecond: number
   createdWikiDocuments: number
   updatedWikiDocuments: number
   activities: number
+  workspaceChatConversations: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1208,9 +1824,13 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   workspaceMemberships?: boolean | UserCountOutputTypeCountWorkspaceMembershipsArgs
   tasks?: boolean | UserCountOutputTypeCountTasksArgs
   messages?: boolean | UserCountOutputTypeCountMessagesArgs
+  sentDirectMessages?: boolean | UserCountOutputTypeCountSentDirectMessagesArgs
+  directConversationsAsFirst?: boolean | UserCountOutputTypeCountDirectConversationsAsFirstArgs
+  directConversationsAsSecond?: boolean | UserCountOutputTypeCountDirectConversationsAsSecondArgs
   createdWikiDocuments?: boolean | UserCountOutputTypeCountCreatedWikiDocumentsArgs
   updatedWikiDocuments?: boolean | UserCountOutputTypeCountUpdatedWikiDocumentsArgs
   activities?: boolean | UserCountOutputTypeCountActivitiesArgs
+  workspaceChatConversations?: boolean | UserCountOutputTypeCountWorkspaceChatConversationsArgs
 }
 
 /**
@@ -1254,6 +1874,27 @@ export type UserCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Types.E
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountSentDirectMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DirectMessageWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDirectConversationsAsFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DirectMessageConversationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDirectConversationsAsSecondArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DirectMessageConversationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountCreatedWikiDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.WikiDocumentWhereInput
 }
@@ -1272,6 +1913,13 @@ export type UserCountOutputTypeCountActivitiesArgs<ExtArgs extends runtime.Types
   where?: Prisma.ActivityLogWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountWorkspaceChatConversationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkspaceChatConversationWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1287,9 +1935,13 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   workspaceMemberships?: boolean | Prisma.User$workspaceMembershipsArgs<ExtArgs>
   tasks?: boolean | Prisma.User$tasksArgs<ExtArgs>
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
+  sentDirectMessages?: boolean | Prisma.User$sentDirectMessagesArgs<ExtArgs>
+  directConversationsAsFirst?: boolean | Prisma.User$directConversationsAsFirstArgs<ExtArgs>
+  directConversationsAsSecond?: boolean | Prisma.User$directConversationsAsSecondArgs<ExtArgs>
   createdWikiDocuments?: boolean | Prisma.User$createdWikiDocumentsArgs<ExtArgs>
   updatedWikiDocuments?: boolean | Prisma.User$updatedWikiDocumentsArgs<ExtArgs>
   activities?: boolean | Prisma.User$activitiesArgs<ExtArgs>
+  workspaceChatConversations?: boolean | Prisma.User$workspaceChatConversationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1335,9 +1987,13 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   workspaceMemberships?: boolean | Prisma.User$workspaceMembershipsArgs<ExtArgs>
   tasks?: boolean | Prisma.User$tasksArgs<ExtArgs>
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
+  sentDirectMessages?: boolean | Prisma.User$sentDirectMessagesArgs<ExtArgs>
+  directConversationsAsFirst?: boolean | Prisma.User$directConversationsAsFirstArgs<ExtArgs>
+  directConversationsAsSecond?: boolean | Prisma.User$directConversationsAsSecondArgs<ExtArgs>
   createdWikiDocuments?: boolean | Prisma.User$createdWikiDocumentsArgs<ExtArgs>
   updatedWikiDocuments?: boolean | Prisma.User$updatedWikiDocumentsArgs<ExtArgs>
   activities?: boolean | Prisma.User$activitiesArgs<ExtArgs>
+  workspaceChatConversations?: boolean | Prisma.User$workspaceChatConversationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1350,9 +2006,13 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     workspaceMemberships: Prisma.$WorkspaceMemberPayload<ExtArgs>[]
     tasks: Prisma.$TaskPayload<ExtArgs>[]
     messages: Prisma.$MessagePayload<ExtArgs>[]
+    sentDirectMessages: Prisma.$DirectMessagePayload<ExtArgs>[]
+    directConversationsAsFirst: Prisma.$DirectMessageConversationPayload<ExtArgs>[]
+    directConversationsAsSecond: Prisma.$DirectMessageConversationPayload<ExtArgs>[]
     createdWikiDocuments: Prisma.$WikiDocumentPayload<ExtArgs>[]
     updatedWikiDocuments: Prisma.$WikiDocumentPayload<ExtArgs>[]
     activities: Prisma.$ActivityLogPayload<ExtArgs>[]
+    workspaceChatConversations: Prisma.$WorkspaceChatConversationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1762,9 +2422,13 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   workspaceMemberships<T extends Prisma.User$workspaceMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workspaceMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tasks<T extends Prisma.User$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messages<T extends Prisma.User$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sentDirectMessages<T extends Prisma.User$sentDirectMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sentDirectMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DirectMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  directConversationsAsFirst<T extends Prisma.User$directConversationsAsFirstArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$directConversationsAsFirstArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DirectMessageConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  directConversationsAsSecond<T extends Prisma.User$directConversationsAsSecondArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$directConversationsAsSecondArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DirectMessageConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdWikiDocuments<T extends Prisma.User$createdWikiDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdWikiDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WikiDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   updatedWikiDocuments<T extends Prisma.User$updatedWikiDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$updatedWikiDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WikiDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activities<T extends Prisma.User$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  workspaceChatConversations<T extends Prisma.User$workspaceChatConversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workspaceChatConversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceChatConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2292,6 +2956,78 @@ export type User$messagesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
+ * User.sentDirectMessages
+ */
+export type User$sentDirectMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DirectMessage
+   */
+  select?: Prisma.DirectMessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DirectMessage
+   */
+  omit?: Prisma.DirectMessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DirectMessageInclude<ExtArgs> | null
+  where?: Prisma.DirectMessageWhereInput
+  orderBy?: Prisma.DirectMessageOrderByWithRelationInput | Prisma.DirectMessageOrderByWithRelationInput[]
+  cursor?: Prisma.DirectMessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DirectMessageScalarFieldEnum | Prisma.DirectMessageScalarFieldEnum[]
+}
+
+/**
+ * User.directConversationsAsFirst
+ */
+export type User$directConversationsAsFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DirectMessageConversation
+   */
+  select?: Prisma.DirectMessageConversationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DirectMessageConversation
+   */
+  omit?: Prisma.DirectMessageConversationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DirectMessageConversationInclude<ExtArgs> | null
+  where?: Prisma.DirectMessageConversationWhereInput
+  orderBy?: Prisma.DirectMessageConversationOrderByWithRelationInput | Prisma.DirectMessageConversationOrderByWithRelationInput[]
+  cursor?: Prisma.DirectMessageConversationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DirectMessageConversationScalarFieldEnum | Prisma.DirectMessageConversationScalarFieldEnum[]
+}
+
+/**
+ * User.directConversationsAsSecond
+ */
+export type User$directConversationsAsSecondArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DirectMessageConversation
+   */
+  select?: Prisma.DirectMessageConversationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DirectMessageConversation
+   */
+  omit?: Prisma.DirectMessageConversationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DirectMessageConversationInclude<ExtArgs> | null
+  where?: Prisma.DirectMessageConversationWhereInput
+  orderBy?: Prisma.DirectMessageConversationOrderByWithRelationInput | Prisma.DirectMessageConversationOrderByWithRelationInput[]
+  cursor?: Prisma.DirectMessageConversationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DirectMessageConversationScalarFieldEnum | Prisma.DirectMessageConversationScalarFieldEnum[]
+}
+
+/**
  * User.createdWikiDocuments
  */
 export type User$createdWikiDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2361,6 +3097,30 @@ export type User$activitiesArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ActivityLogScalarFieldEnum | Prisma.ActivityLogScalarFieldEnum[]
+}
+
+/**
+ * User.workspaceChatConversations
+ */
+export type User$workspaceChatConversationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkspaceChatConversation
+   */
+  select?: Prisma.WorkspaceChatConversationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkspaceChatConversation
+   */
+  omit?: Prisma.WorkspaceChatConversationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceChatConversationInclude<ExtArgs> | null
+  where?: Prisma.WorkspaceChatConversationWhereInput
+  orderBy?: Prisma.WorkspaceChatConversationOrderByWithRelationInput | Prisma.WorkspaceChatConversationOrderByWithRelationInput[]
+  cursor?: Prisma.WorkspaceChatConversationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkspaceChatConversationScalarFieldEnum | Prisma.WorkspaceChatConversationScalarFieldEnum[]
 }
 
 /**

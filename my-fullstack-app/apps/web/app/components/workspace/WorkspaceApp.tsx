@@ -35,22 +35,59 @@ import CreateProjectDialog from "./CreateProjectDialog";
 import SprintsView from "../SprintsView";
 import WikiDocumentsView from "./WikiDocumentsView";
 import type { WorkspaceProject } from "./project-planning-types";
+import {
+  WorkspaceChatProvider,
+  useWorkspaceChat,
+} from "../workspace-chat/WorkspaceChatContext";
+import WorkspaceChatWidget from "../workspace-chat/WorkspaceChatWidget";
+import WorkspaceHumanChatPage from "../workspace-human-chat/WorkspaceHumanChatPage";
+import AiChatPage from "../ai-chat/AiChatPage";
 
 type ViewState = "loading" | "ready" | "empty" | "error";
 type WorkspaceView =
   | "Dashboard"
   | "Kanban Board"
   | "Sprints"
-  | "Wiki Documents";
+  | "Wiki Documents"
+  | "Workspace Chat"
+  | "AI Chat";
 
 export default function WorkspaceApp({
+  initialAiChatMode = "widget",
+  initialView = "Dashboard",
   workspaceId,
 }: {
+  initialAiChatMode?: "page" | "widget";
+  initialView?: WorkspaceView;
+  workspaceId?: string;
+}) {
+  return (
+    <WorkspaceChatProvider>
+      <WorkspaceAppContent
+        initialAiChatMode={initialAiChatMode}
+        initialView={initialView}
+        workspaceId={workspaceId}
+      />
+    </WorkspaceChatProvider>
+  );
+}
+
+function WorkspaceAppContent({
+  initialAiChatMode,
+  initialView,
+  workspaceId,
+}: {
+  initialAiChatMode: "page" | "widget";
+  initialView: WorkspaceView;
   workspaceId?: string;
 }) {
   const router = useRouter();
+  const workspaceChat = useWorkspaceChat();
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [activeView, setActiveView] = useState<WorkspaceView>("Dashboard");
+  const [activeView, setActiveView] = useState<WorkspaceView>(initialView);
+  const [aiChatFullPage, setAiChatFullPage] = useState(
+    initialView === "AI Chat" && initialAiChatMode === "page",
+  );
   const [viewState, setViewState] = useState<ViewState>("loading");
   const [workspaces, setWorkspaces] = useState<WorkspaceSummary[]>([]);
   const [currentWorkspace, setCurrentWorkspace] =
@@ -73,6 +110,11 @@ export default function WorkspaceApp({
   const [projectDialogOpen, setProjectDialogOpen] = useState(false);
   const projectLoadWorkspaceId = useRef<string | null>(null);
   const sprintLoadKey = useRef<string | null>(null);
+
+  useEffect(() => {
+    setActiveView(initialView);
+    setAiChatFullPage(initialView === "AI Chat" && initialAiChatMode === "page");
+  }, [initialAiChatMode, initialView]);
 
   const load = useCallback(async () => {
     setViewState("loading");
@@ -203,14 +245,36 @@ export default function WorkspaceApp({
     window.setTimeout(() => setToast(null), 2600);
   }
 
+  function openAiChatWidget() {
+    if (!currentWorkspace) return;
+    setActiveView("AI Chat");
+    setAiChatFullPage(false);
+    workspaceChat.openWidget();
+    router.push(`/workspaces/${currentWorkspace.id}`);
+  }
+
   function navigate(view: string) {
     if (
       view === "Dashboard" ||
       view === "Kanban Board" ||
       view === "Sprints" ||
-      view === "Wiki Documents"
+      view === "Wiki Documents" ||
+      view === "Workspace Chat" ||
+      view === "AI Chat"
     ) {
       setActiveView(view);
+      if (currentWorkspace) {
+        if (view === "Workspace Chat") {
+          router.push(`/workspaces/${currentWorkspace.id}/workspace-chat`);
+        } else if (view === "AI Chat") {
+          if (activeView === "AI Chat" && aiChatFullPage) return;
+          openAiChatWidget();
+          return;
+        } else {
+          setAiChatFullPage(false);
+          router.push(`/workspaces/${currentWorkspace.id}`);
+        }
+      }
       if (view === "Dashboard") setDashboardRefresh((value) => value + 1);
       return;
     }
@@ -330,6 +394,8 @@ export default function WorkspaceApp({
       onOpenMembers={openMembers}
     />
   );
+  const activeProject =
+    projects.find((project) => project.id === activeProjectId) ?? null;
 
   return (
     <div className={styles.app}>
@@ -354,7 +420,7 @@ export default function WorkspaceApp({
           onToggleSidebar={() => setSidebarOpen((open) => !open)}
           workspaceName={currentWorkspace?.name ?? "Workspaces"}
           projectName={
-            projects.find((project) => project.id === activeProjectId)?.name
+            activeProject?.name
           }
           userName={currentUser?.name}
           userEmail={currentUser?.email}
@@ -410,10 +476,7 @@ export default function WorkspaceApp({
             />
           ) : activeView === "Sprints" ? (
             <SprintsView
-              project={
-                projects.find((project) => project.id === activeProjectId) ??
-                null
-              }
+              project={activeProject}
               sprints={sprints}
               onAddSprint={addSprint}
               onUpdateSprintStatus={updateSprintStatus}
@@ -424,18 +487,48 @@ export default function WorkspaceApp({
               }
               loading={sprintsLoading}
             />
-          ) : (
+          ) : activeView === "Wiki Documents" ? (
             <WikiDocumentsView
               workspaceId={currentWorkspace.id}
-              project={
-                projects.find((project) => project.id === activeProjectId) ??
-                null
-              }
+              project={activeProject}
               onOpenProjects={() => setProjectDialogOpen(true)}
               onNotify={showToast}
             />
+          ) : activeView === "Workspace Chat" ? (
+            <WorkspaceHumanChatPage
+              workspace={currentWorkspace}
+              currentUser={currentUser}
+              onOpenMembers={openMembers}
+            />
+          ) : activeView === "AI Chat" && aiChatFullPage ? (
+            <AiChatPage
+              workspaceId={currentWorkspace.id}
+              activeProject={activeProject}
+              onCollapseToWidget={openAiChatWidget}
+            />
+          ) : (
+            <DashboardView
+              workspaceId={currentWorkspace.id}
+              workspaceName={currentWorkspace.name}
+              refreshKey={dashboardRefresh}
+              onOpenProject={(projectId) => {
+                setActiveProjectId(projectId);
+                setActiveView("Kanban Board");
+              }}
+            />
           ))}
       </div>
+      <WorkspaceChatWidget
+        workspaceId={currentWorkspace?.id}
+        activeProject={activeProject}
+        onOpenFullscreen={() => {
+          if (!currentWorkspace) return;
+          setActiveView("AI Chat");
+          setAiChatFullPage(true);
+          workspaceChat.closeWidget();
+          router.push(`/workspaces/${currentWorkspace.id}/ai-chat`);
+        }}
+      />
       <CreateWorkspaceDialog
         open={dialogOpen}
         loading={creating}

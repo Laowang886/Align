@@ -46,13 +46,17 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  ownedWorkspaces      Workspace[]       @relation("WorkspaceOwner")
-  workspaceMemberships WorkspaceMember[]
-  tasks                Task[]            @relation("assignee")
-  messages             Message[]
-  createdWikiDocuments WikiDocument[]    @relation("WikiDocumentCreator")
-  updatedWikiDocuments WikiDocument[]    @relation("WikiDocumentUpdater")
-  activities           ActivityLog[]     @relation("ActivityActor")
+  ownedWorkspaces            Workspace[]                 @relation("WorkspaceOwner")
+  workspaceMemberships       WorkspaceMember[]
+  tasks                      Task[]                      @relation("assignee")
+  messages                   Message[]
+  sentDirectMessages         DirectMessage[]             @relation("DirectMessageAuthor")
+  directConversationsAsFirst DirectMessageConversation[] @relation("DirectMessageFirstUser")
+  directConversationsAsSecond DirectMessageConversation[] @relation("DirectMessageSecondUser")
+  createdWikiDocuments       WikiDocument[]              @relation("WikiDocumentCreator")
+  updatedWikiDocuments       WikiDocument[]              @relation("WikiDocumentUpdater")
+  activities                 ActivityLog[]               @relation("ActivityActor")
+  workspaceChatConversations WorkspaceChatConversation[]
 
   @@unique([provider, providerId])
 }
@@ -66,12 +70,14 @@ model Workspace {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  owner         User              @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Restrict)
-  members       WorkspaceMember[]
-  projects      Project[]
-  channels      Channel[]
-  wikiDocuments WikiDocument[]
-  activities    ActivityLog[]
+  owner                      User                        @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  members                    WorkspaceMember[]
+  projects                   Project[]
+  channels                   Channel[]
+  directMessageConversations DirectMessageConversation[]
+  wikiDocuments              WikiDocument[]
+  activities                 ActivityLog[]
+  workspaceChatConversations WorkspaceChatConversation[]
 
   @@index([ownerId])
   @@map("Team")
@@ -104,11 +110,12 @@ model Project {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  boards        Board[]
-  sprints       Sprint[]
-  wikiDocuments WikiDocument[]
-  activities    ActivityLog[]
+  workspace                  Workspace                   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  boards                     Board[]
+  sprints                    Sprint[]
+  wikiDocuments              WikiDocument[]
+  activities                 ActivityLog[]
+  workspaceChatConversations WorkspaceChatConversation[]
 
   @@unique([workspaceId, key])
   @@index([workspaceId])
@@ -245,5 +252,38 @@ model Message {
   author  User    @relation(fields: [authorId], references: [id], onDelete: Restrict)
 
   @@index([channelId])
+  @@index([authorId])
+}
+
+model DirectMessageConversation {
+  id           String   @id @default(uuid())
+  workspaceId  String
+  firstUserId  String
+  secondUserId String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  workspace  Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  firstUser  User            @relation("DirectMessageFirstUser", fields: [firstUserId], references: [id], onDelete: Cascade)
+  secondUser User            @relation("DirectMessageSecondUser", fields: [secondUserId], references: [id], onDelete: Cascade)
+  messages   DirectMessage[]
+
+  @@unique([workspaceId, firstUserId, secondUserId])
+  @@index([workspaceId])
+  @@index([firstUserId])
+  @@index([secondUserId])
+}
+
+model DirectMessage {
+  id             String   @id @default(uuid())
+  conversationId String
+  authorId       String
+  content        String
+  createdAt      DateTime @default(now())
+
+  conversation DirectMessageConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  author       User                      @relation("DirectMessageAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([conversationId, createdAt])
   @@index([authorId])
 }

@@ -77,3 +77,33 @@ export type Channel = Prisma.ChannelModel
  * 
  */
 export type Message = Prisma.MessageModel
+/**
+ * Model DirectMessageConversation
+ * 
+ */
+export type DirectMessageConversation = Prisma.DirectMessageConversationModel
+/**
+ * Model DirectMessage
+ * 
+ */
+export type DirectMessage = Prisma.DirectMessageModel
+/**
+ * Model WorkspaceChatConversation
+ * 
+ */
+export type WorkspaceChatConversation = Prisma.WorkspaceChatConversationModel
+/**
+ * Model WorkspaceChatMessage
+ * 
+ */
+export type WorkspaceChatMessage = Prisma.WorkspaceChatMessageModel
+/**
+ * Model WorkspaceChatActionPlan
+ * 
+ */
+export type WorkspaceChatActionPlan = Prisma.WorkspaceChatActionPlanModel
+/**
+ * Model WorkspaceChatAction
+ * 
+ */
+export type WorkspaceChatAction = Prisma.WorkspaceChatActionModel

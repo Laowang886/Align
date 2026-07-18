@@ -15,6 +15,7 @@ const navigation: NavigationItem[] = [
   { label: "Sprints", icon: "clock" },
   { label: "Wiki Documents", icon: "book" },
   { label: "Workspace Chat", icon: "chat" },
+  { label: "AI Chat", icon: "sparkles" },
 ];
 
 type SidebarProps = {

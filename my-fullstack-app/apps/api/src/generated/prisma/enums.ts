@@ -46,3 +46,39 @@ export const ColumnCategory = {
 } as const
 
 export type ColumnCategory = (typeof ColumnCategory)[keyof typeof ColumnCategory]
+
+
+export const WorkspaceChatMessageRole = {
+  USER: 'USER',
+  ASSISTANT: 'ASSISTANT'
+} as const
+
+export type WorkspaceChatMessageRole = (typeof WorkspaceChatMessageRole)[keyof typeof WorkspaceChatMessageRole]
+
+
+export const WorkspaceChatActionType = {
+  CREATE_TASK: 'CREATE_TASK',
+  UPDATE_TASK: 'UPDATE_TASK',
+  MOVE_TASK: 'MOVE_TASK',
+  DELETE_TASK: 'DELETE_TASK',
+  CREATE_WIKI: 'CREATE_WIKI',
+  UPDATE_WIKI: 'UPDATE_WIKI',
+  DELETE_WIKI: 'DELETE_WIKI',
+  CREATE_SPRINT: 'CREATE_SPRINT',
+  START_SPRINT: 'START_SPRINT',
+  COMPLETE_SPRINT: 'COMPLETE_SPRINT'
+} as const
+
+export type WorkspaceChatActionType = (typeof WorkspaceChatActionType)[keyof typeof WorkspaceChatActionType]
+
+
+export const WorkspaceChatActionStatus = {
+  PENDING_CONFIRMATION: 'PENDING_CONFIRMATION',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED',
+  EXECUTING: 'EXECUTING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED'
+} as const
+
+export type WorkspaceChatActionStatus = (typeof WorkspaceChatActionStatus)[keyof typeof WorkspaceChatActionStatus]

@@ -323,6 +323,165 @@ export const wikiApi = {
     ),
 };
 
+export type HumanChatUser = {
+  id: string;
+  name: string;
+  email: string;
+  avatarUrl: string | null;
+};
+
+export type HumanChatChannel = {
+  id: string;
+  name: string;
+  workspaceId: string;
+  _count?: { messages: number };
+};
+
+export type HumanChatMessage = {
+  id: string;
+  content: string;
+  channelId?: string;
+  conversationId?: string;
+  authorId: string;
+  createdAt: string;
+  author: HumanChatUser;
+};
+
+export type HumanChatDirectConversation = {
+  id: string;
+  workspaceId: string;
+  otherUser: HumanChatUser;
+  updatedAt: string;
+  lastMessage?: HumanChatMessage | null;
+};
+
+export const humanChatApi = {
+  listChannels: (workspaceId: string) =>
+    apiRequest<HumanChatChannel[]>(`/workspaces/${workspaceId}/chat/channels`),
+  createChannel: (workspaceId: string, input: { name: string }) =>
+    apiRequest<HumanChatChannel>(`/workspaces/${workspaceId}/chat/channels`, {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
+  listChannelMessages: (workspaceId: string, channelId: string) =>
+    apiRequest<HumanChatMessage[]>(
+      `/workspaces/${workspaceId}/chat/channels/${channelId}/messages`,
+    ),
+  createChannelMessage: (
+    workspaceId: string,
+    channelId: string,
+    input: { content: string },
+  ) =>
+    apiRequest<HumanChatMessage>(
+      `/workspaces/${workspaceId}/chat/channels/${channelId}/messages`,
+      {
+        method: "POST",
+        body: JSON.stringify(input),
+      },
+    ),
+  listDirectMessages: (workspaceId: string) =>
+    apiRequest<HumanChatDirectConversation[]>(
+      `/workspaces/${workspaceId}/chat/direct-messages`,
+    ),
+  openDirectMessage: (workspaceId: string, memberId: string) =>
+    apiRequest<HumanChatDirectConversation>(
+      `/workspaces/${workspaceId}/chat/direct-messages/${memberId}`,
+      { method: "POST" },
+    ),
+  listDirectMessageMessages: (workspaceId: string, conversationId: string) =>
+    apiRequest<HumanChatMessage[]>(
+      `/workspaces/${workspaceId}/chat/direct-messages/${conversationId}/messages`,
+    ),
+  createDirectMessage: (
+    workspaceId: string,
+    conversationId: string,
+    input: { content: string },
+  ) =>
+    apiRequest<HumanChatMessage>(
+      `/workspaces/${workspaceId}/chat/direct-messages/${conversationId}/messages`,
+      {
+        method: "POST",
+        body: JSON.stringify(input),
+      },
+    ),
+};
+
+export type WorkspaceChatProject = {
+  id: string;
+  name: string;
+  key: string;
+};
+
+export type WorkspaceChatConversationSummary = {
+  id: string;
+  workspaceId: string;
+  projectId: string | null;
+  title: string | null;
+  createdAt: string;
+  updatedAt: string;
+  project?: WorkspaceChatProject | null;
+};
+
+export type WorkspaceChatMessage = {
+  id: string;
+  conversationId: string;
+  role: "USER" | "ASSISTANT";
+  content: string;
+  createdAt: string;
+};
+
+export type WorkspaceChatConversation = WorkspaceChatConversationSummary & {
+  messages: WorkspaceChatMessage[];
+};
+
+export const workspaceChatApi = {
+  listConversations: (workspaceId: string) =>
+    apiRequest<WorkspaceChatConversationSummary[]>(
+      `/workspaces/${workspaceId}/workspace-chat/conversations`,
+    ),
+  createConversation: (workspaceId: string, projectId?: string | null) =>
+    apiRequest<WorkspaceChatConversationSummary>(
+      `/workspaces/${workspaceId}/workspace-chat/conversations`,
+      {
+        method: "POST",
+        body: JSON.stringify(projectId ? { projectId } : {}),
+      },
+    ),
+  updateConversationTitle: (
+    workspaceId: string,
+    conversationId: string,
+    input: { title: string },
+  ) =>
+    apiRequest<WorkspaceChatConversationSummary>(
+      `/workspaces/${workspaceId}/workspace-chat/conversations/${conversationId}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(input),
+      },
+    ),
+  getConversation: (workspaceId: string, conversationId: string) =>
+    apiRequest<WorkspaceChatConversation>(
+      `/workspaces/${workspaceId}/workspace-chat/conversations/${conversationId}`,
+    ),
+  deleteConversation: (workspaceId: string, conversationId: string) =>
+    apiRequest<void>(
+      `/workspaces/${workspaceId}/workspace-chat/conversations/${conversationId}`,
+      { method: "DELETE" },
+    ),
+  createMessage: (
+    workspaceId: string,
+    conversationId: string,
+    input: { content: string },
+  ) =>
+    apiRequest<WorkspaceChatMessage>(
+      `/workspaces/${workspaceId}/workspace-chat/conversations/${conversationId}/messages`,
+      {
+        method: "POST",
+        body: JSON.stringify(input),
+      },
+    ),
+};
+
 export type CurrentUser = AuthenticatedUser;
 
 export const authApi = {
