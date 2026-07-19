@@ -230,11 +230,13 @@ model ActivityLog {
 model Channel {
   id          String @id @default(uuid())
   name        String
+  notice      String? @db.Text
   workspaceId String @map("teamId")
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   messages  Message[]
 
+  @@unique([workspaceId, name], map: "Channel_teamId_name_key")
   @@index([workspaceId])
 }
 
@@ -245,8 +247,9 @@ model Message {
   authorId  String
   createdAt DateTime @default(now())
 
-  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  author  User    @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  channel     Channel             @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  author      User                @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  attachments MessageAttachment[]
 
   @@index([channelId])
   @@index([authorId])
@@ -273,4 +276,19 @@ model SafetyReport {
   createdAt   DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model MessageAttachment {
+  id           String   @id @default(uuid())
+  messageId    String
+  originalName String
+  storedName   String
+  mimeType     String
+  sizeBytes    Int
+  storagePath  String
+  createdAt    DateTime @default(now())
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
 }

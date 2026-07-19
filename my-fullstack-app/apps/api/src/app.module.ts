@@ -12,6 +12,7 @@ import { SprintsModule } from './sprints/sprints.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { UsersModule } from './users/users.module';
 import { SupportModule } from './support/support.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { SupportModule } from './support/support.module';
     DashboardModule,
     UsersModule,
     SupportModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

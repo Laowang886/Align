@@ -109,3 +109,8 @@ export type FeedbackSubmission = Prisma.FeedbackSubmissionModel
  * 
  */
 export type SafetyReport = Prisma.SafetyReportModel
+/**
+ * Model MessageAttachment
+ * 
+ */
+export type MessageAttachment = Prisma.MessageAttachmentModel
