@@ -87,9 +87,6 @@ export default function Header({
       </div>
 
       <div className={styles.headerRight}>
-        <a href="#main" className={styles.openTab}>
-          Open Tab <Icon name="external" size={14} />
-        </a>
         <NotificationBell />
 
         <div className={styles.accountMenuWrap} ref={menuRef}>
