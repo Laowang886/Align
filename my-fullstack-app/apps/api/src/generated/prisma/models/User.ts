@@ -231,6 +231,7 @@ export type UserWhereInput = {
   activities?: Prisma.ActivityLogListRelationFilter
   feedbackSubmissions?: Prisma.FeedbackSubmissionListRelationFilter
   safetyReports?: Prisma.SafetyReportListRelationFilter
+  oauthIdentities?: Prisma.OAuthIdentityListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -253,6 +254,7 @@ export type UserOrderByWithRelationInput = {
   activities?: Prisma.ActivityLogOrderByRelationAggregateInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionOrderByRelationAggregateInput
   safetyReports?: Prisma.SafetyReportOrderByRelationAggregateInput
+  oauthIdentities?: Prisma.OAuthIdentityOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -279,6 +281,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   activities?: Prisma.ActivityLogListRelationFilter
   feedbackSubmissions?: Prisma.FeedbackSubmissionListRelationFilter
   safetyReports?: Prisma.SafetyReportListRelationFilter
+  oauthIdentities?: Prisma.OAuthIdentityListRelationFilter
 }, "id" | "email" | "provider_providerId">
 
 export type UserOrderByWithAggregationInput = {
@@ -333,6 +336,7 @@ export type UserCreateInput = {
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -355,6 +359,7 @@ export type UserUncheckedCreateInput = {
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -377,6 +382,7 @@ export type UserUpdateInput = {
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -399,6 +405,7 @@ export type UserUncheckedUpdateInput = {
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -504,6 +511,20 @@ export type NullableStringFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type UserCreateNestedOneWithoutOauthIdentitiesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOauthIdentitiesInput, Prisma.UserUncheckedCreateWithoutOauthIdentitiesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOauthIdentitiesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutOauthIdentitiesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOauthIdentitiesInput, Prisma.UserUncheckedCreateWithoutOauthIdentitiesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOauthIdentitiesInput
+  upsert?: Prisma.UserUpsertWithoutOauthIdentitiesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOauthIdentitiesInput, Prisma.UserUpdateWithoutOauthIdentitiesInput>, Prisma.UserUncheckedUpdateWithoutOauthIdentitiesInput>
 }
 
 export type UserCreateNestedOneWithoutOwnedWorkspacesInput = {
@@ -636,6 +657,110 @@ export type UserUpdateOneRequiredWithoutSafetyReportsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSafetyReportsInput, Prisma.UserUpdateWithoutSafetyReportsInput>, Prisma.UserUncheckedUpdateWithoutSafetyReportsInput>
 }
 
+export type UserCreateWithoutOauthIdentitiesInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  avatarColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
+  safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutOauthIdentitiesInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  avatarColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
+  safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutOauthIdentitiesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOauthIdentitiesInput, Prisma.UserUncheckedCreateWithoutOauthIdentitiesInput>
+}
+
+export type UserUpsertWithoutOauthIdentitiesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOauthIdentitiesInput, Prisma.UserUncheckedUpdateWithoutOauthIdentitiesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOauthIdentitiesInput, Prisma.UserUncheckedCreateWithoutOauthIdentitiesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOauthIdentitiesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOauthIdentitiesInput, Prisma.UserUncheckedUpdateWithoutOauthIdentitiesInput>
+}
+
+export type UserUpdateWithoutOauthIdentitiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
+  safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOauthIdentitiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
+}
+
 export type UserCreateWithoutOwnedWorkspacesInput = {
   id?: string
   email: string
@@ -655,6 +780,7 @@ export type UserCreateWithoutOwnedWorkspacesInput = {
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
@@ -676,6 +802,7 @@ export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOwnedWorkspacesInput = {
@@ -713,6 +840,7 @@ export type UserUpdateWithoutOwnedWorkspacesInput = {
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
@@ -734,6 +862,7 @@ export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutWorkspaceMembershipsInput = {
@@ -755,6 +884,7 @@ export type UserCreateWithoutWorkspaceMembershipsInput = {
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutWorkspaceMembershipsInput = {
@@ -776,6 +906,7 @@ export type UserUncheckedCreateWithoutWorkspaceMembershipsInput = {
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutWorkspaceMembershipsInput = {
@@ -813,6 +944,7 @@ export type UserUpdateWithoutWorkspaceMembershipsInput = {
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkspaceMembershipsInput = {
@@ -834,6 +966,7 @@ export type UserUncheckedUpdateWithoutWorkspaceMembershipsInput = {
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedWikiDocumentsInput = {
@@ -855,6 +988,7 @@ export type UserCreateWithoutCreatedWikiDocumentsInput = {
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedWikiDocumentsInput = {
@@ -876,6 +1010,7 @@ export type UserUncheckedCreateWithoutCreatedWikiDocumentsInput = {
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedWikiDocumentsInput = {
@@ -902,6 +1037,7 @@ export type UserCreateWithoutUpdatedWikiDocumentsInput = {
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUpdatedWikiDocumentsInput = {
@@ -923,6 +1059,7 @@ export type UserUncheckedCreateWithoutUpdatedWikiDocumentsInput = {
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUpdatedWikiDocumentsInput = {
@@ -960,6 +1097,7 @@ export type UserUpdateWithoutCreatedWikiDocumentsInput = {
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedWikiDocumentsInput = {
@@ -981,6 +1119,7 @@ export type UserUncheckedUpdateWithoutCreatedWikiDocumentsInput = {
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutUpdatedWikiDocumentsInput = {
@@ -1013,6 +1152,7 @@ export type UserUpdateWithoutUpdatedWikiDocumentsInput = {
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUpdatedWikiDocumentsInput = {
@@ -1034,6 +1174,7 @@ export type UserUncheckedUpdateWithoutUpdatedWikiDocumentsInput = {
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTasksInput = {
@@ -1055,6 +1196,7 @@ export type UserCreateWithoutTasksInput = {
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTasksInput = {
@@ -1076,6 +1218,7 @@ export type UserUncheckedCreateWithoutTasksInput = {
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTasksInput = {
@@ -1113,6 +1256,7 @@ export type UserUpdateWithoutTasksInput = {
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTasksInput = {
@@ -1134,6 +1278,7 @@ export type UserUncheckedUpdateWithoutTasksInput = {
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutActivitiesInput = {
@@ -1155,6 +1300,7 @@ export type UserCreateWithoutActivitiesInput = {
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutActivitiesInput = {
@@ -1176,6 +1322,7 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutActivitiesInput = {
@@ -1213,6 +1360,7 @@ export type UserUpdateWithoutActivitiesInput = {
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivitiesInput = {
@@ -1234,6 +1382,7 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMessagesInput = {
@@ -1255,6 +1404,7 @@ export type UserCreateWithoutMessagesInput = {
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMessagesInput = {
@@ -1276,6 +1426,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMessagesInput = {
@@ -1313,6 +1464,7 @@ export type UserUpdateWithoutMessagesInput = {
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -1334,6 +1486,7 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutFeedbackSubmissionsInput = {
@@ -1355,6 +1508,7 @@ export type UserCreateWithoutFeedbackSubmissionsInput = {
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFeedbackSubmissionsInput = {
@@ -1376,6 +1530,7 @@ export type UserUncheckedCreateWithoutFeedbackSubmissionsInput = {
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFeedbackSubmissionsInput = {
@@ -1413,6 +1568,7 @@ export type UserUpdateWithoutFeedbackSubmissionsInput = {
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFeedbackSubmissionsInput = {
@@ -1434,6 +1590,7 @@ export type UserUncheckedUpdateWithoutFeedbackSubmissionsInput = {
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSafetyReportsInput = {
@@ -1455,6 +1612,7 @@ export type UserCreateWithoutSafetyReportsInput = {
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSafetyReportsInput = {
@@ -1476,6 +1634,7 @@ export type UserUncheckedCreateWithoutSafetyReportsInput = {
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSafetyReportsInput = {
@@ -1513,6 +1672,7 @@ export type UserUpdateWithoutSafetyReportsInput = {
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSafetyReportsInput = {
@@ -1534,6 +1694,7 @@ export type UserUncheckedUpdateWithoutSafetyReportsInput = {
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  oauthIdentities?: Prisma.OAuthIdentityUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1551,6 +1712,7 @@ export type UserCountOutputType = {
   activities: number
   feedbackSubmissions: number
   safetyReports: number
+  oauthIdentities: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1563,6 +1725,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   activities?: boolean | UserCountOutputTypeCountActivitiesArgs
   feedbackSubmissions?: boolean | UserCountOutputTypeCountFeedbackSubmissionsArgs
   safetyReports?: boolean | UserCountOutputTypeCountSafetyReportsArgs
+  oauthIdentities?: boolean | UserCountOutputTypeCountOauthIdentitiesArgs
 }
 
 /**
@@ -1638,6 +1801,13 @@ export type UserCountOutputTypeCountSafetyReportsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.SafetyReportWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountOauthIdentitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OAuthIdentityWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1659,6 +1829,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   activities?: boolean | Prisma.User$activitiesArgs<ExtArgs>
   feedbackSubmissions?: boolean | Prisma.User$feedbackSubmissionsArgs<ExtArgs>
   safetyReports?: boolean | Prisma.User$safetyReportsArgs<ExtArgs>
+  oauthIdentities?: boolean | Prisma.User$oauthIdentitiesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1712,6 +1883,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   activities?: boolean | Prisma.User$activitiesArgs<ExtArgs>
   feedbackSubmissions?: boolean | Prisma.User$feedbackSubmissionsArgs<ExtArgs>
   safetyReports?: boolean | Prisma.User$safetyReportsArgs<ExtArgs>
+  oauthIdentities?: boolean | Prisma.User$oauthIdentitiesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1729,6 +1901,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     activities: Prisma.$ActivityLogPayload<ExtArgs>[]
     feedbackSubmissions: Prisma.$FeedbackSubmissionPayload<ExtArgs>[]
     safetyReports: Prisma.$SafetyReportPayload<ExtArgs>[]
+    oauthIdentities: Prisma.$OAuthIdentityPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2144,6 +2317,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   activities<T extends Prisma.User$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   feedbackSubmissions<T extends Prisma.User$feedbackSubmissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$feedbackSubmissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedbackSubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   safetyReports<T extends Prisma.User$safetyReportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$safetyReportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SafetyReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  oauthIdentities<T extends Prisma.User$oauthIdentitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$oauthIdentitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OAuthIdentityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2789,6 +2963,30 @@ export type User$safetyReportsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.SafetyReportScalarFieldEnum | Prisma.SafetyReportScalarFieldEnum[]
+}
+
+/**
+ * User.oauthIdentities
+ */
+export type User$oauthIdentitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OAuthIdentity
+   */
+  select?: Prisma.OAuthIdentitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OAuthIdentity
+   */
+  omit?: Prisma.OAuthIdentityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OAuthIdentityInclude<ExtArgs> | null
+  where?: Prisma.OAuthIdentityWhereInput
+  orderBy?: Prisma.OAuthIdentityOrderByWithRelationInput | Prisma.OAuthIdentityOrderByWithRelationInput[]
+  cursor?: Prisma.OAuthIdentityWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OAuthIdentityScalarFieldEnum | Prisma.OAuthIdentityScalarFieldEnum[]
 }
 
 /**

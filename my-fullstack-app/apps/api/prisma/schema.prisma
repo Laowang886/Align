@@ -57,8 +57,23 @@ model User {
 
   feedbackSubmissions FeedbackSubmission[]
   safetyReports       SafetyReport[]
+  oauthIdentities     OAuthIdentity[]
 
   @@unique([provider, providerId])
+}
+
+model OAuthIdentity {
+  id         String   @id @default(uuid())
+  userId     String
+  provider   String
+  providerId String
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerId])
+  @@unique([userId, provider])
+  @@index([userId])
 }
 
 model Workspace {

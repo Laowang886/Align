@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  OAuthIdentity: 'OAuthIdentity',
   Workspace: 'Workspace',
   WorkspaceMember: 'WorkspaceMember',
   Project: 'Project',
@@ -98,6 +99,17 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const OAuthIdentityScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  provider: 'provider',
+  providerId: 'providerId',
+  createdAt: 'createdAt'
+} as const
+
+export type OAuthIdentityScalarFieldEnum = (typeof OAuthIdentityScalarFieldEnum)[keyof typeof OAuthIdentityScalarFieldEnum]
 
 
 export const WorkspaceScalarFieldEnum = {

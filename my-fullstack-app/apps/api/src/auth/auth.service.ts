@@ -74,18 +74,22 @@ export class AuthService {
     return this.createAuthResponse(user);
   }
 
-  //This function handles the OAuth login process. It checks if a user with the given provider and providerId already exists in the database. If so, it returns an authentication response for that user. If not, it checks if a user with the same email already exists. If such a user exists, it throws a ConflictException. If no conflicts are found, it creates a new user in the database with the provided OAuth information and returns an authentication response for the newly created user.
+  // OAuth identities are looked up before email matching. A new Google or GitHub
+  // identity with a matching email is linked to the existing account.
   async loginWithOAuth(oauthUser: OAuthUser) {
     const email = normalizeEmail(oauthUser.email);
-    const existingOAuthUser = await this.prisma.user.findFirst({
+    const existingIdentity = await this.prisma.oAuthIdentity.findUnique({
       where: {
-        provider: oauthUser.provider,
-        providerId: oauthUser.providerId,
+        provider_providerId: {
+          provider: oauthUser.provider,
+          providerId: oauthUser.providerId,
+        },
       },
+      include: { user: true },
     });
 
-    if (existingOAuthUser) {
-      return this.createAuthResponse(existingOAuthUser);
+    if (existingIdentity) {
+      return this.createAuthResponse(existingIdentity.user);
     }
 
     const existingEmailUser = await this.prisma.user.findUnique({
@@ -93,9 +97,23 @@ export class AuthService {
     });
 
     if (existingEmailUser) {
-      throw new ConflictException(
-        'An account with this email already exists. Sign in with your existing method first.',
-      );
+      await this.prisma.oAuthIdentity.create({
+        data: {
+          userId: existingEmailUser.id,
+          provider: oauthUser.provider,
+          providerId: oauthUser.providerId,
+        },
+      });
+      if (!existingEmailUser.provider) {
+        await this.prisma.user.update({
+          where: { id: existingEmailUser.id },
+          data: {
+            provider: oauthUser.provider,
+            providerId: oauthUser.providerId,
+          },
+        });
+      }
+      return this.createAuthResponse(existingEmailUser);
     }
 
     const user = await this.prisma.user.create({
@@ -105,6 +123,12 @@ export class AuthService {
         avatarUrl: oauthUser.avatarUrl,
         provider: oauthUser.provider,
         providerId: oauthUser.providerId,
+        oauthIdentities: {
+          create: {
+            provider: oauthUser.provider,
+            providerId: oauthUser.providerId,
+          },
+        },
       },
     });
 

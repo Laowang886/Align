@@ -16,12 +16,15 @@ describe('AuthService', () => {
   };
 
   const findUnique = jest.fn();
-  const findFirst = jest.fn();
   const create = jest.fn();
+  const update = jest.fn();
+  const identityFindUnique = jest.fn();
+  const identityCreate = jest.fn();
   let capturedPasswordHash = '';
   const signAsync = jest.fn().mockResolvedValue('signed-token');
   const prisma = {
-    user: { findUnique, findFirst, create },
+    user: { findUnique, create, update },
+    oAuthIdentity: { findUnique: identityFindUnique, create: identityCreate },
   } as unknown as PrismaService;
   const jwt = { signAsync } as unknown as JwtService;
   const service = new AuthService(prisma, jwt);
@@ -102,7 +105,7 @@ describe('AuthService', () => {
   });
 
   it('creates a user when a new Google identity signs in', async () => {
-    findFirst.mockResolvedValue(null);
+    identityFindUnique.mockResolvedValue(null);
     findUnique.mockResolvedValue(null);
     create.mockResolvedValue({
       ...user,
@@ -126,17 +129,20 @@ describe('AuthService', () => {
         avatarUrl: 'https://example.com/avatar.png',
         provider: 'google',
         providerId: 'google-user-1',
+        oauthIdentities: {
+          create: {
+            provider: 'google',
+            providerId: 'google-user-1',
+          },
+        },
       },
     });
     expect(result.accessToken).toBe('signed-token');
   });
 
   it('signs in an existing OAuth user by provider identity', async () => {
-    findFirst.mockResolvedValue({
-      ...user,
-      passwordHash: null,
-      provider: 'github',
-      providerId: 'github-user-1',
+    identityFindUnique.mockResolvedValue({
+      user: { ...user, passwordHash: null },
     });
 
     const result = await service.loginWithOAuth({
@@ -149,6 +155,34 @@ describe('AuthService', () => {
 
     expect(findUnique).not.toHaveBeenCalled();
     expect(create).not.toHaveBeenCalled();
+    expect(result.user).toMatchObject({ id: user.id, email: user.email });
+  });
+
+  it('links a new OAuth provider to an existing account with the same email', async () => {
+    identityFindUnique.mockResolvedValue(null);
+    findUnique.mockResolvedValue({ ...user, passwordHash: 'hash' });
+    identityCreate.mockResolvedValue({});
+    update.mockResolvedValue(user);
+
+    const result = await service.loginWithOAuth({
+      provider: 'github',
+      providerId: 'github-user-1',
+      email: user.email,
+      name: user.name,
+      avatarUrl: null,
+    });
+
+    expect(identityCreate).toHaveBeenCalledWith({
+      data: {
+        userId: user.id,
+        provider: 'github',
+        providerId: 'github-user-1',
+      },
+    });
+    expect(update).toHaveBeenCalledWith({
+      where: { id: user.id },
+      data: { provider: 'github', providerId: 'github-user-1' },
+    });
     expect(result.user).toMatchObject({ id: user.id, email: user.email });
   });
 
