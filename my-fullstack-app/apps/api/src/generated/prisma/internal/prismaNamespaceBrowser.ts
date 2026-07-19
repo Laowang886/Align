@@ -63,6 +63,8 @@ export const ModelName = {
   ActivityLog: 'ActivityLog',
   Channel: 'Channel',
   Message: 'Message',
+  Notification: 'Notification',
+  NotificationPreference: 'NotificationPreference',
   FeedbackSubmission: 'FeedbackSubmission',
   SafetyReport: 'SafetyReport',
   MessageAttachment: 'MessageAttachment'
@@ -242,6 +244,39 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  recipientId: 'recipientId',
+  actorId: 'actorId',
+  workspaceId: 'workspaceId',
+  projectId: 'projectId',
+  taskId: 'taskId',
+  messageId: 'messageId',
+  type: 'type',
+  eventId: 'eventId',
+  title: 'title',
+  content: 'content',
+  link: 'link',
+  isRead: 'isRead',
+  createdAt: 'createdAt',
+  readAt: 'readAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+export const NotificationPreferenceScalarFieldEnum = {
+  userId: 'userId',
+  notificationsEnabled: 'notificationsEnabled',
+  kanbanNotificationsEnabled: 'kanbanNotificationsEnabled',
+  chatNotificationsEnabled: 'chatNotificationsEnabled',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NotificationPreferenceScalarFieldEnum = (typeof NotificationPreferenceScalarFieldEnum)[keyof typeof NotificationPreferenceScalarFieldEnum]
 
 
 export const FeedbackSubmissionScalarFieldEnum = {

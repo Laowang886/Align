@@ -38,6 +38,11 @@ import type {
   UpdateChatChannelInput,
   UpdateChatChannelNoticeInput,
   WorkspaceChatState,
+  Notification,
+  NotificationPage,
+  NotificationUnreadCount,
+  NotificationPreferences,
+  UpdateNotificationPreferencesInput,
 } from "@repo/shared";
 
 const API_URL = (
@@ -483,4 +488,36 @@ export const supportApi = {
       method: "POST",
       body: JSON.stringify(input),
     }),
+};
+
+export const notificationApi = {
+  list: (
+    options: { page?: number; pageSize?: number; unreadOnly?: boolean } = {},
+  ) => {
+    const params = new URLSearchParams();
+    if (options.page) params.set("page", String(options.page));
+    if (options.pageSize) params.set("pageSize", String(options.pageSize));
+    if (options.unreadOnly) params.set("unreadOnly", "true");
+    const query = params.toString();
+    return apiRequest<NotificationPage>(
+      `/notifications${query ? `?${query}` : ""}`,
+    );
+  },
+  unreadCount: () =>
+    apiRequest<NotificationUnreadCount>("/notifications/unread-count"),
+  preferences: () =>
+    apiRequest<NotificationPreferences>("/notifications/preferences"),
+  updatePreferences: (input: UpdateNotificationPreferencesInput) =>
+    apiRequest<NotificationPreferences>("/notifications/preferences", {
+      method: "PATCH",
+      body: JSON.stringify(input),
+    }),
+  markRead: (id: string) =>
+    apiRequest<Notification>(`/notifications/${id}/read`, { method: "PATCH" }),
+  markAllRead: () =>
+    apiRequest<{ updated: number }>("/notifications/read-all", {
+      method: "PATCH",
+    }),
+  remove: (id: string) =>
+    apiRequest<void>(`/notifications/${id}`, { method: "DELETE" }),
 };

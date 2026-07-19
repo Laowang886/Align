@@ -7,25 +7,24 @@ import { authApi, clearClientAuthState } from "../../lib/api-client";
 import styles from "../page.module.css";
 import Icon from "./Icon";
 import SettingsDialog from "./SettingsDialog";
+import NotificationBell from "./notifications/NotificationBell";
 
 export default function Header({
   onToggleSidebar,
   workspaceName = "FormatWeaver HQ",
   projectName,
   userName = "User",
-  userEmail,
   userAvatarUrl,
 }: {
   onToggleSidebar: () => void;
   workspaceName?: string;
   projectName?: string;
   userName?: string;
-  userEmail?: string;
   userAvatarUrl?: string | null;
 }) {
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
-  const [menuOpen, setMenuOpen] = useState(false); 
+  const [menuOpen, setMenuOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
@@ -91,10 +90,7 @@ export default function Header({
         <a href="#main" className={styles.openTab}>
           Open Tab <Icon name="external" size={14} />
         </a>
-        <button className={styles.bell} aria-label="Notifications">
-          <Icon name="bell" />
-          <i />
-        </button>
+        <NotificationBell />
 
         <div className={styles.accountMenuWrap} ref={menuRef}>
           <button
@@ -106,6 +102,7 @@ export default function Header({
             onClick={() => setMenuOpen((open) => !open)}
           >
             {userAvatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img src={userAvatarUrl} alt="" />
             ) : (
               userName.charAt(0).toUpperCase()
@@ -145,7 +142,10 @@ export default function Header({
           )}
         </div>
       </div>
-      <SettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <SettingsDialog
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+      />
     </header>
   );
 }

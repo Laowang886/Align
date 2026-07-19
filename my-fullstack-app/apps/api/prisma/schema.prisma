@@ -35,6 +35,11 @@ enum ColumnCategory {
   DONE
 }
 
+enum NotificationType {
+  WORKSPACE_CHAT_MESSAGE
+  TASK_ASSIGNED
+}
+
 model User {
   id           String   @id @default(uuid())
   email        String   @unique
@@ -47,13 +52,16 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  ownedWorkspaces      Workspace[]       @relation("WorkspaceOwner")
-  workspaceMemberships WorkspaceMember[]
-  tasks                Task[]            @relation("assignee")
-  messages             Message[]
-  createdWikiDocuments WikiDocument[]    @relation("WikiDocumentCreator")
-  updatedWikiDocuments WikiDocument[]    @relation("WikiDocumentUpdater")
-  activities           ActivityLog[]     @relation("ActivityActor")
+  ownedWorkspaces       Workspace[]       @relation("WorkspaceOwner")
+  workspaceMemberships  WorkspaceMember[]
+  tasks                 Task[]            @relation("assignee")
+  messages              Message[]
+  createdWikiDocuments  WikiDocument[]    @relation("WikiDocumentCreator")
+  updatedWikiDocuments  WikiDocument[]    @relation("WikiDocumentUpdater")
+  activities            ActivityLog[]     @relation("ActivityActor")
+  receivedNotifications Notification[]    @relation("NotificationRecipient")
+  actedNotifications    Notification[]    @relation("NotificationActor")
+  notificationPreference NotificationPreference?
 
   feedbackSubmissions FeedbackSubmission[]
   safetyReports       SafetyReport[]
@@ -76,6 +84,7 @@ model Workspace {
   channels      Channel[]
   wikiDocuments WikiDocument[]
   activities    ActivityLog[]
+  notifications Notification[]
 
   @@index([ownerId])
   @@map("Team")
@@ -113,6 +122,7 @@ model Project {
   sprints       Sprint[]
   wikiDocuments WikiDocument[]
   activities    ActivityLog[]
+  notifications Notification[]
 
   @@unique([workspaceId, key])
   @@index([workspaceId])
@@ -195,11 +205,12 @@ model Task {
   assigneeId  String?
   sprintId    String?
 
-  column    Column   @relation(fields: [columnId], references: [id], onDelete: Cascade)
-  assignee  User?    @relation("assignee", fields: [assigneeId], references: [id], onDelete: SetNull)
-  sprint    Sprint?  @relation(fields: [sprintId], references: [id], onDelete: SetNull)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  column        Column         @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  assignee      User?          @relation("assignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  sprint        Sprint?        @relation(fields: [sprintId], references: [id], onDelete: SetNull)
+  notifications Notification[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@index([columnId])
   @@index([assigneeId])
@@ -228,10 +239,10 @@ model ActivityLog {
 }
 
 model Channel {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   name        String
   notice      String? @db.Text
-  workspaceId String @map("teamId")
+  workspaceId String  @map("teamId")
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   messages  Message[]
@@ -247,12 +258,59 @@ model Message {
   authorId  String
   createdAt DateTime @default(now())
 
-  channel     Channel             @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  author      User                @relation(fields: [authorId], references: [id], onDelete: Restrict)
-  attachments MessageAttachment[]
+  channel       Channel             @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  author        User                @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  attachments   MessageAttachment[]
+  notifications Notification[]
 
   @@index([channelId])
   @@index([authorId])
+}
+
+model Notification {
+  id          String           @id @default(uuid())
+  recipientId String
+  actorId     String?
+  workspaceId String?
+  projectId   String?
+  taskId      String?
+  messageId   String?
+  type        NotificationType
+  eventId     String
+  title       String
+  content     String
+  link        String
+  isRead      Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  readAt      DateTime?
+
+  recipient User       @relation("NotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  actor     User?      @relation("NotificationActor", fields: [actorId], references: [id], onDelete: SetNull)
+  workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  project   Project?   @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  task      Task?      @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  message   Message?   @relation(fields: [messageId], references: [id], onDelete: SetNull)
+
+  @@unique([recipientId, type, eventId])
+  @@index([recipientId])
+  @@index([recipientId, isRead])
+  @@index([createdAt])
+  @@index([actorId])
+  @@index([workspaceId])
+  @@index([projectId])
+  @@index([taskId])
+  @@index([messageId])
+}
+
+model NotificationPreference {
+  userId                     String   @id
+  notificationsEnabled       Boolean  @default(true)
+  kanbanNotificationsEnabled Boolean  @default(true)
+  chatNotificationsEnabled   Boolean  @default(true)
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // apps/api/prisma/schema.prisma
@@ -260,7 +318,7 @@ model Message {
 model FeedbackSubmission {
   id        String   @id @default(uuid())
   userId    String
-  type      String   // "general" | "bug" | "feature" | "usability"
+  type      String // "general" | "bug" | "feature" | "usability"
   content   String
   createdAt DateTime @default(now())
 
@@ -270,7 +328,7 @@ model FeedbackSubmission {
 model SafetyReport {
   id          String   @id @default(uuid())
   userId      String
-  category    String   // "harassment" | "exploit" | "privacy" | "other"
+  category    String // "harassment" | "exploit" | "privacy" | "other"
   description String
   status      String   @default("open")
   createdAt   DateTime @default(now())
