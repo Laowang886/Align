@@ -52,13 +52,19 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Team: 'Team',
-  TeamMember: 'TeamMember',
+  Workspace: 'Workspace',
+  WorkspaceMember: 'WorkspaceMember',
+  Project: 'Project',
+  Sprint: 'Sprint',
+  WikiDocument: 'WikiDocument',
   Board: 'Board',
   Column: 'Column',
   Task: 'Task',
+  ActivityLog: 'ActivityLog',
   Channel: 'Channel',
-  Message: 'Message'
+  Message: 'Message',
+  FeedbackSubmission: 'FeedbackSubmission',
+  SafetyReport: 'SafetyReport'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -81,36 +87,90 @@ export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   name: 'name',
+  passwordHash: 'passwordHash',
+  provider: 'provider',
+  providerId: 'providerId',
   avatarUrl: 'avatarUrl',
-  createdAt: 'createdAt'
+  avatarColor: 'avatarColor',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-export const TeamScalarFieldEnum = {
+export const WorkspaceScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  slug: 'slug'
+  slug: 'slug',
+  description: 'description',
+  ownerId: 'ownerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
-export type TeamScalarFieldEnum = (typeof TeamScalarFieldEnum)[keyof typeof TeamScalarFieldEnum]
+export type WorkspaceScalarFieldEnum = (typeof WorkspaceScalarFieldEnum)[keyof typeof WorkspaceScalarFieldEnum]
 
 
-export const TeamMemberScalarFieldEnum = {
+export const WorkspaceMemberScalarFieldEnum = {
   id: 'id',
   role: 'role',
   userId: 'userId',
-  teamId: 'teamId'
+  workspaceId: 'workspaceId',
+  joinedAt: 'joinedAt'
 } as const
 
-export type TeamMemberScalarFieldEnum = (typeof TeamMemberScalarFieldEnum)[keyof typeof TeamMemberScalarFieldEnum]
+export type WorkspaceMemberScalarFieldEnum = (typeof WorkspaceMemberScalarFieldEnum)[keyof typeof WorkspaceMemberScalarFieldEnum]
+
+
+export const ProjectScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  name: 'name',
+  key: 'key',
+  description: 'description',
+  color: 'color',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const SprintScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  name: 'name',
+  goal: 'goal',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SprintScalarFieldEnum = (typeof SprintScalarFieldEnum)[keyof typeof SprintScalarFieldEnum]
+
+
+export const WikiDocumentScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  projectId: 'projectId',
+  title: 'title',
+  content: 'content',
+  createdById: 'createdById',
+  updatedById: 'updatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WikiDocumentScalarFieldEnum = (typeof WikiDocumentScalarFieldEnum)[keyof typeof WikiDocumentScalarFieldEnum]
 
 
 export const BoardScalarFieldEnum = {
   id: 'id',
   title: 'title',
-  teamId: 'teamId'
+  projectId: 'projectId'
 } as const
 
 export type BoardScalarFieldEnum = (typeof BoardScalarFieldEnum)[keyof typeof BoardScalarFieldEnum]
@@ -120,6 +180,8 @@ export const ColumnScalarFieldEnum = {
   id: 'id',
   title: 'title',
   order: 'order',
+  color: 'color',
+  category: 'category',
   boardId: 'boardId'
 } as const
 
@@ -128,21 +190,42 @@ export type ColumnScalarFieldEnum = (typeof ColumnScalarFieldEnum)[keyof typeof 
 
 export const TaskScalarFieldEnum = {
   id: 'id',
+  code: 'code',
   title: 'title',
   description: 'description',
+  priority: 'priority',
+  dueDate: 'dueDate',
+  storyPoints: 'storyPoints',
   order: 'order',
   columnId: 'columnId',
   assigneeId: 'assigneeId',
-  createdAt: 'createdAt'
+  sprintId: 'sprintId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
 
 
+export const ActivityLogScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  actorId: 'actorId',
+  projectId: 'projectId',
+  action: 'action',
+  resourceType: 'resourceType',
+  resourceId: 'resourceId',
+  summary: 'summary',
+  createdAt: 'createdAt'
+} as const
+
+export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[keyof typeof ActivityLogScalarFieldEnum]
+
+
 export const ChannelScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  teamId: 'teamId'
+  workspaceId: 'workspaceId'
 } as const
 
 export type ChannelScalarFieldEnum = (typeof ChannelScalarFieldEnum)[keyof typeof ChannelScalarFieldEnum]
@@ -157,6 +240,29 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const FeedbackSubmissionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type FeedbackSubmissionScalarFieldEnum = (typeof FeedbackSubmissionScalarFieldEnum)[keyof typeof FeedbackSubmissionScalarFieldEnum]
+
+
+export const SafetyReportScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  category: 'category',
+  description: 'description',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type SafetyReportScalarFieldEnum = (typeof SafetyReportScalarFieldEnum)[keyof typeof SafetyReportScalarFieldEnum]
 
 
 export const SortOrder = {
