@@ -27,6 +27,13 @@ import type {
   UpdateKanbanTaskInput,
   MoveKanbanTaskInput,
   UpdateProfileInput,
+  ChatConversation,
+  ChatChannel,
+  ChatMessage,
+  CreateChatChannelInput,
+  UpdateChatChannelInput,
+  UpdateChatChannelNoticeInput,
+  WorkspaceChatState,
 } from "@repo/shared";
 
 const API_URL = (
@@ -56,7 +63,9 @@ export function clearClientAuthState(): void {
 async function apiRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
   const headers = new Headers(init.headers);
   headers.set("Accept", "application/json");
-  if (init.body) headers.set("Content-Type", "application/json");
+  if (init.body && !(init.body instanceof FormData)) {
+    headers.set("Content-Type", "application/json");
+  }
 
   let response: Response;
   const controller = new AbortController();
@@ -323,6 +332,109 @@ export const wikiApi = {
       { method: "DELETE" },
     ),
 };
+
+export const chatApi = {
+  state: (workspaceId: string) =>
+    apiRequest<WorkspaceChatState>(`/workspaces/${workspaceId}/chat`),
+  createChannel: (workspaceId: string, input: CreateChatChannelInput) =>
+    apiRequest<ChatChannel>(`/workspaces/${workspaceId}/chat/channels`, {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
+  renameChannel: (
+    workspaceId: string,
+    channelId: string,
+    name: UpdateChatChannelInput["name"],
+  ) =>
+    apiRequest<ChatChannel>(
+      `/workspaces/${workspaceId}/chat/channels/${channelId}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ name }),
+      },
+    ),
+  updateChannelNotice: (
+    workspaceId: string,
+    channelId: string,
+    notice: UpdateChatChannelNoticeInput["notice"],
+  ) =>
+    apiRequest<ChatChannel>(
+      `/workspaces/${workspaceId}/chat/channels/${channelId}/notice`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ notice }),
+      },
+    ),
+  channelConversation: (workspaceId: string, channelId: string) =>
+    apiRequest<ChatConversation>(
+      `/workspaces/${workspaceId}/chat/channels/${channelId}`,
+    ),
+  channelMessages: (workspaceId: string, channelId: string) =>
+    apiRequest<ChatMessage[]>(
+      `/workspaces/${workspaceId}/chat/channels/${channelId}/messages`,
+    ),
+  sendChannelMessage: (
+    workspaceId: string,
+    channelId: string,
+    content: string,
+    attachments: File[] = [],
+  ) =>
+    apiRequest<ChatMessage>(
+      `/workspaces/${workspaceId}/chat/channels/${channelId}/messages`,
+      {
+        method: "POST",
+        body: createChatMessageBody(content, attachments),
+      },
+    ),
+  deleteChannel: (workspaceId: string, channelId: string) =>
+    apiRequest<void>(`/workspaces/${workspaceId}/chat/channels/${channelId}`, {
+      method: "DELETE",
+    }),
+  clearChannelMessages: (workspaceId: string, channelId: string) =>
+    apiRequest<void>(
+      `/workspaces/${workspaceId}/chat/channels/${channelId}/messages`,
+      { method: "DELETE" },
+    ),
+  directConversation: (workspaceId: string, userId: string) =>
+    apiRequest<ChatConversation>(
+      `/workspaces/${workspaceId}/chat/direct/${userId}`,
+    ),
+  directMessages: (workspaceId: string, userId: string) =>
+    apiRequest<ChatMessage[]>(
+      `/workspaces/${workspaceId}/chat/direct/${userId}/messages`,
+    ),
+  sendDirectMessage: (
+    workspaceId: string,
+    userId: string,
+    content: string,
+    attachments: File[] = [],
+  ) =>
+    apiRequest<ChatMessage>(
+      `/workspaces/${workspaceId}/chat/direct/${userId}/messages`,
+      {
+        method: "POST",
+        body: createChatMessageBody(content, attachments),
+      },
+    ),
+  attachmentUrl: (
+    workspaceId: string,
+    attachmentId: string,
+    options: { download?: boolean } = {},
+  ) =>
+    `${API_URL}/workspaces/${workspaceId}/chat/attachments/${attachmentId}${
+      options.download ? "?download=1" : ""
+    }`,
+};
+
+function createChatMessageBody(content: string, attachments: File[]) {
+  if (attachments.length === 0) return JSON.stringify({ content });
+  const formData = new FormData();
+  formData.set("content", content);
+  for (const attachment of attachments) {
+    formData.append("attachments", attachment);
+  }
+  return formData;
+}
 
 export type CurrentUser = AuthenticatedUser;
 

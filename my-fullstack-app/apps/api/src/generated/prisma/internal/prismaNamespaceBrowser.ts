@@ -62,7 +62,8 @@ export const ModelName = {
   Task: 'Task',
   ActivityLog: 'ActivityLog',
   Channel: 'Channel',
-  Message: 'Message'
+  Message: 'Message',
+  MessageAttachment: 'MessageAttachment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -223,6 +224,7 @@ export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[key
 export const ChannelScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  notice: 'notice',
   workspaceId: 'workspaceId'
 } as const
 
@@ -238,6 +240,20 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const MessageAttachmentScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  originalName: 'originalName',
+  storedName: 'storedName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  storagePath: 'storagePath',
+  createdAt: 'createdAt'
+} as const
+
+export type MessageAttachmentScalarFieldEnum = (typeof MessageAttachmentScalarFieldEnum)[keyof typeof MessageAttachmentScalarFieldEnum]
 
 
 export const SortOrder = {
