@@ -353,6 +353,23 @@ export default function WorkspaceApp({
     setDashboardRefresh((value) => value + 1);
   }
 
+  async function deleteProject(project: Pick<WorkspaceProject, "id" | "name">) {
+    if (!currentWorkspace) return;
+    if (!window.confirm(`Delete ${project.name}? This permanently deletes this project and its data.`)) return;
+
+    try {
+      await projectApi.delete(project.id);
+      setProjects((items) => items.filter((item) => item.id !== project.id));
+      setActiveProjectId(null);
+      setSprints([]);
+      setDashboardRefresh((value) => value + 1);
+      showToast(`${project.name} deleted.`);
+      router.push(`/workspaces/${currentWorkspace.id}`);
+    } catch (caught: unknown) {
+      showToast(caught instanceof ApiError ? caught.message : "Unable to delete project.");
+    }
+  }
+
   async function addSprint(input: CreateSprintInput): Promise<void> {
     if (!currentWorkspace || !activeProjectId) {
       throw new Error("Select a project first.");
@@ -431,6 +448,7 @@ export default function WorkspaceApp({
           activeProjectId={activeProjectId}
           onSelectProject={selectProject}
           onAddProject={() => setProjectDialogOpen(true)}
+          onDeleteProject={deleteProject}
         />
       )}
       <div className={styles.shell}>

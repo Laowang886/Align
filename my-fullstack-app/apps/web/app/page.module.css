@@ -2186,3 +2186,19 @@
   flex: 0 0 29px;
   cursor: pointer;
 }
+
+.projectList > button .projectDeleteButton {
+  width: 24px;
+  height: 24px;
+  margin-left: auto;
+  border-radius: 5px;
+  color: #fda4af;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.projectList > button .projectDeleteButton:hover {
+  background: #ffffff1a;
+  color: #fff;
+}

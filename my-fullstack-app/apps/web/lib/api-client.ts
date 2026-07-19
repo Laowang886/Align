@@ -110,8 +110,13 @@ async function apiRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
     throw new ApiError(response.status, message);
   }
 
-  if (response.status === 204) return undefined as T;
-  return (await response.json()) as T;
+  if (response.status === 204 || response.headers.get("content-length") === "0") {
+    return undefined as T;
+  }
+
+  const body = await response.text();
+  if (!body.trim()) return undefined as T;
+  return JSON.parse(body) as T;
 }
 
 async function readJson(response: Response): Promise<unknown> {
@@ -184,6 +189,8 @@ export const workspaceApi = {
 
 export const projectApi = {
   get: (projectId: string) => apiRequest<Project>(`/projects/${projectId}`),
+  delete: (projectId: string) =>
+    apiRequest<void>(`/projects/${projectId}`, { method: "DELETE" }),
   list: (workspaceId: string) =>
     apiRequest<Project[]>(`/workspaces/${workspaceId}/projects`),
   create: (workspaceId: string, input: CreateProjectInput) =>
