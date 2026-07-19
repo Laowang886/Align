@@ -475,6 +475,22 @@ export const userApi = {
       body: JSON.stringify(input),
     }),
   deleteAccount: () => apiRequest<void>("/users/me", { method: "DELETE" }),
+  uploadAvatar: (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return apiRequest<AuthenticatedUser>("/uploads/avatar", {
+      method: "POST",
+      body: formData,
+    });
+  },
+  uploadWorkspaceImage: async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return apiRequest<{ url: string }>("/uploads/workspace", {
+      method: "POST",
+      body: formData,
+    });
+  },
 };
 
 export const supportApi = {

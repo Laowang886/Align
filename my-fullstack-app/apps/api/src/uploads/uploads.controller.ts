@@ -20,8 +20,10 @@ import { PrismaService } from '../prisma/prisma.service';
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 const AVATAR_UPLOAD_ROOT = resolve(__dirname, '../../uploads/avatars');
+const WORKSPACE_UPLOAD_ROOT = resolve(__dirname, '../../uploads/workspaces');
 
 mkdirSync(AVATAR_UPLOAD_ROOT, { recursive: true });
+mkdirSync(WORKSPACE_UPLOAD_ROOT, { recursive: true });
 
 type AuthenticatedRequest = Request & { user: { id: string } };
 
@@ -85,5 +87,31 @@ export class UploadsController {
         provider: true,
       },
     });
+  }
+
+  @Post('workspace')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: WORKSPACE_UPLOAD_ROOT,
+        filename: (_req, file, callback) =>
+          callback(null, `${randomUUID()}${extname(file.originalname)}`),
+      }),
+      limits: { fileSize: MAX_FILE_SIZE },
+      fileFilter: (_req, file, callback) => {
+        if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+          return callback(
+            new BadRequestException('Only JPEG, PNG, WEBP, or GIF images are allowed'),
+            false,
+          );
+        }
+        callback(null, true);
+      },
+    }),
+  )
+  uploadWorkspaceImage(@UploadedFile() file: Express.Multer.File) {
+    if (!file) throw new BadRequestException('No file uploaded');
+    return { url: `/uploads/workspaces/${file.filename}` };
   }
 }
