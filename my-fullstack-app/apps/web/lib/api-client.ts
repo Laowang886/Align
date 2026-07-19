@@ -17,7 +17,7 @@ import type {
   LoginInput,
   RegisterInput,
   WorkspaceDashboard,
-  WeeklyReport,
+  // WeeklyReport,
   KanbanBoard,
   KanbanColumn,
   KanbanTask,
@@ -216,10 +216,11 @@ export const sprintApi = {
 export const dashboardApi = {
   get: (workspaceId: string) =>
     apiRequest<WorkspaceDashboard>(`/workspaces/${workspaceId}/dashboard`),
-  generateWeeklyReport: (workspaceId: string) =>
-    apiRequest<WeeklyReport>(`/workspaces/${workspaceId}/reports/weekly`, {
-      method: "POST",
-    }),
+  // AI weekly-report generation is disabled.
+  // generateWeeklyReport: (workspaceId: string) =>
+  //   apiRequest<WeeklyReport>(`/workspaces/${workspaceId}/reports/weekly`, {
+  //     method: "POST",
+  //   }),
 };
 
 export const kanbanApi = {

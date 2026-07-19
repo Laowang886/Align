@@ -72,8 +72,9 @@ export interface WorkspaceDashboard {
   activities: DashboardActivity[];
 }
 
-export interface WeeklyReport {
-  markdown: string;
-  generatedAt: string;
-  model: string;
-}
+// AI weekly-report generation is disabled.
+// export interface WeeklyReport {
+//   markdown: string;
+//   generatedAt: string;
+//   model: string;
+// }
