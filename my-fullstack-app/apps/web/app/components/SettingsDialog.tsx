@@ -194,11 +194,14 @@ export default function SettingsDialog({
 
     try {
       //The PATCH request is actually sent to the backend server.
-      await userApi.updateProfile({
+      const updatedUser = await userApi.updateProfile({
         name,
         ...(currentUser?.provider ? {} : { avatarColor }),
       });
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      queryClient.setQueryData(["currentUser"], updatedUser);
+      window.dispatchEvent(
+        new CustomEvent("align:profile-updated", { detail: updatedUser }),
+      );
       //Tell the user, "The operation was successful!" Then, change the status back after 2 seconds to restore the interface to its original state.
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 2000);

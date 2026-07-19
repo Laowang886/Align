@@ -421,6 +421,7 @@ export default function WorkspaceApp({
           userName={currentUser?.name}
           userEmail={currentUser?.email}
           userAvatarUrl={currentUser?.avatarUrl}
+          userAvatarColor={currentUser?.avatarColor}
         />
         <div className={styles.mainContent}>
           {viewState === "loading" && <WorkspaceLoadingState />}

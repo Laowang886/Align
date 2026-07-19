@@ -3,7 +3,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { authApi, clearClientAuthState } from "../../lib/api-client";
+import {
+  authApi,
+  clearClientAuthState,
+  type CurrentUser,
+} from "../../lib/api-client";
 import styles from "../page.module.css";
 import Icon from "./Icon";
 import SettingsDialog from "./SettingsDialog";
@@ -15,6 +19,7 @@ export default function Header({
   userName = "User",
   userEmail,
   userAvatarUrl,
+  userAvatarColor,
 }: {
   onToggleSidebar: () => void;
   workspaceName?: string;
@@ -22,12 +27,29 @@ export default function Header({
   userName?: string;
   userEmail?: string;
   userAvatarUrl?: string | null;
+  userAvatarColor?: string | null;
 }) {
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false); 
   const [signingOut, setSigningOut] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [avatarColor, setAvatarColor] = useState(userAvatarColor);
+
+  useEffect(() => {
+    setAvatarColor(userAvatarColor);
+  }, [userAvatarColor]);
+
+  useEffect(() => {
+    function updateAvatarColor(event: Event) {
+      const updatedUser = (event as CustomEvent<CurrentUser>).detail;
+      setAvatarColor(updatedUser.avatarColor);
+    }
+
+    window.addEventListener("align:profile-updated", updateAvatarColor);
+    return () =>
+      window.removeEventListener("align:profile-updated", updateAvatarColor);
+  }, []);
 
   useEffect(() => {
     //Click anywhere outside the menu area to automatically close the drop-down menu.
@@ -100,6 +122,7 @@ export default function Header({
           <button
             className={styles.profileAvatarButton}
             type="button"
+            style={userAvatarUrl ? undefined : { backgroundColor: avatarColor ?? undefined }}
             aria-label="Open account menu"
             aria-expanded={menuOpen}
             aria-haspopup="menu"
