@@ -6,6 +6,8 @@ export interface Workspace {
   name: string;
   slug: string;
   description: string | null;
+  avatarUrl: string | null;
+  avatarPreset: string | null;
   ownerId: string;
   createdAt: string;
   updatedAt: string;
@@ -57,6 +59,8 @@ export interface CreateWorkspaceInput {
   name: string;
   slug?: string;
   description?: string;
+  avatarUrl?: string;
+  avatarPreset?: string;
 }
 
 export interface UpdateWorkspaceInput {

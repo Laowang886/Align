@@ -1,4 +1,4 @@
-import { NotFoundException, ServiceUnavailableException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
 
 describe('DashboardService', () => {
@@ -106,13 +106,14 @@ describe('DashboardService', () => {
     ).rejects.toBeInstanceOf(NotFoundException);
   });
 
-  it('requires an API key before generating an AI report', async () => {
-    const previous = process.env.OPENAI_API_KEY;
-    delete process.env.OPENAI_API_KEY;
-    const service = new DashboardService(createPrisma() as never);
-    await expect(
-      service.generateWeeklyReport('user-1', 'workspace-1'),
-    ).rejects.toBeInstanceOf(ServiceUnavailableException);
-    if (previous) process.env.OPENAI_API_KEY = previous;
-  });
+  // AI weekly-report generation is disabled.
+  // it('requires an API key before generating an AI report', async () => {
+  //   const previous = process.env.OPENAI_API_KEY;
+  //   delete process.env.OPENAI_API_KEY;
+  //   const service = new DashboardService(createPrisma() as never);
+  //   await expect(
+  //     service.generateWeeklyReport('user-1', 'workspace-1'),
+  //   ).rejects.toBeInstanceOf(ServiceUnavailableException);
+  //   if (previous) process.env.OPENAI_API_KEY = previous;
+  // });
 });

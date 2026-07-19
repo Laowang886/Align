@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { FeedbackType, SafetyCategory } from "@repo/shared";
 import styles from "../page.module.css";
@@ -11,6 +11,7 @@ import {
   userApi,
   supportApi,
   ApiError,
+  type CurrentUser,
 } from "../../lib/api-client";
 import { useNotificationPreferences } from "./notifications/useNotificationPreferences";
 
@@ -69,6 +70,8 @@ export default function SettingsDialog({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [avatarColor, setAvatarColor] = useState(avatarColors[0]);
+  const avatarFileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -234,6 +237,41 @@ export default function SettingsDialog({
     }
   }
 
+  async function handleAvatarSelected(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setSaveError("Choose an image file in JPEG, PNG, WEBP, or GIF format.");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setSaveError("Choose an image smaller than 2 MB.");
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    setSaveError(null);
+    try {
+      const updatedUser = await userApi.uploadAvatar(file);
+      queryClient.setQueryData(["currentUser"], updatedUser);
+      window.dispatchEvent(
+        new CustomEvent<CurrentUser>("align:profile-updated", {
+          detail: updatedUser,
+        }),
+      );
+    } catch (caught: unknown) {
+      setSaveError(
+        caught instanceof ApiError ? caught.message : "Unable to upload photo.",
+      );
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  }
+
   return (
     <div
       className={styles.modalBackdrop}
@@ -313,27 +351,60 @@ export default function SettingsDialog({
                     />
                   </label>
 
-                  {!currentUser?.provider && (
-                    <fieldset className={styles.settingsAvatarField}>
-                      <legend>Avatar profile color</legend>
-                      <div>
-                        {avatarColors.map((color) => (
+                  {currentUser && !currentUser.provider && (
+                    <>
+                      <fieldset className={styles.settingsAvatarUploadField}>
+                        <legend>Profile photo</legend>
+                        <div className={styles.settingsAvatarUploadRow}>
                           <button
-                            key={color}
                             type="button"
-                            className={
-                              avatarColor === color
-                                ? styles.settingsColorSelected
-                                : ""
-                            }
-                            style={{ backgroundColor: color }}
-                            aria-label={`Use ${color} for your profile color`}
-                            aria-pressed={avatarColor === color}
-                            onClick={() => setAvatarColor(color)}
+                            className={styles.settingsAvatarUploadButton}
+                            onClick={() => avatarFileInputRef.current?.click()}
+                            disabled={isUploadingAvatar}
+                            aria-label="Upload a profile photo"
+                          >
+                            {currentUser.avatarUrl ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={currentUser.avatarUrl} alt="" />
+                            ) : (
+                              name.charAt(0).toUpperCase()
+                            )}
+                            <span>{isUploadingAvatar ? "…" : "Change"}</span>
+                          </button>
+                          <p>Upload an image</p>
+                          <input
+                            ref={avatarFileInputRef}
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp,image/gif"
+                            //this is we use to handle the file selection event, and we use void to ignore the returned promise since we don't need to await it here.
+                            //The browser automatically generates an object the moment the user completes the "select file" action; the browser then passes this object as a parameter to the function you wrote.
+                            onChange={(event) => void handleAvatarSelected(event)}
+                            tabIndex={-1}
                           />
-                        ))}
-                      </div>
-                    </fieldset>
+                        </div>
+                      </fieldset>
+
+                      <fieldset className={styles.settingsAvatarField}>
+                        <legend>Avatar profile color</legend>
+                        <div>
+                          {avatarColors.map((color) => (
+                            <button
+                              key={color}
+                              type="button"
+                              className={
+                                avatarColor === color
+                                  ? styles.settingsColorSelected
+                                  : ""
+                              }
+                              style={{ backgroundColor: color }}
+                              aria-label={`Use ${color} for your profile color`}
+                              aria-pressed={avatarColor === color}
+                              onClick={() => setAvatarColor(color)}
+                            />
+                          ))}
+                        </div>
+                      </fieldset>
+                    </>
                   )}
 
                   {saveError && (

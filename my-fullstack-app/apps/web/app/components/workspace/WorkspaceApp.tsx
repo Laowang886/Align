@@ -321,6 +321,21 @@ export default function WorkspaceApp({
     router.push("/workspaces");
   }
 
+  async function deleteWorkspace(workspace: WorkspaceSummary) {
+    if (!window.confirm(`Delete ${workspace.name}? This permanently deletes this workspace and its data.`)) return;
+
+    try {
+      await workspaceApi.delete(workspace.id);
+      const remaining = workspaces.filter((item) => item.id !== workspace.id);
+      setWorkspaces(remaining);
+      window.localStorage.removeItem("currentWorkspaceId");
+      showToast(`${workspace.name} deleted.`);
+      router.push(remaining[0] ? `/workspaces/${remaining[0].id}` : "/workspaces");
+    } catch (caught: unknown) {
+      showToast(caught instanceof ApiError ? caught.message : "Unable to delete workspace.");
+    }
+  }
+
   async function createProject(input: CreateProjectInput): Promise<void> {
     if (!currentWorkspace) throw new Error("Select a workspace first.");
     const project = (await projectApi.create(
@@ -336,6 +351,23 @@ export default function WorkspaceApp({
     );
     showToast(`${project.name} created successfully.`);
     setDashboardRefresh((value) => value + 1);
+  }
+
+  async function deleteProject(project: Pick<WorkspaceProject, "id" | "name">) {
+    if (!currentWorkspace) return;
+    if (!window.confirm(`Delete ${project.name}? This permanently deletes this project and its data.`)) return;
+
+    try {
+      await projectApi.delete(project.id);
+      setProjects((items) => items.filter((item) => item.id !== project.id));
+      setActiveProjectId(null);
+      setSprints([]);
+      setDashboardRefresh((value) => value + 1);
+      showToast(`${project.name} deleted.`);
+      router.push(`/workspaces/${currentWorkspace.id}`);
+    } catch (caught: unknown) {
+      showToast(caught instanceof ApiError ? caught.message : "Unable to delete project.");
+    }
   }
 
   async function addSprint(input: CreateSprintInput): Promise<void> {
@@ -387,6 +419,7 @@ export default function WorkspaceApp({
         setCreateError(null);
         setDialogOpen(true);
       }}
+      onDelete={deleteWorkspace}
     />
   );
   const openMembers = () => setMembersOpen(true);
@@ -415,6 +448,7 @@ export default function WorkspaceApp({
           activeProjectId={activeProjectId}
           onSelectProject={selectProject}
           onAddProject={() => setProjectDialogOpen(true)}
+          onDeleteProject={deleteProject}
         />
       )}
       <div className={styles.shell}>
