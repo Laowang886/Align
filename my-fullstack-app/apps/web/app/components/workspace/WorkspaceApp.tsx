@@ -49,10 +49,16 @@ export default function WorkspaceApp({
   workspaceId,
   projectId,
   initialView = "Dashboard",
+  targetTaskId,
+  targetChannelId,
+  targetDirectUserId,
 }: {
   workspaceId?: string;
   projectId?: string;
   initialView?: WorkspaceView;
+  targetTaskId?: string;
+  targetChannelId?: string;
+  targetDirectUserId?: string;
 }) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -419,7 +425,6 @@ export default function WorkspaceApp({
             projects.find((project) => project.id === activeProjectId)?.name
           }
           userName={currentUser?.name}
-          userEmail={currentUser?.email}
           userAvatarUrl={currentUser?.avatarUrl}
         />
         <div className={styles.mainContent}>
@@ -469,6 +474,7 @@ export default function WorkspaceApp({
                 onNotify={showToast}
                 onDataChanged={() => setDashboardRefresh((value) => value + 1)}
                 sprints={sprints}
+                initialTaskId={targetTaskId}
               />
             ) : activeView === "Sprints" ? (
               <SprintsView
@@ -501,6 +507,8 @@ export default function WorkspaceApp({
                 workspaceId={currentWorkspace.id}
                 workspaceName={currentWorkspace.name}
                 currentUser={currentUser}
+                initialChannelId={targetChannelId}
+                initialDirectUserId={targetDirectUserId}
               />
             ) : (
               <WorkspaceLoadingState />

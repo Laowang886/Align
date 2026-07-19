@@ -46,3 +46,11 @@ export const ColumnCategory = {
 } as const
 
 export type ColumnCategory = (typeof ColumnCategory)[keyof typeof ColumnCategory]
+
+
+export const NotificationType = {
+  WORKSPACE_CHAT_MESSAGE: 'WORKSPACE_CHAT_MESSAGE',
+  TASK_ASSIGNED: 'TASK_ASSIGNED'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]

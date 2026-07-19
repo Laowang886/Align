@@ -3,7 +3,9 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
+  Optional,
 } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import type {
@@ -23,14 +25,18 @@ import {
   ChatFileStorageService,
   type ChatUploadedFile,
 } from './chat-file-storage.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 const DIRECT_CHANNEL_PREFIX = 'dm:';
 
 @Injectable()
 export class ChatService {
+  private readonly logger = new Logger(ChatService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly fileStorage: ChatFileStorageService = new ChatFileStorageService(),
+    @Optional() private readonly notifications?: NotificationsService,
   ) {}
 
   async getWorkspaceChatState(
@@ -124,7 +130,9 @@ export class ChatService {
     });
     if (!channel) throw new NotFoundException('Channel not found');
     if (!isPublicChannelName(channel.name)) {
-      throw new BadRequestException('Channel notice is only available for public channels');
+      throw new BadRequestException(
+        'Channel notice is only available for public channels',
+      );
     }
 
     if (channel.notice === input.notice) return toChatChannel(channel);
@@ -145,7 +153,36 @@ export class ChatService {
   ): Promise<ChatMessage> {
     await this.requireWorkspaceMember(userId, workspaceId);
     const channel = await this.requireCustomChannel(workspaceId, channelId);
-    return this.createMessage(channel.id, userId, input.content, files);
+    const message = await this.createMessage(
+      channel.id,
+      userId,
+      input.content,
+      files,
+    );
+    try {
+      const workspace = this.notifications
+        ? await this.prisma.workspace.findUnique({
+            where: { id: workspaceId },
+            select: { name: true },
+          })
+        : null;
+      if (workspace) {
+        await this.notifications?.notifyWorkspaceChatMessage({
+          actorId: userId,
+          actorName: message.author.name,
+          workspaceId,
+          workspaceName: workspace.name,
+          channelId: channel.id,
+          messageId: message.id,
+        });
+      }
+    } catch (error) {
+      this.logger.error(
+        `Failed to create chat notifications for message ${message.id}`,
+        error instanceof Error ? error.stack : String(error),
+      );
+    }
+    return message;
   }
 
   async clearChannelMessages(
@@ -243,7 +280,36 @@ export class ChatService {
       workspaceId,
       directChannelName(userId, targetUserId),
     );
-    return this.createMessage(channel.id, userId, input.content, files);
+    const message = await this.createMessage(
+      channel.id,
+      userId,
+      input.content,
+      files,
+    );
+    try {
+      const workspace = this.notifications
+        ? await this.prisma.workspace.findUnique({
+            where: { id: workspaceId },
+            select: { name: true },
+          })
+        : null;
+      if (workspace) {
+        await this.notifications?.notifyDirectChatMessage({
+          actorId: userId,
+          actorName: message.author.name,
+          recipientId: targetUserId,
+          workspaceId,
+          workspaceName: workspace.name,
+          messageId: message.id,
+        });
+      }
+    } catch (error) {
+      this.logger.error(
+        `Failed to create direct message notification for ${message.id}`,
+        error instanceof Error ? error.stack : String(error),
+      );
+    }
+    return message;
   }
 
   async getAttachmentForDownload(
@@ -526,14 +592,17 @@ function toChannelConversation(channel: {
   };
 }
 
-function toChatMessage(message: {
-  id: string;
-  channelId: string;
-  authorId: string;
-  content: string;
-  createdAt: Date;
-  author: ChatUserSummary;
-}, attachments: ChatMessageAttachment[] = []): ChatMessage {
+function toChatMessage(
+  message: {
+    id: string;
+    channelId: string;
+    authorId: string;
+    content: string;
+    createdAt: Date;
+    author: ChatUserSummary;
+  },
+  attachments: ChatMessageAttachment[] = [],
+): ChatMessage {
   return {
     id: message.id,
     channelId: message.channelId,
@@ -560,8 +629,5 @@ function isPublicChannelName(name: string): boolean {
 
 function isDirectChannelParticipant(name: string, userId: string): boolean {
   if (isPublicChannelName(name)) return false;
-  return name
-    .slice(DIRECT_CHANNEL_PREFIX.length)
-    .split(':')
-    .includes(userId);
+  return name.slice(DIRECT_CHANNEL_PREFIX.length).split(':').includes(userId);
 }

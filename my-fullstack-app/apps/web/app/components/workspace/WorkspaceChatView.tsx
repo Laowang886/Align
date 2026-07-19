@@ -26,6 +26,8 @@ type WorkspaceChatViewProps = {
   workspaceId: string;
   workspaceName: string;
   currentUser: CurrentUser;
+  initialChannelId?: string;
+  initialDirectUserId?: string;
 };
 
 type SettingsView = "main" | "search";
@@ -51,6 +53,8 @@ export default function WorkspaceChatView({
   workspaceId,
   workspaceName,
   currentUser,
+  initialChannelId,
+  initialDirectUserId,
 }: WorkspaceChatViewProps) {
   const [selection, setSelection] = useState<Selection | null>(null);
   const [conversation, setConversation] = useState<ChatConversation | null>(
@@ -123,7 +127,9 @@ export default function WorkspaceChatView({
     : "none";
   const activeChannel = useMemo(() => {
     if (selection?.kind !== "channel") return null;
-    return channels.find((channel) => channel.id === selection.channelId) ?? null;
+    return (
+      channels.find((channel) => channel.id === selection.channelId) ?? null
+    );
   }, [channels, selection]);
   const activeDirectMember = useMemo(() => {
     if (selection?.kind !== "direct") return null;
@@ -131,12 +137,13 @@ export default function WorkspaceChatView({
   }, [members, selection]);
   const activeTitle = conversation?.title ?? "No channel selected";
   const activeDescription =
-    conversation?.description ?? "Create a channel to start a workspace conversation.";
+    conversation?.description ??
+    "Create a channel to start a workspace conversation.";
   const activeConversationChannelId = conversation?.channel.id ?? null;
   const clearHistoryTargetName =
     selection?.kind === "direct"
-      ? activeDirectMember?.user.name ?? activeTitle
-      : activeChannel?.name ?? activeTitle.replace(/^#\s*/, "");
+      ? (activeDirectMember?.user.name ?? activeTitle)
+      : (activeChannel?.name ?? activeTitle.replace(/^#\s*/, ""));
 
   const otherMembers = useMemo(
     () => members.filter((member) => member.userId !== currentUser.id),
@@ -151,13 +158,13 @@ export default function WorkspaceChatView({
     });
   }, [otherMembers, search]);
   const sortedChannels = useMemo(
-    () => [...channels].sort((first, second) => first.name.localeCompare(second.name)),
+    () =>
+      [...channels].sort((first, second) =>
+        first.name.localeCompare(second.name),
+      ),
     [channels],
   );
-  const visibleSortedMembers = useMemo(
-    () => visibleMembers,
-    [visibleMembers],
-  );
+  const visibleSortedMembers = useMemo(() => visibleMembers, [visibleMembers]);
   const messageUrls = useMemo(() => extractMessageUrls(messages), [messages]);
   const memberFilteredMessageUrls = useMemo(() => {
     if (selectedHistoryMemberUserIds.size === 0) return messageUrls;
@@ -251,7 +258,7 @@ export default function WorkspaceChatView({
             (channel) => channel.id === nextSelection.channelId,
           )
             ? firstChannelSelection
-            : nextSelection ?? firstChannelSelection;
+            : (nextSelection ?? firstChannelSelection);
 
         if (!resolvedSelection) {
           setSelection(null);
@@ -271,7 +278,10 @@ export default function WorkspaceChatView({
 
         if (resolvedSelection.kind === "channel") {
           const [nextConversation, nextMessages] = await Promise.all([
-            chatApi.channelConversation(workspaceId, resolvedSelection.channelId),
+            chatApi.channelConversation(
+              workspaceId,
+              resolvedSelection.channelId,
+            ),
             chatApi.channelMessages(workspaceId, resolvedSelection.channelId),
           ]);
           if (
@@ -327,7 +337,14 @@ export default function WorkspaceChatView({
     setError(null);
     void Promise.all([
       workspaceApi.members(workspaceId),
-      loadMessages(selection),
+      loadMessages(
+        selection ??
+          (initialDirectUserId
+            ? { kind: "direct", userId: initialDirectUserId }
+            : initialChannelId
+              ? { kind: "channel", channelId: initialChannelId }
+              : null),
+      ),
     ])
       .then(([nextMembers]) => {
         if (!cancelled) setMembers(nextMembers);
@@ -347,7 +364,13 @@ export default function WorkspaceChatView({
     return () => {
       cancelled = true;
     };
-  }, [loadMessages, selection, workspaceId]);
+  }, [
+    initialChannelId,
+    initialDirectUserId,
+    loadMessages,
+    selection,
+    workspaceId,
+  ]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -1171,9 +1194,7 @@ export default function WorkspaceChatView({
               </button>
             </div>
           ))}
-          {!loading && sortedChannels.length === 0 && (
-            <em>No channels yet.</em>
-          )}
+          {!loading && sortedChannels.length === 0 && <em>No channels yet.</em>}
         </div>
         <div className={styles.workspaceChatSection}>
           <p>Direct Messages</p>
@@ -1361,10 +1382,7 @@ export default function WorkspaceChatView({
               />
             </div>
           </div>
-          <button
-            type="submit"
-            disabled={!canSendMessage}
-          >
+          <button type="submit" disabled={!canSendMessage}>
             {sending ? "Sending..." : "Send"}
           </button>
         </form>
@@ -1430,9 +1448,7 @@ export default function WorkspaceChatView({
                           type="button"
                           key={filter}
                           className={`${styles.workspaceChatHistoryTab} ${
-                            selected
-                              ? styles.workspaceChatHistoryTabActive
-                              : ""
+                            selected ? styles.workspaceChatHistoryTabActive : ""
                           }`}
                           onClick={() => toggleHistoryContentType(filter)}
                           aria-pressed={selected}
@@ -1495,9 +1511,7 @@ export default function WorkspaceChatView({
                           {selection?.kind === "channel" && activeChannel && (
                             <button
                               type="button"
-                              className={
-                                styles.workspaceChatSettingsNameAction
-                              }
+                              className={styles.workspaceChatSettingsNameAction}
                               onClick={(event) =>
                                 openRenameChannelModal(activeChannel, event)
                               }
@@ -1509,14 +1523,14 @@ export default function WorkspaceChatView({
                             </button>
                           )}
                         </div>
-                        <div className={styles.workspaceChatSettingsNoticeHeader}>
+                        <div
+                          className={styles.workspaceChatSettingsNoticeHeader}
+                        >
                           <span>Channel notice</span>
                           {selection?.kind === "channel" && activeChannel && (
                             <button
                               type="button"
-                              className={
-                                styles.workspaceChatSettingsNameAction
-                              }
+                              className={styles.workspaceChatSettingsNameAction}
                               onClick={(event) =>
                                 openChannelNoticeModal(activeChannel, event)
                               }
@@ -1733,8 +1747,7 @@ export default function WorkspaceChatView({
           className={styles.workspaceChatModalOverlay}
           role="presentation"
           onMouseDown={(event) => {
-            if (event.target === event.currentTarget)
-              closeChannelNoticeModal();
+            if (event.target === event.currentTarget) closeChannelNoticeModal();
           }}
         >
           <section
@@ -1885,9 +1898,7 @@ export default function WorkspaceChatView({
             aria-labelledby="delete-channel-title"
           >
             <header className={styles.workspaceChatModalHeader}>
-              <h3 id="delete-channel-title">
-                Delete #{channelToDelete.name}?
-              </h3>
+              <h3 id="delete-channel-title">Delete #{channelToDelete.name}?</h3>
               <button
                 type="button"
                 onClick={closeDeleteChannelModal}

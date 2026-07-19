@@ -12,6 +12,7 @@ import {
   supportApi,
   ApiError,
 } from "../../lib/api-client";
+import { useNotificationPreferences } from "./notifications/useNotificationPreferences";
 
 type SettingsTab = "account" | "preferences" | "support" | "danger";
 
@@ -26,7 +27,14 @@ const settingsTabs: {
   { id: "danger", label: "Danger zone", icon: "alert" },
 ];
 
-const avatarColors = ["#4f46e5", "#0f766e", "#0284c7", "#b45309", "#be123c", "#7e22ce"];
+const avatarColors = [
+  "#4f46e5",
+  "#0f766e",
+  "#0284c7",
+  "#b45309",
+  "#be123c",
+  "#7e22ce",
+];
 
 export default function SettingsDialog({
   open,
@@ -36,11 +44,13 @@ export default function SettingsDialog({
   onClose: () => void;
 }) {
   const [activeTab, setActiveTab] = useState<SettingsTab>("account");
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [kanbanNotificationsEnabled, setKanbanNotificationsEnabled] =
-    useState(true);
-  const [chatNotificationsEnabled, setChatNotificationsEnabled] =
-    useState(true);
+  const notificationPreferences = useNotificationPreferences(open);
+  const notificationsEnabled =
+    notificationPreferences.preferences?.notificationsEnabled ?? true;
+  const kanbanNotificationsEnabled =
+    notificationPreferences.preferences?.kanbanNotificationsEnabled ?? true;
+  const chatNotificationsEnabled =
+    notificationPreferences.preferences?.chatNotificationsEnabled ?? true;
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [deleteConfirmationText, setDeleteConfirmationText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -48,7 +58,7 @@ export default function SettingsDialog({
 
   //Once the save is successful, the cached "currentUser" is immediately invalidated, which triggers useQuery to automatically re-initiate a network request to obtain the latest modified user information.
   const queryClient = useQueryClient();
-  
+
   const { data: currentUser } = useQuery({
     queryKey: ["currentUser"],
     queryFn: authApi.me,
@@ -151,7 +161,9 @@ export default function SettingsDialog({
     }
   }
 
-  async function handleSubmitSafetyReport(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmitSafetyReport(
+    event: React.FormEvent<HTMLFormElement>,
+  ) {
     event.preventDefault();
     if (!safetyText.trim()) return;
     setIsSubmittingSafety(true);
@@ -164,7 +176,11 @@ export default function SettingsDialog({
       setSafetySuccessId(report.id);
       setSafetyText("");
     } catch (caught: unknown) {
-      setSafetyError(caught instanceof ApiError ? caught.message : "Unable to submit the report.");
+      setSafetyError(
+        caught instanceof ApiError
+          ? caught.message
+          : "Unable to submit the report.",
+      );
     } finally {
       setIsSubmittingSafety(false);
     }
@@ -176,11 +192,18 @@ export default function SettingsDialog({
     setIsSubmittingFeedback(true);
     setFeedbackError(null);
     try {
-      await supportApi.submitFeedback({ type: feedbackType, content: feedbackText.trim() });
+      await supportApi.submitFeedback({
+        type: feedbackType,
+        content: feedbackText.trim(),
+      });
       setFeedbackSuccess(true);
       setFeedbackText("");
     } catch (caught: unknown) {
-      setFeedbackError(caught instanceof ApiError ? caught.message : "Unable to submit feedback.");
+      setFeedbackError(
+        caught instanceof ApiError
+          ? caught.message
+          : "Unable to submit feedback.",
+      );
     } finally {
       setIsSubmittingFeedback(false);
     }
@@ -210,7 +233,6 @@ export default function SettingsDialog({
       setIsSaving(false);
     }
   }
-
 
   return (
     <div
@@ -266,7 +288,10 @@ export default function SettingsDialog({
           <div className={styles.settingsContentBody}>
             {activeTab === "account" && (
               <section className={styles.settingsPanel}>
-                <form onSubmit={handleSaveAccount} className={styles.settingsForm}>
+                <form
+                  onSubmit={handleSaveAccount}
+                  className={styles.settingsForm}
+                >
                   <label>
                     Full Name
                     <input
@@ -296,7 +321,11 @@ export default function SettingsDialog({
                           <button
                             key={color}
                             type="button"
-                            className={avatarColor === color ? styles.settingsColorSelected : ""}
+                            className={
+                              avatarColor === color
+                                ? styles.settingsColorSelected
+                                : ""
+                            }
                             style={{ backgroundColor: color }}
                             aria-label={`Use ${color} for your profile color`}
                             aria-pressed={avatarColor === color}
@@ -315,7 +344,11 @@ export default function SettingsDialog({
                     <p>Changes will synchronize across the workspace.</p>
                     <button type="submit" disabled={isSaving}>
                       <Icon name={saveSuccess ? "check" : "save"} size={15} />
-                      {isSaving ? "Saving..." : saveSuccess ? "Changes saved" : "Save changes"}
+                      {isSaving
+                        ? "Saving..."
+                        : saveSuccess
+                          ? "Changes saved"
+                          : "Save changes"}
                     </button>
                   </div>
                 </form>
@@ -332,6 +365,23 @@ export default function SettingsDialog({
                   </p>
                 </div>
 
+                {notificationPreferences.loadError && (
+                  <div className={styles.settingsError}>
+                    <span>Unable to load notification preferences.</span>
+                    <button
+                      type="button"
+                      onClick={() => void notificationPreferences.retry()}
+                    >
+                      Retry
+                    </button>
+                  </div>
+                )}
+                {notificationPreferences.actionError && (
+                  <p className={styles.settingsError}>
+                    {notificationPreferences.actionError}
+                  </p>
+                )}
+
                 <article className={styles.settingsPreferenceMaster}>
                   <div className={styles.settingsPreferenceCopy}>
                     <span className={styles.settingsPreferenceIcon}>
@@ -340,13 +390,19 @@ export default function SettingsDialog({
                     <div>
                       <p>
                         <b>Main notification alerts</b>
-                        <em className={notificationsEnabled ? styles.settingsStatusActive : styles.settingsStatusMuted}>
+                        <em
+                          className={
+                            notificationsEnabled
+                              ? styles.settingsStatusActive
+                              : styles.settingsStatusMuted
+                          }
+                        >
                           {notificationsEnabled ? "Active" : "Muted"}
                         </em>
                       </p>
                       <small>
-                        Master switch for all workspace notifications. Turning it
-                        off disables every channel below.
+                        Master switch for all workspace notifications. Turning
+                        it off disables every channel below.
                       </small>
                     </div>
                   </div>
@@ -356,39 +412,89 @@ export default function SettingsDialog({
                     role="switch"
                     aria-checked={notificationsEnabled}
                     aria-label="Enable main notification alerts"
-                    onClick={() => setNotificationsEnabled((value) => !value)}
-                  ><i /></button>
+                    disabled={
+                      notificationPreferences.loading ||
+                      notificationPreferences.loadError ||
+                      notificationPreferences.saving
+                    }
+                    onClick={() =>
+                      void notificationPreferences
+                        .update({
+                          notificationsEnabled: !notificationsEnabled,
+                        })
+                        .catch(() => undefined)
+                    }
+                  >
+                    <i />
+                  </button>
                 </article>
 
                 <div className={styles.settingsPreferenceChannels}>
                   {[
-                    ["board", "Kanban board notifications", "Receive notifications when tasks are added, moved, or updated on the active sprint board.", kanbanNotificationsEnabled, setKanbanNotificationsEnabled],
-                    ["chat", "Workspace chat notifications", "Get notified when teammates ping you or post new messages in workspace channels.", chatNotificationsEnabled, setChatNotificationsEnabled],
-                  ].map(([icon, label, description, enabled, setEnabled]) => (
-                    <article className={`${styles.settingsPreferenceChannel} ${!notificationsEnabled ? styles.settingsPreferenceDisabled : ""}`} key={label as string}>
-                      <div className={styles.settingsPreferenceCopy}>
-                        <span className={styles.settingsPreferenceIcon}>
-                          <Icon name={icon as "board" | "chat"} size={16} />
-                        </span>
-                        <div>
-                          <p><b>{label as string}</b></p>
-                          <small>{description as string}</small>
+                    [
+                      "board",
+                      "Kanban board notifications",
+                      "Receive notifications when tasks are assigned to you.",
+                      kanbanNotificationsEnabled,
+                      "kanbanNotificationsEnabled",
+                    ],
+                    [
+                      "chat",
+                      "Workspace chat notifications",
+                      "Get notified when teammates post in workspace channels or send you a direct message.",
+                      chatNotificationsEnabled,
+                      "chatNotificationsEnabled",
+                    ],
+                  ].map(
+                    ([icon, label, description, enabled, preferenceKey]) => (
+                      <article
+                        className={`${styles.settingsPreferenceChannel} ${!notificationsEnabled ? styles.settingsPreferenceDisabled : ""}`}
+                        key={label as string}
+                      >
+                        <div className={styles.settingsPreferenceCopy}>
+                          <span className={styles.settingsPreferenceIcon}>
+                            <Icon name={icon as "board" | "chat"} size={16} />
+                          </span>
+                          <div>
+                            <p>
+                              <b>{label as string}</b>
+                            </p>
+                            <small>{description as string}</small>
+                          </div>
                         </div>
-                      </div>
-                      <div className={styles.settingsPreferenceControl}>
-                        {!notificationsEnabled && <em>Muted</em>}
-                        <button
-                          className={`${styles.settingsToggle} ${enabled ? styles.settingsToggleOn : ""}`}
-                          type="button"
-                          disabled={!notificationsEnabled}
-                          role="switch"
-                          aria-checked={notificationsEnabled && (enabled as boolean)}
-                          aria-label={`Enable ${label as string}`}
-                          onClick={() => (setEnabled as React.Dispatch<React.SetStateAction<boolean>>)((value) => !value)}
-                        ><i /></button>
-                      </div>
-                    </article>
-                  ))}
+                        <div className={styles.settingsPreferenceControl}>
+                          {!notificationsEnabled && <em>Muted</em>}
+                          <button
+                            className={`${styles.settingsToggle} ${enabled ? styles.settingsToggleOn : ""}`}
+                            type="button"
+                            disabled={
+                              !notificationsEnabled ||
+                              notificationPreferences.loading ||
+                              notificationPreferences.loadError ||
+                              notificationPreferences.saving
+                            }
+                            role="switch"
+                            aria-checked={
+                              notificationsEnabled && (enabled as boolean)
+                            }
+                            aria-label={`Enable ${label as string}`}
+                            onClick={() =>
+                              void notificationPreferences
+                                .update({
+                                  [preferenceKey as
+                                    | "kanbanNotificationsEnabled"
+                                    | "chatNotificationsEnabled"]:
+                                    !(enabled as boolean),
+                                })
+                                .catch(() => undefined)
+                            }
+                          >
+                            <i />
+                          </button>
+                        </div>
+                      </article>
+                    ),
+                  )}
                 </div>
               </section>
             )}
@@ -401,36 +507,122 @@ export default function SettingsDialog({
                 </div>
 
                 <article className={styles.settingsSupportCard}>
-                  <span className={styles.settingsSupportIcon}><Icon name="mail" size={16} /></span>
+                  <span className={styles.settingsSupportIcon}>
+                    <Icon name="mail" size={16} />
+                  </span>
                   <div className={styles.settingsSupportCardContent}>
                     <b>Email support</b>
-                    <p>Get help with account configuration, integrations, and billing questions.</p>
+                    <p>
+                      Get help with account configuration, integrations, and
+                      billing questions.
+                    </p>
                     <div className={styles.settingsSupportEmail}>
                       <code>support@sprintforge.co</code>
-                      <button type="button" onClick={() => void handleCopyEmail()} aria-label="Copy support email">
-                        <Icon name={copiedEmail ? "check" : "clipboard"} size={14} />
+                      <button
+                        type="button"
+                        onClick={() => void handleCopyEmail()}
+                        aria-label="Copy support email"
+                      >
+                        <Icon
+                          name={copiedEmail ? "check" : "clipboard"}
+                          size={14}
+                        />
                       </button>
-                      <a href="mailto:support@sprintforge.co" aria-label="Email support"><Icon name="external" size={14} /></a>
+                      <a
+                        href="mailto:support@sprintforge.co"
+                        aria-label="Email support"
+                      >
+                        <Icon name="external" size={14} />
+                      </a>
                     </div>
-                    {copiedEmail && <small className={styles.settingsSupportSuccess}>Copied to clipboard.</small>}
+                    {copiedEmail && (
+                      <small className={styles.settingsSupportSuccess}>
+                        Copied to clipboard.
+                      </small>
+                    )}
                   </div>
                 </article>
 
                 <article className={styles.settingsSupportCard}>
-                  <span className={`${styles.settingsSupportIcon} ${styles.settingsSafetyIcon}`}><Icon name="alert" size={16} /></span>
+                  <span
+                    className={`${styles.settingsSupportIcon} ${styles.settingsSafetyIcon}`}
+                  >
+                    <Icon name="alert" size={16} />
+                  </span>
                   <div className={styles.settingsSupportCardContent}>
                     <b>Safety center</b>
-                    <p>Report harassment, security exploits, privacy violations, or other urgent concerns.</p>
+                    <p>
+                      Report harassment, security exploits, privacy violations,
+                      or other urgent concerns.
+                    </p>
                     <div className={styles.settingsSupportFormShell}>
-                      <strong><Icon name="alert" size={13} />File an incident report</strong>
+                      <strong>
+                        <Icon name="alert" size={13} />
+                        File an incident report
+                      </strong>
                       {safetySuccessId ? (
-                        <div className={styles.settingsSubmissionSuccess}><Icon name="check" size={17} /><b>Report transmitted safely</b><small>Reference: #{safetySuccessId.slice(0, 8)}</small></div>
+                        <div className={styles.settingsSubmissionSuccess}>
+                          <Icon name="check" size={17} />
+                          <b>Report transmitted safely</b>
+                          <small>
+                            Reference: #{safetySuccessId.slice(0, 8)}
+                          </small>
+                        </div>
                       ) : (
-                        <form onSubmit={handleSubmitSafetyReport} className={styles.settingsSupportForm}>
-                          <label>Incident category<select value={safetyCategory} onChange={(event) => setSafetyCategory(event.target.value as SafetyCategory)}><option value="harassment">Harassment / code of conduct</option><option value="exploit">Security vulnerability / exploit</option><option value="privacy">Privacy / data leakage</option><option value="other">Other emergency concern</option></select></label>
-                          <label>Incident description<textarea required rows={3} value={safetyText} onChange={(event) => setSafetyText(event.target.value)} placeholder="Provide relevant details, usernames, or vulnerability vectors..." /></label>
-                          {safetyError && <p className={styles.settingsError}>{safetyError}</p>}
-                          <button type="submit" disabled={isSubmittingSafety || !safetyText.trim()}><Icon name="alert" size={13} />{isSubmittingSafety ? "Transmitting..." : "Submit incident report"}</button>
+                        <form
+                          onSubmit={handleSubmitSafetyReport}
+                          className={styles.settingsSupportForm}
+                        >
+                          <label>
+                            Incident category
+                            <select
+                              value={safetyCategory}
+                              onChange={(event) =>
+                                setSafetyCategory(
+                                  event.target.value as SafetyCategory,
+                                )
+                              }
+                            >
+                              <option value="harassment">
+                                Harassment / code of conduct
+                              </option>
+                              <option value="exploit">
+                                Security vulnerability / exploit
+                              </option>
+                              <option value="privacy">
+                                Privacy / data leakage
+                              </option>
+                              <option value="other">
+                                Other emergency concern
+                              </option>
+                            </select>
+                          </label>
+                          <label>
+                            Incident description
+                            <textarea
+                              required
+                              rows={3}
+                              value={safetyText}
+                              onChange={(event) =>
+                                setSafetyText(event.target.value)
+                              }
+                              placeholder="Provide relevant details, usernames, or vulnerability vectors..."
+                            />
+                          </label>
+                          {safetyError && (
+                            <p className={styles.settingsError}>
+                              {safetyError}
+                            </p>
+                          )}
+                          <button
+                            type="submit"
+                            disabled={isSubmittingSafety || !safetyText.trim()}
+                          >
+                            <Icon name="alert" size={13} />
+                            {isSubmittingSafety
+                              ? "Transmitting..."
+                              : "Submit incident report"}
+                          </button>
                         </form>
                       )}
                     </div>
@@ -438,19 +630,79 @@ export default function SettingsDialog({
                 </article>
 
                 <article className={styles.settingsSupportCard}>
-                  <span className={`${styles.settingsSupportIcon} ${styles.settingsFeedbackIcon}`}><Icon name="chat" size={16} /></span>
+                  <span
+                    className={`${styles.settingsSupportIcon} ${styles.settingsFeedbackIcon}`}
+                  >
+                    <Icon name="chat" size={16} />
+                  </span>
                   <div className={styles.settingsSupportCardContent}>
                     <b>Submit feedback</b>
-                    <p>Share bug reports, suggestions, or design feedback with the SprintForge team.</p>
+                    <p>
+                      Share bug reports, suggestions, or design feedback with
+                      the SprintForge team.
+                    </p>
                     <div className={styles.settingsSupportFormShell}>
                       {feedbackSuccess ? (
-                        <div className={styles.settingsSubmissionSuccess}><Icon name="check" size={17} /><b>Feedback submitted successfully</b><small>Thank you for helping us improve SprintForge.</small></div>
+                        <div className={styles.settingsSubmissionSuccess}>
+                          <Icon name="check" size={17} />
+                          <b>Feedback submitted successfully</b>
+                          <small>
+                            Thank you for helping us improve SprintForge.
+                          </small>
+                        </div>
                       ) : (
-                        <form onSubmit={handleSubmitFeedback} className={styles.settingsSupportForm}>
-                          <label>Feedback category<select value={feedbackType} onChange={(event) => setFeedbackType(event.target.value as FeedbackType)}><option value="general">General suggestion</option><option value="bug">Bug report / defect</option><option value="feature">New feature idea</option><option value="usability">Usability / design critique</option></select></label>
-                          <label>Your feedback<textarea required rows={3} value={feedbackText} onChange={(event) => setFeedbackText(event.target.value)} placeholder="Describe the issue, idea, or review..." /></label>
-                          {feedbackError && <p className={styles.settingsError}>{feedbackError}</p>}
-                          <button type="submit" disabled={isSubmittingFeedback || !feedbackText.trim()}><Icon name="external" size={13} />{isSubmittingFeedback ? "Submitting..." : "Submit feedback"}</button>
+                        <form
+                          onSubmit={handleSubmitFeedback}
+                          className={styles.settingsSupportForm}
+                        >
+                          <label>
+                            Feedback category
+                            <select
+                              value={feedbackType}
+                              onChange={(event) =>
+                                setFeedbackType(
+                                  event.target.value as FeedbackType,
+                                )
+                              }
+                            >
+                              <option value="general">
+                                General suggestion
+                              </option>
+                              <option value="bug">Bug report / defect</option>
+                              <option value="feature">New feature idea</option>
+                              <option value="usability">
+                                Usability / design critique
+                              </option>
+                            </select>
+                          </label>
+                          <label>
+                            Your feedback
+                            <textarea
+                              required
+                              rows={3}
+                              value={feedbackText}
+                              onChange={(event) =>
+                                setFeedbackText(event.target.value)
+                              }
+                              placeholder="Describe the issue, idea, or review..."
+                            />
+                          </label>
+                          {feedbackError && (
+                            <p className={styles.settingsError}>
+                              {feedbackError}
+                            </p>
+                          )}
+                          <button
+                            type="submit"
+                            disabled={
+                              isSubmittingFeedback || !feedbackText.trim()
+                            }
+                          >
+                            <Icon name="external" size={13} />
+                            {isSubmittingFeedback
+                              ? "Submitting..."
+                              : "Submit feedback"}
+                          </button>
                         </form>
                       )}
                     </div>
@@ -458,8 +710,35 @@ export default function SettingsDialog({
                 </article>
 
                 <div className={styles.settingsPolicies}>
-                  <div className={styles.settingsSupportHeading}><Icon name="file" size={17} /><h4>Terms &amp; policies summary</h4></div>
-                  <div className={styles.settingsPolicyCopy}><section><b>1. Data storage &amp; privacy shield</b><p>Workspace records, wiki documents, and conversations are securely stored and isolated by workspace tenant.</p></section><section><b>2. Collaborative workspace authority</b><p>Workspace administrators manage membership, permissions, and board deletion. Revoked members lose access immediately.</p></section><section><b>3. Respectful workspace environments</b><p>Harassment, intentional denial of service, and data tampering are prohibited and may result in permanent suspension.</p></section></div>
+                  <div className={styles.settingsSupportHeading}>
+                    <Icon name="file" size={17} />
+                    <h4>Terms &amp; policies summary</h4>
+                  </div>
+                  <div className={styles.settingsPolicyCopy}>
+                    <section>
+                      <b>1. Data storage &amp; privacy shield</b>
+                      <p>
+                        Workspace records, wiki documents, and conversations are
+                        securely stored and isolated by workspace tenant.
+                      </p>
+                    </section>
+                    <section>
+                      <b>2. Collaborative workspace authority</b>
+                      <p>
+                        Workspace administrators manage membership, permissions,
+                        and board deletion. Revoked members lose access
+                        immediately.
+                      </p>
+                    </section>
+                    <section>
+                      <b>3. Respectful workspace environments</b>
+                      <p>
+                        Harassment, intentional denial of service, and data
+                        tampering are prohibited and may result in permanent
+                        suspension.
+                      </p>
+                    </section>
+                  </div>
                 </div>
               </section>
             )}
@@ -467,8 +746,15 @@ export default function SettingsDialog({
             {activeTab === "danger" && (
               <section className={styles.settingsPanel}>
                 <div className={styles.settingsDangerHeading}>
-                  <b><Icon name="alert" size={16} />Warning: irreversible action</b>
-                  <p>Deleting your account removes your profile, revokes workspace memberships, and signs you out. This cannot be undone.</p>
+                  <b>
+                    <Icon name="alert" size={16} />
+                    Warning: irreversible action
+                  </b>
+                  <p>
+                    Deleting your account removes your profile, revokes
+                    workspace memberships, and signs you out. This cannot be
+                    undone.
+                  </p>
                 </div>
                 <button
                   className={styles.deleteAccountButton}
@@ -479,7 +765,8 @@ export default function SettingsDialog({
                     setDeleteConfirmationOpen(true);
                   }}
                 >
-                  <Icon name="trash" size={15} />Delete account permanently
+                  <Icon name="trash" size={15} />
+                  Delete account permanently
                 </button>
               </section>
             )}
@@ -497,11 +784,39 @@ export default function SettingsDialog({
               <h3 id="delete-account-title">Confirm account deletion</h3>
               <p>
                 To confirm deletion, type <b>DELETE</b> below. Your profile,
-                owned workspaces, and all associated data will be permanently removed.
+                owned workspaces, and all associated data will be permanently
+                removed.
               </p>
-              <input value={deleteConfirmationText} onChange={(event) => setDeleteConfirmationText(event.target.value)} placeholder="Type ‘DELETE’ to confirm" />
-              {deleteError && <p className={styles.settingsError}>{deleteError}</p>}
-              <div><button type="button" disabled={isDeleting} onClick={() => { setDeleteConfirmationOpen(false); setDeleteConfirmationText(""); setDeleteError(null); }}>Cancel</button><button type="button" disabled={deleteConfirmationText !== "DELETE" || isDeleting} onClick={() => void handleDeleteAccount()}>{isDeleting ? "Deleting…" : "I understand, delete my account"}</button></div>
+              <input
+                value={deleteConfirmationText}
+                onChange={(event) =>
+                  setDeleteConfirmationText(event.target.value)
+                }
+                placeholder="Type ‘DELETE’ to confirm"
+              />
+              {deleteError && (
+                <p className={styles.settingsError}>{deleteError}</p>
+              )}
+              <div>
+                <button
+                  type="button"
+                  disabled={isDeleting}
+                  onClick={() => {
+                    setDeleteConfirmationOpen(false);
+                    setDeleteConfirmationText("");
+                    setDeleteError(null);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={deleteConfirmationText !== "DELETE" || isDeleting}
+                  onClick={() => void handleDeleteAccount()}
+                >
+                  {isDeleting ? "Deleting…" : "I understand, delete my account"}
+                </button>
+              </div>
             </section>
           </div>
         )}
