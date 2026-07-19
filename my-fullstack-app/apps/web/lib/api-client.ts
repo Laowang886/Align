@@ -145,6 +145,8 @@ export const workspaceApi = {
       method: "POST",
       body: JSON.stringify(input),
     }),
+  delete: (workspaceId: string) =>
+    apiRequest<void>(`/workspaces/${workspaceId}`, { method: "DELETE" }),
   members: (workspaceId: string) =>
     apiRequest<WorkspaceMember[]>(`/workspaces/${workspaceId}/members`),
   inviteMember: (

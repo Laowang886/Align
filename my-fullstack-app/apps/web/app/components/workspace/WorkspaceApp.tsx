@@ -321,6 +321,21 @@ export default function WorkspaceApp({
     router.push("/workspaces");
   }
 
+  async function deleteWorkspace(workspace: WorkspaceSummary) {
+    if (!window.confirm(`Delete ${workspace.name}? This permanently deletes this workspace and its data.`)) return;
+
+    try {
+      await workspaceApi.delete(workspace.id);
+      const remaining = workspaces.filter((item) => item.id !== workspace.id);
+      setWorkspaces(remaining);
+      window.localStorage.removeItem("currentWorkspaceId");
+      showToast(`${workspace.name} deleted.`);
+      router.push(remaining[0] ? `/workspaces/${remaining[0].id}` : "/workspaces");
+    } catch (caught: unknown) {
+      showToast(caught instanceof ApiError ? caught.message : "Unable to delete workspace.");
+    }
+  }
+
   async function createProject(input: CreateProjectInput): Promise<void> {
     if (!currentWorkspace) throw new Error("Select a workspace first.");
     const project = (await projectApi.create(
@@ -387,6 +402,7 @@ export default function WorkspaceApp({
         setCreateError(null);
         setDialogOpen(true);
       }}
+      onDelete={deleteWorkspace}
     />
   );
   const openMembers = () => setMembersOpen(true);

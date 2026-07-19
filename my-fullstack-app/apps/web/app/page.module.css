@@ -2172,3 +2172,17 @@
     grid-template-columns: 1fr;
   }
 }
+
+.workspaceMenu button > .workspaceSelectedDot {
+  width: 29px;
+  min-width: 29px;
+  height: 29px;
+  padding: 0;
+  border-radius: 7px;
+  background: #fff;
+  color: #5545f5;
+  display: grid;
+  place-items: center;
+  flex: 0 0 29px;
+  cursor: pointer;
+}
