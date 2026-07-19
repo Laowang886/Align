@@ -209,3 +209,6 @@ For Google and GitHub auth (run from `my-fullstack-app`):
 pnpm --filter api add passport-google-oauth20 passport-github2
 pnpm --filter api add -D @types/passport-google-oauth20 @types/passport-github2
 ```
+
+Every time before git pull(this'll fix the prisma migrate):
+npx prisma migrate dev 
