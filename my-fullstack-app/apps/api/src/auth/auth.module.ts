@@ -16,6 +16,11 @@ const jwtExpiresIn = (process.env.JWT_EXPIRATION_TIME ?? '7d') as NonNullable<
 >['expiresIn'];
 const redisUrl = process.env.REDIS_URL ?? 'redis://127.0.0.1:6379';
 
+const throttleLimit = Number(
+  process.env.THROTTLE_LIMIT ??
+    (process.env.NODE_ENV === 'production' ? 10 : 1000),
+);
+
 @Module({
   imports: [
     JwtModule.register({
@@ -30,8 +35,10 @@ const redisUrl = process.env.REDIS_URL ?? 'redis://127.0.0.1:6379';
     ThrottlerModule.forRoot({
       throttlers: [
         {
-          ttl: 60000,
-          limit: process.env.NODE_ENV === 'production' ? 10 : Infinity,
+          name: 'default',
+          ttl: 60_000,
+          limit: throttleLimit,
+          blockDuration: 60_000,
         },
       ],
       storage: new ThrottlerStorageRedisService(redisUrl),
