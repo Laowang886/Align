@@ -18,10 +18,11 @@ describe('AuthService', () => {
   const findUnique = jest.fn();
   const findFirst = jest.fn();
   const create = jest.fn();
+  const update = jest.fn();
   let capturedPasswordHash = '';
   const signAsync = jest.fn().mockResolvedValue('signed-token');
   const prisma = {
-    user: { findUnique, findFirst, create },
+    user: { findUnique, findFirst, create, update },
   } as unknown as PrismaService;
   const jwt = { signAsync } as unknown as JwtService;
   const service = new AuthService(prisma, jwt);
@@ -150,6 +151,36 @@ describe('AuthService', () => {
     expect(findUnique).not.toHaveBeenCalled();
     expect(create).not.toHaveBeenCalled();
     expect(result.user).toMatchObject({ id: user.id, email: user.email });
+  });
+
+  it('refreshes an existing OAuth user avatar when the provider supplies a new one', async () => {
+    findFirst.mockResolvedValue({
+      ...user,
+      avatarUrl: 'https://example.com/old-avatar.png',
+      passwordHash: null,
+      provider: 'google',
+      providerId: 'google-user-1',
+    });
+    update.mockResolvedValue({
+      ...user,
+      avatarUrl: 'https://example.com/new-avatar.png',
+      passwordHash: null,
+      provider: 'google',
+      providerId: 'google-user-1',
+    });
+
+    await service.loginWithOAuth({
+      provider: 'google',
+      providerId: 'google-user-1',
+      email: user.email,
+      name: user.name,
+      avatarUrl: 'https://example.com/new-avatar.png',
+    });
+
+    expect(update).toHaveBeenCalledWith({
+      where: { id: user.id },
+      data: { avatarUrl: 'https://example.com/new-avatar.png' },
+    });
   });
 
   it('rejects password login for an OAuth-only account', async () => {
