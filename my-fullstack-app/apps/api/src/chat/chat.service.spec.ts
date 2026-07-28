@@ -178,6 +178,9 @@ describe('ChatService', () => {
           return Promise.resolve({ count: initialLength - messages.length });
         }),
       },
+      workspace: {
+        findUnique: jest.fn(() => Promise.resolve({ name: 'Project' })),
+      },
     };
     return prisma;
   }
@@ -234,6 +237,34 @@ describe('ChatService', () => {
     await expect(
       service.getChannelMessages('user-1', 'workspace-1', channel.id),
     ).rejects.toBeInstanceOf(NotFoundException);
+  });
+
+  it('notifies other workspace members after a channel message is saved', async () => {
+    const prisma = createPrisma();
+    const notifications = { notifyWorkspaceChatMessage: jest.fn() };
+    const service = new ChatService(
+      prisma as never,
+      undefined,
+      notifications as never,
+    );
+    const channel = await service.createChannel('user-1', 'workspace-1', {
+      name: 'project',
+    });
+
+    const message = await service.createChannelMessage(
+      'user-1',
+      'workspace-1',
+      channel.id,
+      { content: 'Hello team' },
+    );
+
+    expect(notifications.notifyWorkspaceChatMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actorId: 'user-1',
+        messageId: message.id,
+        channelId: channel.id,
+      }),
+    );
   });
 
   it('allows all to be deleted as a public channel but keeps direct channels protected', async () => {
@@ -422,9 +453,13 @@ describe('ChatService', () => {
     const other = await service.createChannel('user-1', 'workspace-1', {
       name: 'random',
     });
-    const otherWorkspace = await service.createChannel('user-1', 'workspace-2', {
-      name: 'planning',
-    });
+    const otherWorkspace = await service.createChannel(
+      'user-1',
+      'workspace-2',
+      {
+        name: 'planning',
+      },
+    );
     await service.updateChannelNotice('user-1', 'workspace-1', current.id, {
       notice: 'Keep me',
     });
@@ -479,14 +514,18 @@ describe('ChatService', () => {
       content: 'Delete this shared message',
     });
 
-    await service.clearChannelMessages('user-2', 'workspace-1', direct.channel.id);
+    await service.clearChannelMessages(
+      'user-2',
+      'workspace-1',
+      direct.channel.id,
+    );
 
     await expect(
       service.getDirectMessages('user-1', 'workspace-1', 'user-2'),
     ).resolves.toEqual([]);
-    expect(prisma.channels.find((item) => item.id === direct.channel.id)).toEqual(
-      direct.channel,
-    );
+    expect(
+      prisma.channels.find((item) => item.id === direct.channel.id),
+    ).toEqual(direct.channel);
     await expect(
       service.createDirectMessage('user-1', 'workspace-1', 'user-2', {
         content: 'New direct message',

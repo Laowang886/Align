@@ -1,9 +1,9 @@
-// 认证的核心业务逻辑，例如：
-// 查询用户是否已存在
-// 使用 bcrypt 加密密码
-// 创建 User
-// 比较登录密码
-// 签发 JWT token
+// Core authentication business logic, including:
+// checking whether a user exists,
+// hashing passwords with bcrypt,
+// creating users,
+// comparing login passwords, and
+// issuing JWT tokens.
 import {
   ConflictException,
   Injectable,
@@ -16,7 +16,7 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import type { OAuthUser } from './types/oauth-user';
 
-// auth.service.ts 顶部，或者单独一个 utils 文件
+// This can live at the top of auth.service.ts or in a separate utility file.
 function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();
 }
@@ -85,7 +85,14 @@ export class AuthService {
     });
 
     if (existingOAuthUser) {
-      return this.createAuthResponse(existingOAuthUser);
+      const user =
+        oauthUser.avatarUrl && oauthUser.avatarUrl !== existingOAuthUser.avatarUrl
+          ? await this.prisma.user.update({
+              where: { id: existingOAuthUser.id },
+              data: { avatarUrl: oauthUser.avatarUrl },
+            })
+          : existingOAuthUser;
+      return this.createAuthResponse(user);
     }
 
     const existingEmailUser = await this.prisma.user.findUnique({

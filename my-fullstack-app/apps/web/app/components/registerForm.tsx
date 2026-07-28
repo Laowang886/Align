@@ -45,15 +45,15 @@ export default function RegisterForm() {
     <main className={`${styles.loginPage} ${styles.authPageTransition}`}>
       <section className={styles.loginIntro}>
         <Link className={styles.landingBrand} href="/">
-          <span className={styles.logo}>SF</span>
+          <span className={styles.logo}>A</span>
           <span>
-            <b>SprintForge</b>
-            <small>SaaS console</small>
+            <b>Align</b>
+            <small>Team workspace</small>
           </span>
         </Link>
 
-        <h1>Create your SprintForge workspace.</h1>
-        <p>Register an account to start managing sprint progress and team activity.</p>
+        <h1>Create your Align workspace.</h1>
+        <p>Register an account to connect projects, progress, and team activity.</p>
       </section>
 
       <form className={styles.loginCard} onSubmit={handleSubmit}>

@@ -1,12 +1,15 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
   Optional,
 } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
 import type { ColumnCategory, TaskPriority } from '@repo/shared';
 import { PrismaService } from '../prisma/prisma.service';
 import { ActivityService } from '../dashboard/activity.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import type {
   CreateKanbanColumnInput,
   CreateKanbanTaskInput,
@@ -62,9 +65,12 @@ type KanbanDatabase = Pick<
 
 @Injectable()
 export class KanbanService {
+  private readonly logger = new Logger(KanbanService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     @Optional() private readonly activity?: ActivityService,
+    @Optional() private readonly notifications?: NotificationsService,
   ) {}
 
   async getBoard(
@@ -267,6 +273,14 @@ export class KanbanService {
       },
       include: taskAssigneeInclude,
     });
+    await this.notifyTaskAssignmentSafely({
+      actorId: userId,
+      recipientId: task.assigneeId,
+      workspaceId,
+      projectId,
+      taskId: task.id,
+      taskCode: task.code,
+    });
     await this.record(
       userId,
       workspaceId,
@@ -315,6 +329,19 @@ export class KanbanService {
       },
       include: taskAssigneeInclude,
     });
+    if (
+      input.assigneeId !== undefined &&
+      input.assigneeId !== task.assigneeId
+    ) {
+      await this.notifyTaskAssignmentSafely({
+        actorId: userId,
+        recipientId: updated.assigneeId,
+        workspaceId,
+        projectId,
+        taskId: updated.id,
+        taskCode: updated.code,
+      });
+    }
     await this.record(
       userId,
       workspaceId,
@@ -462,6 +489,29 @@ export class KanbanService {
     });
   }
 
+  private async notifyTaskAssignmentSafely(input: {
+    actorId: string;
+    recipientId: string | null;
+    workspaceId: string;
+    projectId: string;
+    taskId: string;
+    taskCode: string;
+  }): Promise<void> {
+    if (!input.recipientId || input.recipientId === input.actorId) return;
+    try {
+      await this.notifications?.notifyTaskAssigned({
+        ...input,
+        recipientId: input.recipientId,
+        eventId: randomUUID(),
+      });
+    } catch (error) {
+      this.logger.error(
+        `Failed to create assignment notification for task ${input.taskId}`,
+        error instanceof Error ? error.stack : String(error),
+      );
+    }
+  }
+
   private async getOrCreateBoard(projectId: string): Promise<{ id: string }> {
     const existing = await this.findBoard(projectId);
     if (existing) return existing;
@@ -523,10 +573,15 @@ export class KanbanService {
     db: KanbanDatabase,
     boardId: string,
     taskId: string,
-  ): Promise<{ id: string; columnId: string; order: number } | null> {
+  ): Promise<{
+    id: string;
+    columnId: string;
+    order: number;
+    assigneeId: string | null;
+  } | null> {
     return db.task.findFirst({
       where: { id: taskId, column: { boardId } },
-      select: { id: true, columnId: true, order: true },
+      select: { id: true, columnId: true, order: true, assigneeId: true },
     });
   }
 

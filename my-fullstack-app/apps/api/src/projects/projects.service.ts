@@ -71,6 +71,21 @@ export class ProjectsService {
     }
   }
 
+  async delete(userId: string, projectId: string): Promise<void> {
+    const project = await this.prisma.project.findFirst({
+      where: {
+        id: projectId,
+        workspace: { members: { some: { userId } } },
+      },
+      select: { workspaceId: true },
+    });
+    if (!project) throw new NotFoundException('Project not found');
+
+    const membership = await this.findMembership(userId, project.workspaceId);
+    assertWorkspacePermission(membership.role, 'delete');
+    await this.prisma.project.delete({ where: { id: projectId } });
+  }
+
   private async findMembership(userId: string, workspaceId: string) {
     const membership = await this.prisma.workspaceMember.findUnique({
       where: { userId_workspaceId: { userId, workspaceId } },

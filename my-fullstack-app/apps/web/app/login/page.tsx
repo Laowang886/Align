@@ -37,14 +37,14 @@ export default function LoginPage() {
     <main className={`${styles.loginPage} ${styles.authPageTransition}`}>
       <section className={styles.loginIntro}>
         <Link className={styles.landingBrand} href="/">
-          <span className={styles.logo}>SF</span>
+          <span className={styles.logo}>A</span>
           <span>
-            <b>SprintForge</b>
-            <small>SaaS console</small>
+            <b>Align</b>
+            <small>Team workspace</small>
           </span>
         </Link>
 
-        <h1>Welcome back to SprintForge.</h1>
+        <h1>Welcome back to Align.</h1>
         <p>
           Sign in to continue planning work, tracking progress, and
           collaborating with your team.
@@ -86,7 +86,7 @@ export default function LoginPage() {
         <OAuthButtons mode="sign in" />
 
         <p className={styles.authSwitch}>
-          New to SprintForge? <Link href="/register">Create an account</Link>
+          New to Align? <Link href="/register">Create an account</Link>
         </p>
       </form>
     </main>

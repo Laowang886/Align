@@ -21,6 +21,7 @@ type Props = {
   workspaceId?: string;
   workspaceName?: string;
   sprints?: Sprint[];
+  initialTaskId?: string;
 };
 
 type TaskForm = {
@@ -85,6 +86,7 @@ export default function KanbanBoardView({
   workspaceId,
   workspaceName = "this workspace",
   sprints = [],
+  initialTaskId,
 }: Props) {
   const [board, setBoard] = useState<KanbanBoard | null>(null);
   const [members, setMembers] = useState<WorkspaceMember[]>([]);
@@ -108,6 +110,7 @@ export default function KanbanBoardView({
     category: "TODO",
   });
   const boardRequestVersion = useRef(0);
+  const openedDeepLinkRef = useRef<string | null>(null);
 
   const load = useCallback(async () => {
     if (!workspaceId || !projectId) {
@@ -126,6 +129,17 @@ export default function KanbanBoardView({
       if (requestVersion !== boardRequestVersion.current) return;
       setBoard(loadedBoard);
       setMembers(loadedMembers);
+      const linkedTask = initialTaskId
+        ? loadedBoard.columns
+            .flatMap((column) => column.tasks)
+            .find((task) => task.id === initialTaskId)
+        : undefined;
+      if (linkedTask && openedDeepLinkRef.current !== linkedTask.id) {
+        openedDeepLinkRef.current = linkedTask.id;
+        setEditingTask(linkedTask);
+        setTaskForm(taskFormFor(linkedTask));
+        setTaskModalOpen(true);
+      }
     } catch (caught: unknown) {
       if (requestVersion !== boardRequestVersion.current) return;
       setError(
@@ -136,7 +150,7 @@ export default function KanbanBoardView({
     } finally {
       if (requestVersion === boardRequestVersion.current) setLoading(false);
     }
-  }, [projectId, workspaceId]);
+  }, [initialTaskId, projectId, workspaceId]);
 
   useEffect(() => {
     void load();
@@ -172,18 +186,7 @@ export default function KanbanBoardView({
       columnId ?? task?.columnId ?? board?.columns[0]?.id ?? "";
     setEditingTask(task ?? null);
     setTaskForm(
-      task
-        ? {
-            title: task.title,
-            description: task.description ?? "",
-            priority: task.priority,
-            assigneeId: task.assigneeId ?? "",
-            dueDate: task.dueDate ?? "",
-            storyPoints: task.storyPoints?.toString() ?? "",
-            sprintId: task.sprintId ?? "",
-            columnId: selectedColumn,
-          }
-        : emptyTask(selectedColumn),
+      task ? taskFormFor(task, selectedColumn) : emptyTask(selectedColumn),
     );
     setTaskModalOpen(true);
   }
@@ -445,7 +448,7 @@ export default function KanbanBoardView({
       <section
         className={styles.kanbanBoard}
         style={{
-          gridTemplateColumns: `repeat(${board.columns.length}, minmax(245px, 1fr)) minmax(180px, 220px)`,
+          gridTemplateColumns: `repeat(${board.columns.length}, minmax(272px, 320px)) minmax(180px, 220px)`,
         }}
       >
         {board.columns.map((column) => {
@@ -479,7 +482,7 @@ export default function KanbanBoardView({
                     onClick={() => openColumn(column)}
                     aria-label={`Edit ${column.title}`}
                   >
-                    •••
+                    <Icon name="more" size={16} />
                   </button>
                 </div>
               </div>
@@ -508,7 +511,7 @@ export default function KanbanBoardView({
                           onClick={() => openTask(undefined, task)}
                           aria-label={`Edit ${task.code}`}
                         >
-                          •••
+                          <Icon name="more" size={16} />
                         </button>
                       </div>
                     </div>
@@ -540,6 +543,16 @@ export default function KanbanBoardView({
                     </button>
                   </article>
                 ))}
+                {columnTasks.length === 0 && (
+                  <div className={styles.kanbanColumnEmpty}>
+                    <Icon name="clipboard" size={18} />
+                    <p>
+                      {search || priorityFilter !== "all"
+                        ? "No tasks match these filters."
+                        : "No tasks in this status yet."}
+                    </p>
+                  </div>
+                )}
               </div>
             </article>
           );
@@ -794,4 +807,17 @@ export default function KanbanBoardView({
       )}
     </main>
   );
+}
+
+function taskFormFor(task: KanbanTask, columnId = task.columnId): TaskForm {
+  return {
+    title: task.title,
+    description: task.description ?? "",
+    priority: task.priority,
+    assigneeId: task.assigneeId ?? "",
+    dueDate: task.dueDate ?? "",
+    storyPoints: task.storyPoints?.toString() ?? "",
+    sprintId: task.sprintId ?? "",
+    columnId,
+  };
 }

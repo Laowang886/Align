@@ -1,5 +1,5 @@
-//接收浏览器或前端的 HTTP 请求，并把工作交给 Service
-//AuthController 接收 email 和 password
+// Receives HTTP requests from the browser or frontend and delegates work to the service.
+// AuthController receives email and password credentials.
 import {
   Controller,
   Post,
@@ -38,6 +38,8 @@ export class AuthController {
     return request.user;
   }
 
+  //The @Throttle(...) decorator does not "reconfigure a rate limiting system", 
+  // but rather "overrides the global default rate limiting value for this specific route".
   @Throttle({
     default: {
       limit: process.env.NODE_ENV === 'test' ? 1000 : 3,
@@ -57,6 +59,8 @@ export class AuthController {
     return { user: result.user };
   }
 
+  //The @Throttle(...) decorator does not "reconfigure a rate limiting system",
+  // but rather "overrides the global default rate limiting value for this specific route".
   @Throttle({
     default: {
       limit: process.env.NODE_ENV === 'test' ? 1000 : 5,

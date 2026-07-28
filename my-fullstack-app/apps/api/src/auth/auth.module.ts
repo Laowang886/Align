@@ -8,11 +8,13 @@ import { JwtStrategy } from './jwt.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { GithubStrategy } from './strategies/github.strategy';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
 import { APP_GUARD } from '@nestjs/core';
 
 const jwtExpiresIn = (process.env.JWT_EXPIRATION_TIME ?? '7d') as NonNullable<
   JwtModuleOptions['signOptions']
 >['expiresIn'];
+const redisUrl = process.env.REDIS_URL ?? 'redis://127.0.0.1:6379';
 
 @Module({
   imports: [
@@ -24,13 +26,16 @@ const jwtExpiresIn = (process.env.JWT_EXPIRATION_TIME ?? '7d') as NonNullable<
       },
     }),
 
-    //We are using the ThrottlerModule to limit the number of requests a user can make within a certain time frame. In this case, we are allowing a maximum of 10 requests per minute (60000 milliseconds) from the same IP address. This helps to prevent abuse and protect our API from excessive requests.
-    ThrottlerModule.forRoot([
-      {
-        ttl: 60000, // Time window: 60000 milliseconds = 60 seconds
-        limit: process.env.NODE_ENV === 'production' ? 10 : Infinity, //Within this time window, a maximum of 10 requests are allowed from the same IP address.
-      },
-    ]),
+    // Redis gives every API instance one shared rate-limit counter.
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: process.env.NODE_ENV === 'production' ? 10 : Infinity,
+        },
+      ],
+      storage: new ThrottlerStorageRedisService(redisUrl),
+    }),
   ],
   providers: [
     AuthService,

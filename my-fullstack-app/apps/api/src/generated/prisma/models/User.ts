@@ -229,6 +229,9 @@ export type UserWhereInput = {
   createdWikiDocuments?: Prisma.WikiDocumentListRelationFilter
   updatedWikiDocuments?: Prisma.WikiDocumentListRelationFilter
   activities?: Prisma.ActivityLogListRelationFilter
+  receivedNotifications?: Prisma.NotificationListRelationFilter
+  actedNotifications?: Prisma.NotificationListRelationFilter
+  notificationPreference?: Prisma.XOR<Prisma.NotificationPreferenceNullableScalarRelationFilter, Prisma.NotificationPreferenceWhereInput> | null
   feedbackSubmissions?: Prisma.FeedbackSubmissionListRelationFilter
   safetyReports?: Prisma.SafetyReportListRelationFilter
 }
@@ -251,6 +254,9 @@ export type UserOrderByWithRelationInput = {
   createdWikiDocuments?: Prisma.WikiDocumentOrderByRelationAggregateInput
   updatedWikiDocuments?: Prisma.WikiDocumentOrderByRelationAggregateInput
   activities?: Prisma.ActivityLogOrderByRelationAggregateInput
+  receivedNotifications?: Prisma.NotificationOrderByRelationAggregateInput
+  actedNotifications?: Prisma.NotificationOrderByRelationAggregateInput
+  notificationPreference?: Prisma.NotificationPreferenceOrderByWithRelationInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionOrderByRelationAggregateInput
   safetyReports?: Prisma.SafetyReportOrderByRelationAggregateInput
 }
@@ -277,6 +283,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdWikiDocuments?: Prisma.WikiDocumentListRelationFilter
   updatedWikiDocuments?: Prisma.WikiDocumentListRelationFilter
   activities?: Prisma.ActivityLogListRelationFilter
+  receivedNotifications?: Prisma.NotificationListRelationFilter
+  actedNotifications?: Prisma.NotificationListRelationFilter
+  notificationPreference?: Prisma.XOR<Prisma.NotificationPreferenceNullableScalarRelationFilter, Prisma.NotificationPreferenceWhereInput> | null
   feedbackSubmissions?: Prisma.FeedbackSubmissionListRelationFilter
   safetyReports?: Prisma.SafetyReportListRelationFilter
 }, "id" | "email" | "provider_providerId">
@@ -331,6 +340,9 @@ export type UserCreateInput = {
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
 }
@@ -353,6 +365,9 @@ export type UserUncheckedCreateInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
 }
@@ -375,6 +390,9 @@ export type UserUpdateInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
 }
@@ -397,6 +415,9 @@ export type UserUncheckedUpdateInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -608,6 +629,50 @@ export type UserUpdateOneRequiredWithoutMessagesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMessagesInput, Prisma.UserUpdateWithoutMessagesInput>, Prisma.UserUncheckedUpdateWithoutMessagesInput>
 }
 
+export type UserCreateNestedOneWithoutReceivedNotificationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReceivedNotificationsInput, Prisma.UserUncheckedCreateWithoutReceivedNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReceivedNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutActedNotificationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutActedNotificationsInput, Prisma.UserUncheckedCreateWithoutActedNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutActedNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutReceivedNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReceivedNotificationsInput, Prisma.UserUncheckedCreateWithoutReceivedNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReceivedNotificationsInput
+  upsert?: Prisma.UserUpsertWithoutReceivedNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReceivedNotificationsInput, Prisma.UserUpdateWithoutReceivedNotificationsInput>, Prisma.UserUncheckedUpdateWithoutReceivedNotificationsInput>
+}
+
+export type UserUpdateOneWithoutActedNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutActedNotificationsInput, Prisma.UserUncheckedCreateWithoutActedNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutActedNotificationsInput
+  upsert?: Prisma.UserUpsertWithoutActedNotificationsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutActedNotificationsInput, Prisma.UserUpdateWithoutActedNotificationsInput>, Prisma.UserUncheckedUpdateWithoutActedNotificationsInput>
+}
+
+export type UserCreateNestedOneWithoutNotificationPreferenceInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationPreferenceInput, Prisma.UserUncheckedCreateWithoutNotificationPreferenceInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationPreferenceInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutNotificationPreferenceNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationPreferenceInput, Prisma.UserUncheckedCreateWithoutNotificationPreferenceInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationPreferenceInput
+  upsert?: Prisma.UserUpsertWithoutNotificationPreferenceInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationPreferenceInput, Prisma.UserUpdateWithoutNotificationPreferenceInput>, Prisma.UserUncheckedUpdateWithoutNotificationPreferenceInput>
+}
+
 export type UserCreateNestedOneWithoutFeedbackSubmissionsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutFeedbackSubmissionsInput, Prisma.UserUncheckedCreateWithoutFeedbackSubmissionsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutFeedbackSubmissionsInput
@@ -653,6 +718,9 @@ export type UserCreateWithoutOwnedWorkspacesInput = {
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
 }
@@ -674,6 +742,9 @@ export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
 }
@@ -711,6 +782,9 @@ export type UserUpdateWithoutOwnedWorkspacesInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
 }
@@ -732,6 +806,9 @@ export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -753,6 +830,9 @@ export type UserCreateWithoutWorkspaceMembershipsInput = {
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
 }
@@ -774,6 +854,9 @@ export type UserUncheckedCreateWithoutWorkspaceMembershipsInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
 }
@@ -811,6 +894,9 @@ export type UserUpdateWithoutWorkspaceMembershipsInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
 }
@@ -832,6 +918,9 @@ export type UserUncheckedUpdateWithoutWorkspaceMembershipsInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -853,6 +942,9 @@ export type UserCreateWithoutCreatedWikiDocumentsInput = {
   messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
 }
@@ -874,6 +966,9 @@ export type UserUncheckedCreateWithoutCreatedWikiDocumentsInput = {
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
 }
@@ -900,6 +995,9 @@ export type UserCreateWithoutUpdatedWikiDocumentsInput = {
   messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
 }
@@ -921,6 +1019,9 @@ export type UserUncheckedCreateWithoutUpdatedWikiDocumentsInput = {
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
 }
@@ -958,6 +1059,9 @@ export type UserUpdateWithoutCreatedWikiDocumentsInput = {
   messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
 }
@@ -979,6 +1083,9 @@ export type UserUncheckedUpdateWithoutCreatedWikiDocumentsInput = {
   messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -1011,6 +1118,9 @@ export type UserUpdateWithoutUpdatedWikiDocumentsInput = {
   messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
 }
@@ -1032,6 +1142,9 @@ export type UserUncheckedUpdateWithoutUpdatedWikiDocumentsInput = {
   messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -1053,6 +1166,9 @@ export type UserCreateWithoutTasksInput = {
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
 }
@@ -1074,6 +1190,9 @@ export type UserUncheckedCreateWithoutTasksInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
 }
@@ -1111,6 +1230,9 @@ export type UserUpdateWithoutTasksInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
 }
@@ -1132,6 +1254,9 @@ export type UserUncheckedUpdateWithoutTasksInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -1153,6 +1278,9 @@ export type UserCreateWithoutActivitiesInput = {
   messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
+  receivedNotifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
 }
@@ -1174,6 +1302,9 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
+  receivedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
 }
@@ -1211,6 +1342,9 @@ export type UserUpdateWithoutActivitiesInput = {
   messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
+  receivedNotifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
 }
@@ -1232,6 +1366,9 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
+  receivedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -1253,6 +1390,9 @@ export type UserCreateWithoutMessagesInput = {
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
 }
@@ -1274,6 +1414,9 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
 }
@@ -1311,6 +1454,9 @@ export type UserUpdateWithoutMessagesInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
 }
@@ -1332,6 +1478,345 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutReceivedNotificationsInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  avatarColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
+  safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutReceivedNotificationsInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  avatarColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
+  safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutReceivedNotificationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReceivedNotificationsInput, Prisma.UserUncheckedCreateWithoutReceivedNotificationsInput>
+}
+
+export type UserCreateWithoutActedNotificationsInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  avatarColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
+  safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutActedNotificationsInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  avatarColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
+  safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutActedNotificationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutActedNotificationsInput, Prisma.UserUncheckedCreateWithoutActedNotificationsInput>
+}
+
+export type UserUpsertWithoutReceivedNotificationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReceivedNotificationsInput, Prisma.UserUncheckedUpdateWithoutReceivedNotificationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReceivedNotificationsInput, Prisma.UserUncheckedCreateWithoutReceivedNotificationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReceivedNotificationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReceivedNotificationsInput, Prisma.UserUncheckedUpdateWithoutReceivedNotificationsInput>
+}
+
+export type UserUpdateWithoutReceivedNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
+  safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReceivedNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUpsertWithoutActedNotificationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutActedNotificationsInput, Prisma.UserUncheckedUpdateWithoutActedNotificationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutActedNotificationsInput, Prisma.UserUncheckedCreateWithoutActedNotificationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutActedNotificationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutActedNotificationsInput, Prisma.UserUncheckedUpdateWithoutActedNotificationsInput>
+}
+
+export type UserUpdateWithoutActedNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
+  safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutActedNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutNotificationPreferenceInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  avatarColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
+  safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutNotificationPreferenceInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash?: string | null
+  provider?: string | null
+  providerId?: string | null
+  avatarUrl?: string | null
+  avatarColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
+  safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutNotificationPreferenceInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationPreferenceInput, Prisma.UserUncheckedCreateWithoutNotificationPreferenceInput>
+}
+
+export type UserUpsertWithoutNotificationPreferenceInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutNotificationPreferenceInput, Prisma.UserUncheckedUpdateWithoutNotificationPreferenceInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationPreferenceInput, Prisma.UserUncheckedCreateWithoutNotificationPreferenceInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutNotificationPreferenceInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutNotificationPreferenceInput, Prisma.UserUncheckedUpdateWithoutNotificationPreferenceInput>
+}
+
+export type UserUpdateWithoutNotificationPreferenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
+  safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutNotificationPreferenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  workspaceMemberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -1354,6 +1839,9 @@ export type UserCreateWithoutFeedbackSubmissionsInput = {
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   safetyReports?: Prisma.SafetyReportCreateNestedManyWithoutUserInput
 }
 
@@ -1375,6 +1863,9 @@ export type UserUncheckedCreateWithoutFeedbackSubmissionsInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   safetyReports?: Prisma.SafetyReportUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1412,6 +1903,9 @@ export type UserUpdateWithoutFeedbackSubmissionsInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUpdateManyWithoutUserNestedInput
 }
 
@@ -1433,6 +1927,9 @@ export type UserUncheckedUpdateWithoutFeedbackSubmissionsInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   safetyReports?: Prisma.SafetyReportUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1454,6 +1951,9 @@ export type UserCreateWithoutSafetyReportsInput = {
   createdWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionCreateNestedManyWithoutUserInput
 }
 
@@ -1475,6 +1975,9 @@ export type UserUncheckedCreateWithoutSafetyReportsInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedCreateNestedManyWithoutUpdatedByInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  receivedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1512,6 +2015,9 @@ export type UserUpdateWithoutSafetyReportsInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUpdateManyWithoutUserNestedInput
 }
 
@@ -1533,6 +2039,9 @@ export type UserUncheckedUpdateWithoutSafetyReportsInput = {
   createdWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedWikiDocuments?: Prisma.WikiDocumentUncheckedUpdateManyWithoutUpdatedByNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  receivedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   feedbackSubmissions?: Prisma.FeedbackSubmissionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1549,6 +2058,8 @@ export type UserCountOutputType = {
   createdWikiDocuments: number
   updatedWikiDocuments: number
   activities: number
+  receivedNotifications: number
+  actedNotifications: number
   feedbackSubmissions: number
   safetyReports: number
 }
@@ -1561,6 +2072,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   createdWikiDocuments?: boolean | UserCountOutputTypeCountCreatedWikiDocumentsArgs
   updatedWikiDocuments?: boolean | UserCountOutputTypeCountUpdatedWikiDocumentsArgs
   activities?: boolean | UserCountOutputTypeCountActivitiesArgs
+  receivedNotifications?: boolean | UserCountOutputTypeCountReceivedNotificationsArgs
+  actedNotifications?: boolean | UserCountOutputTypeCountActedNotificationsArgs
   feedbackSubmissions?: boolean | UserCountOutputTypeCountFeedbackSubmissionsArgs
   safetyReports?: boolean | UserCountOutputTypeCountSafetyReportsArgs
 }
@@ -1627,6 +2140,20 @@ export type UserCountOutputTypeCountActivitiesArgs<ExtArgs extends runtime.Types
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountReceivedNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountActedNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountFeedbackSubmissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.FeedbackSubmissionWhereInput
 }
@@ -1657,6 +2184,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdWikiDocuments?: boolean | Prisma.User$createdWikiDocumentsArgs<ExtArgs>
   updatedWikiDocuments?: boolean | Prisma.User$updatedWikiDocumentsArgs<ExtArgs>
   activities?: boolean | Prisma.User$activitiesArgs<ExtArgs>
+  receivedNotifications?: boolean | Prisma.User$receivedNotificationsArgs<ExtArgs>
+  actedNotifications?: boolean | Prisma.User$actedNotificationsArgs<ExtArgs>
+  notificationPreference?: boolean | Prisma.User$notificationPreferenceArgs<ExtArgs>
   feedbackSubmissions?: boolean | Prisma.User$feedbackSubmissionsArgs<ExtArgs>
   safetyReports?: boolean | Prisma.User$safetyReportsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1710,6 +2240,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdWikiDocuments?: boolean | Prisma.User$createdWikiDocumentsArgs<ExtArgs>
   updatedWikiDocuments?: boolean | Prisma.User$updatedWikiDocumentsArgs<ExtArgs>
   activities?: boolean | Prisma.User$activitiesArgs<ExtArgs>
+  receivedNotifications?: boolean | Prisma.User$receivedNotificationsArgs<ExtArgs>
+  actedNotifications?: boolean | Prisma.User$actedNotificationsArgs<ExtArgs>
+  notificationPreference?: boolean | Prisma.User$notificationPreferenceArgs<ExtArgs>
   feedbackSubmissions?: boolean | Prisma.User$feedbackSubmissionsArgs<ExtArgs>
   safetyReports?: boolean | Prisma.User$safetyReportsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1727,6 +2260,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdWikiDocuments: Prisma.$WikiDocumentPayload<ExtArgs>[]
     updatedWikiDocuments: Prisma.$WikiDocumentPayload<ExtArgs>[]
     activities: Prisma.$ActivityLogPayload<ExtArgs>[]
+    receivedNotifications: Prisma.$NotificationPayload<ExtArgs>[]
+    actedNotifications: Prisma.$NotificationPayload<ExtArgs>[]
+    notificationPreference: Prisma.$NotificationPreferencePayload<ExtArgs> | null
     feedbackSubmissions: Prisma.$FeedbackSubmissionPayload<ExtArgs>[]
     safetyReports: Prisma.$SafetyReportPayload<ExtArgs>[]
   }
@@ -2142,6 +2678,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   createdWikiDocuments<T extends Prisma.User$createdWikiDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdWikiDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WikiDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   updatedWikiDocuments<T extends Prisma.User$updatedWikiDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$updatedWikiDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WikiDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activities<T extends Prisma.User$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  receivedNotifications<T extends Prisma.User$receivedNotificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$receivedNotificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  actedNotifications<T extends Prisma.User$actedNotificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$actedNotificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notificationPreference<T extends Prisma.User$notificationPreferenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationPreferenceArgs<ExtArgs>>): Prisma.Prisma__NotificationPreferenceClient<runtime.Types.Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   feedbackSubmissions<T extends Prisma.User$feedbackSubmissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$feedbackSubmissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedbackSubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   safetyReports<T extends Prisma.User$safetyReportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$safetyReportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SafetyReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -2741,6 +3280,73 @@ export type User$activitiesArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ActivityLogScalarFieldEnum | Prisma.ActivityLogScalarFieldEnum[]
+}
+
+/**
+ * User.receivedNotifications
+ */
+export type User$receivedNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notification
+   */
+  select?: Prisma.NotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notification
+   */
+  omit?: Prisma.NotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationInclude<ExtArgs> | null
+  where?: Prisma.NotificationWhereInput
+  orderBy?: Prisma.NotificationOrderByWithRelationInput | Prisma.NotificationOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
+}
+
+/**
+ * User.actedNotifications
+ */
+export type User$actedNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notification
+   */
+  select?: Prisma.NotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notification
+   */
+  omit?: Prisma.NotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationInclude<ExtArgs> | null
+  where?: Prisma.NotificationWhereInput
+  orderBy?: Prisma.NotificationOrderByWithRelationInput | Prisma.NotificationOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
+}
+
+/**
+ * User.notificationPreference
+ */
+export type User$notificationPreferenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the NotificationPreference
+   */
+  select?: Prisma.NotificationPreferenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the NotificationPreference
+   */
+  omit?: Prisma.NotificationPreferenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationPreferenceInclude<ExtArgs> | null
+  where?: Prisma.NotificationPreferenceWhereInput
 }
 
 /**

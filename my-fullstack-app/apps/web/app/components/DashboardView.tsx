@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import ReactMarkdown from "react-markdown";
+// import ReactMarkdown from "react-markdown";
 import type {
   ColumnCategory,
-  WeeklyReport,
+  // WeeklyReport,
   WorkspaceDashboard,
 } from "@repo/shared";
 import { ApiError, dashboardApi } from "../../lib/api-client";
@@ -56,7 +56,6 @@ const categoryColors: Record<ColumnCategory, string> = {
 
 export default function DashboardView({
   workspaceId,
-  workspaceName = "Workspace",
   refreshKey = 0,
   onOpenProject,
 }: {
@@ -68,10 +67,10 @@ export default function DashboardView({
   const [dashboard, setDashboard] = useState<WorkspaceDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [report, setReport] = useState<WeeklyReport | null>(null);
-  const [reportOpen, setReportOpen] = useState(false);
-  const [reportLoading, setReportLoading] = useState(false);
-  const [reportError, setReportError] = useState<string | null>(null);
+  // const [report, setReport] = useState<WeeklyReport | null>(null);
+  // const [reportOpen, setReportOpen] = useState(false);
+  // const [reportLoading, setReportLoading] = useState(false);
+  // const [reportError, setReportError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!workspaceId) {
@@ -115,39 +114,39 @@ export default function DashboardView({
       .join(",");
   }, [dashboard]);
 
-  async function generateReport() {
-    if (!workspaceId) return;
-    setReportOpen(true);
-    setReportLoading(true);
-    setReportError(null);
-    try {
-      setReport(await dashboardApi.generateWeeklyReport(workspaceId));
-    } catch (caught: unknown) {
-      setReportError(
-        caught instanceof ApiError
-          ? caught.message
-          : "Unable to generate the report.",
-      );
-    } finally {
-      setReportLoading(false);
-    }
-  }
+  // async function generateReport() {
+  //   if (!workspaceId) return;
+  //   setReportOpen(true);
+  //   setReportLoading(true);
+  //   setReportError(null);
+  //   try {
+  //     setReport(await dashboardApi.generateWeeklyReport(workspaceId));
+  //   } catch (caught: unknown) {
+  //     setReportError(
+  //       caught instanceof ApiError
+  //         ? caught.message
+  //         : "Unable to generate the report.",
+  //     );
+  //   } finally {
+  //     setReportLoading(false);
+  //   }
+  // }
 
-  async function copyReport() {
-    if (report) await navigator.clipboard.writeText(report.markdown);
-  }
+  // async function copyReport() {
+  //   if (report) await navigator.clipboard.writeText(report.markdown);
+  // }
 
-  function downloadReport() {
-    if (!report) return;
-    const url = URL.createObjectURL(
-      new Blob([report.markdown], { type: "text/markdown" }),
-    );
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = `${workspaceName.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-weekly-report.md`;
-    anchor.click();
-    URL.revokeObjectURL(url);
-  }
+  // function downloadReport() {
+  //   if (!report) return;
+  //   const url = URL.createObjectURL(
+  //     new Blob([report.markdown], { type: "text/markdown" }),
+  //   );
+  //   const anchor = document.createElement("a");
+  //   anchor.href = url;
+  //   anchor.download = `${workspaceName.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-weekly-report.md`;
+  //   anchor.click();
+  //   URL.revokeObjectURL(url);
+  // }
 
   if (loading && !dashboard)
     return (
@@ -176,7 +175,7 @@ export default function DashboardView({
 
   return (
     <main id="main" className={styles.main}>
-      <div className={styles.hero}>
+      {/* <div className={styles.hero}>
         <div>
           <h1>Workspace Overview</h1>
           <p>
@@ -191,7 +190,7 @@ export default function DashboardView({
           <Icon name="sparkles" size={19} />
           Generate AI Weekly Report
         </button>
-      </div>
+      </div> */}
       <section className={styles.metrics}>
         <MetricCard
           icon="clipboard"
@@ -394,7 +393,7 @@ export default function DashboardView({
         </article>
       </section>
 
-      {reportOpen && (
+      {/* {reportOpen && (
         <div
           className={styles.modalBackdrop}
           onMouseDown={() => !reportLoading && setReportOpen(false)}
@@ -444,7 +443,7 @@ export default function DashboardView({
             )}
           </section>
         </div>
-      )}
+      )} */}
     </main>
   );
 }

@@ -3,31 +3,51 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { authApi, clearClientAuthState } from "../../lib/api-client";
+import {
+  authApi,
+  clearClientAuthState,
+  type CurrentUser,
+} from "../../lib/api-client";
 import styles from "../page.module.css";
 import Icon from "./Icon";
 import SettingsDialog from "./SettingsDialog";
+import NotificationBell from "./notifications/NotificationBell";
 
 export default function Header({
   onToggleSidebar,
-  workspaceName = "FormatWeaver HQ",
+  workspaceName = "Align Workspace",
   projectName,
   userName = "User",
-  userEmail,
   userAvatarUrl,
 }: {
   onToggleSidebar: () => void;
   workspaceName?: string;
   projectName?: string;
   userName?: string;
-  userEmail?: string;
   userAvatarUrl?: string | null;
 }) {
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
-  const [menuOpen, setMenuOpen] = useState(false); 
+  const [menuOpen, setMenuOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(userAvatarUrl);
+  const [avatarFailed, setAvatarFailed] = useState(false);
+
+  useEffect(() => {
+    setAvatarUrl(userAvatarUrl);
+    setAvatarFailed(false);
+  }, [userAvatarUrl]);
+
+  useEffect(() => {
+    function updateProfile(event: Event) {
+      setAvatarUrl((event as CustomEvent<CurrentUser>).detail.avatarUrl);
+      setAvatarFailed(false);
+    }
+
+    window.addEventListener("align:profile-updated", updateProfile);
+    return () => window.removeEventListener("align:profile-updated", updateProfile);
+  }, []);
 
   useEffect(() => {
     //Click anywhere outside the menu area to automatically close the drop-down menu.
@@ -88,13 +108,7 @@ export default function Header({
       </div>
 
       <div className={styles.headerRight}>
-        <a href="#main" className={styles.openTab}>
-          Open Tab <Icon name="external" size={14} />
-        </a>
-        <button className={styles.bell} aria-label="Notifications">
-          <Icon name="bell" />
-          <i />
-        </button>
+        <NotificationBell />
 
         <div className={styles.accountMenuWrap} ref={menuRef}>
           <button
@@ -105,8 +119,9 @@ export default function Header({
             aria-haspopup="menu"
             onClick={() => setMenuOpen((open) => !open)}
           >
-            {userAvatarUrl ? (
-              <img src={userAvatarUrl} alt="" />
+            {avatarUrl && !avatarFailed ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={avatarUrl} alt="" onError={() => setAvatarFailed(true)} />
             ) : (
               userName.charAt(0).toUpperCase()
             )}
@@ -145,7 +160,10 @@ export default function Header({
           )}
         </div>
       </div>
-      <SettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <SettingsDialog
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+      />
     </header>
   );
 }

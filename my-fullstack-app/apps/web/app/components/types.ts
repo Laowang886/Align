@@ -2,6 +2,7 @@ import type { ComponentProps } from "react";
 
 export type IconName =
   | "menu"
+  | "more"
   | "external"
   | "bell"
   | "chevron"

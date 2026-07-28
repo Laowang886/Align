@@ -49,10 +49,16 @@ export default function WorkspaceApp({
   workspaceId,
   projectId,
   initialView = "Dashboard",
+  targetTaskId,
+  targetChannelId,
+  targetDirectUserId,
 }: {
   workspaceId?: string;
   projectId?: string;
   initialView?: WorkspaceView;
+  targetTaskId?: string;
+  targetChannelId?: string;
+  targetDirectUserId?: string;
 }) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -79,6 +85,11 @@ export default function WorkspaceApp({
   const [projectDialogOpen, setProjectDialogOpen] = useState(false);
   const projectLoadWorkspaceId = useRef<string | null>(null);
   const sprintLoadKey = useRef<string | null>(null);
+
+  useEffect(() => {
+    const mobile = window.matchMedia("(max-width: 720px)");
+    if (mobile.matches) setSidebarOpen(false);
+  }, []);
 
   const load = useCallback(async () => {
     setViewState("loading");
@@ -237,6 +248,7 @@ export default function WorkspaceApp({
   }
 
   function navigate(view: string) {
+    if (window.matchMedia("(max-width: 720px)").matches) setSidebarOpen(false);
     if (
       view === "Dashboard" ||
       view === "Kanban Board" ||
@@ -315,6 +327,21 @@ export default function WorkspaceApp({
     router.push("/workspaces");
   }
 
+  async function deleteWorkspace(workspace: WorkspaceSummary) {
+    if (!window.confirm(`Delete ${workspace.name}? This permanently deletes this workspace and its data.`)) return;
+
+    try {
+      await workspaceApi.delete(workspace.id);
+      const remaining = workspaces.filter((item) => item.id !== workspace.id);
+      setWorkspaces(remaining);
+      window.localStorage.removeItem("currentWorkspaceId");
+      showToast(`${workspace.name} deleted.`);
+      router.push(remaining[0] ? `/workspaces/${remaining[0].id}` : "/workspaces");
+    } catch (caught: unknown) {
+      showToast(caught instanceof ApiError ? caught.message : "Unable to delete workspace.");
+    }
+  }
+
   async function createProject(input: CreateProjectInput): Promise<void> {
     if (!currentWorkspace) throw new Error("Select a workspace first.");
     const project = (await projectApi.create(
@@ -330,6 +357,23 @@ export default function WorkspaceApp({
     );
     showToast(`${project.name} created successfully.`);
     setDashboardRefresh((value) => value + 1);
+  }
+
+  async function deleteProject(project: Pick<WorkspaceProject, "id" | "name">) {
+    if (!currentWorkspace) return;
+    if (!window.confirm(`Delete ${project.name}? This permanently deletes this project and its data.`)) return;
+
+    try {
+      await projectApi.delete(project.id);
+      setProjects((items) => items.filter((item) => item.id !== project.id));
+      setActiveProjectId(null);
+      setSprints([]);
+      setDashboardRefresh((value) => value + 1);
+      showToast(`${project.name} deleted.`);
+      router.push(`/workspaces/${currentWorkspace.id}`);
+    } catch (caught: unknown) {
+      showToast(caught instanceof ApiError ? caught.message : "Unable to delete project.");
+    }
   }
 
   async function addSprint(input: CreateSprintInput): Promise<void> {
@@ -381,6 +425,7 @@ export default function WorkspaceApp({
         setCreateError(null);
         setDialogOpen(true);
       }}
+      onDelete={deleteWorkspace}
     />
   );
   const openMembers = () => setMembersOpen(true);
@@ -409,6 +454,15 @@ export default function WorkspaceApp({
           activeProjectId={activeProjectId}
           onSelectProject={selectProject}
           onAddProject={() => setProjectDialogOpen(true)}
+          onDeleteProject={deleteProject}
+        />
+      )}
+      {sidebarOpen && (
+        <button
+          type="button"
+          className={styles.sidebarBackdrop}
+          aria-label="Close sidebar"
+          onClick={() => setSidebarOpen(false)}
         />
       )}
       <div className={styles.shell}>
@@ -419,7 +473,6 @@ export default function WorkspaceApp({
             projects.find((project) => project.id === activeProjectId)?.name
           }
           userName={currentUser?.name}
-          userEmail={currentUser?.email}
           userAvatarUrl={currentUser?.avatarUrl}
         />
         <div className={styles.mainContent}>
@@ -445,7 +498,7 @@ export default function WorkspaceApp({
               </div>
               <DashboardView
                 workspaceId={currentWorkspace?.id}
-                workspaceName={currentWorkspace?.name ?? "FormatWeaver HQ"}
+                workspaceName={currentWorkspace?.name ?? "Align Workspace"}
                 refreshKey={dashboardRefresh}
               />
             </>
@@ -469,6 +522,7 @@ export default function WorkspaceApp({
                 onNotify={showToast}
                 onDataChanged={() => setDashboardRefresh((value) => value + 1)}
                 sprints={sprints}
+                initialTaskId={targetTaskId}
               />
             ) : activeView === "Sprints" ? (
               <SprintsView
@@ -501,6 +555,8 @@ export default function WorkspaceApp({
                 workspaceId={currentWorkspace.id}
                 workspaceName={currentWorkspace.name}
                 currentUser={currentUser}
+                initialChannelId={targetChannelId}
+                initialDirectUserId={targetDirectUserId}
               />
             ) : (
               <WorkspaceLoadingState />

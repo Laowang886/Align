@@ -113,6 +113,40 @@ describe('KanbanService', () => {
     expect(task.assigneeId).toBe('user-2');
   });
 
+  it('notifies a new assignee once and skips unchanged assignees', async () => {
+    const prisma = createPrismaMock({
+      boards: [{ id: 'board-1', title: 'Kanban', projectId: 'project-1' }],
+      columns: [
+        { id: 'column-1', title: 'Todo', order: 0, boardId: 'board-1' },
+      ],
+      tasks: [
+        {
+          ...task('task-1', 'Assigned task', 'column-1', 0),
+          assigneeId: null,
+        },
+      ],
+    });
+    const notifications = { notifyTaskAssigned: jest.fn() };
+    const service = new KanbanService(
+      prisma,
+      undefined,
+      notifications as never,
+    );
+
+    await service.updateTask('user-1', 'workspace-1', 'project-1', 'task-1', {
+      assigneeId: 'user-2',
+    });
+    await service.updateTask('user-1', 'workspace-1', 'project-1', 'task-1', {
+      assigneeId: 'user-2',
+      title: 'Renamed',
+    });
+
+    expect(notifications.notifyTaskAssigned).toHaveBeenCalledTimes(1);
+    expect(notifications.notifyTaskAssigned).toHaveBeenCalledWith(
+      expect.objectContaining({ recipientId: 'user-2', taskId: 'task-1' }),
+    );
+  });
+
   it('moves tasks while keeping source and target column orders continuous', async () => {
     const prisma = createPrismaMock({
       boards: [{ id: 'board-1', title: 'Kanban', projectId: 'project-1' }],

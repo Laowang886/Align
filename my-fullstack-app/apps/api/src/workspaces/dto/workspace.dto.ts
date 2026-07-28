@@ -2,7 +2,8 @@ import { BadRequestException } from '@nestjs/common';
 import type { CreateWorkspaceInput, UpdateWorkspaceInput } from '@repo/shared';
 import { normalizeSlug } from '../workspaces.service';
 
-const CREATE_KEYS = new Set(['name', 'slug', 'description']);
+const CREATE_KEYS = new Set(['name', 'slug', 'description', 'avatarUrl', 'avatarPreset']);
+const AVATAR_PRESETS = new Set(['board', 'users', 'clipboard', 'chat']);
 const UPDATE_KEYS = new Set(['name', 'slug', 'description']);
 
 export function parseCreateWorkspaceDto(value: unknown): CreateWorkspaceInput {
@@ -12,12 +13,32 @@ export function parseCreateWorkspaceDto(value: unknown): CreateWorkspaceInput {
   const name = parseName(body.name);
   const slug = body.slug === undefined ? undefined : parseSlug(body.slug);
   const description = parseOptionalDescription(body.description);
+  const avatarUrl = parseOptionalAvatarUrl(body.avatarUrl);
+  const avatarPreset = parseOptionalAvatarPreset(body.avatarPreset);
 
   return {
     name,
     ...(slug === undefined ? {} : { slug }),
     ...(description === undefined ? {} : { description }),
+    ...(avatarUrl === undefined ? {} : { avatarUrl }),
+    ...(avatarPreset === undefined ? {} : { avatarPreset }),
   };
+}
+
+function parseOptionalAvatarUrl(value: unknown): string | undefined {
+  if (value === undefined) return undefined;
+  if (typeof value !== 'string' || !value.startsWith('/uploads/workspaces/')) {
+    throw new BadRequestException('Workspace avatar must be an uploaded image');
+  }
+  return value;
+}
+
+function parseOptionalAvatarPreset(value: unknown): string | undefined {
+  if (value === undefined) return undefined;
+  if (typeof value !== 'string' || !AVATAR_PRESETS.has(value)) {
+    throw new BadRequestException('Invalid workspace avatar preset');
+  }
+  return value;
 }
 
 export function parseUpdateWorkspaceDto(value: unknown): UpdateWorkspaceInput {
