@@ -110,6 +110,7 @@ export default function CreateWorkspaceDialog({
             aria-label="Upload workspace image"
           >
             {avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}${avatarUrl}`}
                 alt=""

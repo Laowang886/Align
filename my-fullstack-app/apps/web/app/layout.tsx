@@ -13,8 +13,9 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "SprintForge | Sprint workspace",
-  description: "SprintForge helps teams plan sprints, monitor risk, and share weekly workspace summaries.",
+  title: "Align | Projects, progress, and people",
+  description:
+    "Align brings projects, Kanban boards, sprints, docs, and team conversations into one connected workspace.",
 };
 
 export default function RootLayout({
@@ -23,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Providers>{children}</Providers>
       </body>

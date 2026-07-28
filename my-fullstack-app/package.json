@@ -1,5 +1,5 @@
 {
-  "name": "my-fullstack-app",
+  "name": "align",
   "private": true,
   "scripts": {
     "build": "turbo run build",

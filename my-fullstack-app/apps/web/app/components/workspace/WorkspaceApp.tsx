@@ -86,6 +86,11 @@ export default function WorkspaceApp({
   const projectLoadWorkspaceId = useRef<string | null>(null);
   const sprintLoadKey = useRef<string | null>(null);
 
+  useEffect(() => {
+    const mobile = window.matchMedia("(max-width: 720px)");
+    if (mobile.matches) setSidebarOpen(false);
+  }, []);
+
   const load = useCallback(async () => {
     setViewState("loading");
     setError(null);
@@ -243,6 +248,7 @@ export default function WorkspaceApp({
   }
 
   function navigate(view: string) {
+    if (window.matchMedia("(max-width: 720px)").matches) setSidebarOpen(false);
     if (
       view === "Dashboard" ||
       view === "Kanban Board" ||
@@ -451,6 +457,14 @@ export default function WorkspaceApp({
           onDeleteProject={deleteProject}
         />
       )}
+      {sidebarOpen && (
+        <button
+          type="button"
+          className={styles.sidebarBackdrop}
+          aria-label="Close sidebar"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
       <div className={styles.shell}>
         <Header
           onToggleSidebar={() => setSidebarOpen((open) => !open)}
@@ -484,7 +498,7 @@ export default function WorkspaceApp({
               </div>
               <DashboardView
                 workspaceId={currentWorkspace?.id}
-                workspaceName={currentWorkspace?.name ?? "FormatWeaver HQ"}
+                workspaceName={currentWorkspace?.name ?? "Align Workspace"}
                 refreshKey={dashboardRefresh}
               />
             </>
