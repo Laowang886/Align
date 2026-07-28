@@ -17,7 +17,7 @@ import type {
   LoginInput,
   RegisterInput,
   WorkspaceDashboard,
-  WeeklyReport,
+  // WeeklyReport,
   KanbanBoard,
   KanbanColumn,
   KanbanTask,
@@ -110,8 +110,13 @@ async function apiRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
     throw new ApiError(response.status, message);
   }
 
-  if (response.status === 204) return undefined as T;
-  return (await response.json()) as T;
+  if (response.status === 204 || response.headers.get("content-length") === "0") {
+    return undefined as T;
+  }
+
+  const body = await response.text();
+  if (!body.trim()) return undefined as T;
+  return JSON.parse(body) as T;
 }
 
 async function readJson(response: Response): Promise<unknown> {
@@ -145,6 +150,8 @@ export const workspaceApi = {
       method: "POST",
       body: JSON.stringify(input),
     }),
+  delete: (workspaceId: string) =>
+    apiRequest<void>(`/workspaces/${workspaceId}`, { method: "DELETE" }),
   members: (workspaceId: string) =>
     apiRequest<WorkspaceMember[]>(`/workspaces/${workspaceId}/members`),
   inviteMember: (
@@ -182,6 +189,8 @@ export const workspaceApi = {
 
 export const projectApi = {
   get: (projectId: string) => apiRequest<Project>(`/projects/${projectId}`),
+  delete: (projectId: string) =>
+    apiRequest<void>(`/projects/${projectId}`, { method: "DELETE" }),
   list: (workspaceId: string) =>
     apiRequest<Project[]>(`/workspaces/${workspaceId}/projects`),
   create: (workspaceId: string, input: CreateProjectInput) =>
@@ -216,10 +225,11 @@ export const sprintApi = {
 export const dashboardApi = {
   get: (workspaceId: string) =>
     apiRequest<WorkspaceDashboard>(`/workspaces/${workspaceId}/dashboard`),
-  generateWeeklyReport: (workspaceId: string) =>
-    apiRequest<WeeklyReport>(`/workspaces/${workspaceId}/reports/weekly`, {
-      method: "POST",
-    }),
+  // AI weekly-report generation is disabled.
+  // generateWeeklyReport: (workspaceId: string) =>
+  //   apiRequest<WeeklyReport>(`/workspaces/${workspaceId}/reports/weekly`, {
+  //     method: "POST",
+  //   }),
 };
 
 export const kanbanApi = {
@@ -474,6 +484,22 @@ export const userApi = {
       body: JSON.stringify(input),
     }),
   deleteAccount: () => apiRequest<void>("/users/me", { method: "DELETE" }),
+  uploadAvatar: (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return apiRequest<AuthenticatedUser>("/uploads/avatar", {
+      method: "POST",
+      body: formData,
+    });
+  },
+  uploadWorkspaceImage: async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return apiRequest<{ url: string }>("/uploads/workspace", {
+      method: "POST",
+      body: formData,
+    });
+  },
 };
 
 export const supportApi = {

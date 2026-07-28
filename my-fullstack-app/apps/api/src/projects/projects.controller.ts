@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -52,5 +53,13 @@ export class ProjectController {
     @Param('projectId', new ParseUUIDPipe()) projectId: string,
   ): Promise<Project> {
     return this.projectsService.get(user.id, projectId);
+  }
+
+  @Delete(':projectId')
+  delete(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('projectId', new ParseUUIDPipe()) projectId: string,
+  ): Promise<void> {
+    return this.projectsService.delete(user.id, projectId);
   }
 }

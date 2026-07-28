@@ -30,6 +30,7 @@ type SidebarProps = {
   activeProjectId?: string | null;
   onSelectProject?: (projectId: string) => void;
   onAddProject?: () => void;
+  onDeleteProject?: (project: SidebarProject) => void;
 };
 
 export default function Sidebar({
@@ -45,6 +46,7 @@ export default function Sidebar({
   activeProjectId,
   onSelectProject,
   onAddProject,
+  onDeleteProject,
 }: SidebarProps) {
   return (
     <aside className={styles.sidebar}>
@@ -114,6 +116,18 @@ export default function Sidebar({
           >
             <i style={{ background: project.color }} />
             {project.name}
+            {activeProjectId === project.id && currentUserRole === "OWNER" && (
+              <span
+                className={styles.projectDeleteButton}
+                title="Delete project"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onDeleteProject?.(project);
+                }}
+              >
+                <Icon name="trash" size={14} />
+              </span>
+            )}
           </button>
         ))}
         {!projects && (

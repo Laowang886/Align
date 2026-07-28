@@ -1738,6 +1738,8 @@ export const WorkspaceScalarFieldEnum = {
   name: 'name',
   slug: 'slug',
   description: 'description',
+  avatarUrl: 'avatarUrl',
+  avatarPreset: 'avatarPreset',
   ownerId: 'ownerId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

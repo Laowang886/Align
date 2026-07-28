@@ -38,6 +38,8 @@ export class AuthController {
     return request.user;
   }
 
+  //The @Throttle(...) decorator does not "reconfigure a rate limiting system", 
+  // but rather "overrides the global default rate limiting value for this specific route".
   @Throttle({
     default: {
       limit: process.env.NODE_ENV === 'test' ? 1000 : 3,
@@ -57,6 +59,8 @@ export class AuthController {
     return { user: result.user };
   }
 
+  //The @Throttle(...) decorator does not "reconfigure a rate limiting system",
+  // but rather "overrides the global default rate limiting value for this specific route".
   @Throttle({
     default: {
       limit: process.env.NODE_ENV === 'test' ? 1000 : 5,

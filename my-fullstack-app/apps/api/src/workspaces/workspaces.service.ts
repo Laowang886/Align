@@ -30,6 +30,8 @@ type WorkspaceRecord = {
   name: string;
   slug: string;
   description: string | null;
+  avatarUrl: string | null;
+  avatarPreset: string | null;
   ownerId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -50,38 +52,42 @@ export class WorkspacesService {
     const requestedSlug = input.slug
       ? normalizeSlug(input.slug)
       : normalizeSlug(input.name);
-    const slug = requestedSlug || `workspace-${randomUUID().slice(0, 8)}`;
+    const baseSlug = requestedSlug || 'workspace';
+    const hasCustomSlug = input.slug !== undefined;
     if (input.slug && !requestedSlug) {
       throw new BadRequestException(
         'Workspace slug must contain letters or numbers',
       );
     }
 
-    try {
-      const workspace = await this.prisma.$transaction((transaction) =>
-        transaction.workspace.create({
-          data: {
-            name: input.name.trim(),
-            slug,
-            description: normalizeDescription(input.description),
-            ownerId,
-            members: { create: { userId: ownerId, role: 'OWNER' } },
-          },
-          include: { _count: { select: { members: true, projects: true } } },
-        }),
-      );
-      await this.activity?.record({
-        workspaceId: workspace.id,
-        actorId: ownerId,
-        action: 'created workspace',
-        resourceType: 'WORKSPACE',
-        resourceId: workspace.id,
-        summary: workspace.name,
-      });
-      return toWorkspaceSummary(workspace, 'OWNER');
-    } catch (error: unknown) {
-      throwWorkspaceConflict(error);
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const slug = hasCustomSlug
+        ? attempt === 0
+          ? baseSlug
+          : `${baseSlug}-${randomUUID().slice(0, 8)}`
+        : `${baseSlug}-${randomUUID().slice(0, 8)}`;
+      try {
+        const workspace = await this.prisma.$transaction((transaction) =>
+          transaction.workspace.create({
+            data: {
+              name: input.name.trim(), slug,
+              description: normalizeDescription(input.description),
+              avatarUrl: input.avatarUrl, avatarPreset: input.avatarPreset,
+              ownerId, members: { create: { userId: ownerId, role: 'OWNER' } },
+            },
+            include: { _count: { select: { members: true, projects: true } } },
+          }),
+        );
+        await this.activity?.record({ workspaceId: workspace.id, actorId: ownerId, action: 'created workspace', resourceType: 'WORKSPACE', resourceId: workspace.id, summary: workspace.name });
+        return toWorkspaceSummary(workspace, 'OWNER');
+      } catch (error: unknown) {
+        if (!isUniqueConstraintError(error) || attempt === 2) {
+          throwWorkspaceConflict(error);
+        }
+      }
     }
+
+    throw new ConflictException('Workspace slug is already in use');
   }
 
   async listForUser(userId: string): Promise<WorkspaceSummary[]> {
@@ -402,6 +408,8 @@ function toWorkspaceSummary(
     name: workspace.name,
     slug: workspace.slug,
     description: workspace.description,
+    avatarUrl: workspace.avatarUrl,
+    avatarPreset: workspace.avatarPreset,
     ownerId: workspace.ownerId,
     createdAt: workspace.createdAt.toISOString(),
     updatedAt: workspace.updatedAt.toISOString(),

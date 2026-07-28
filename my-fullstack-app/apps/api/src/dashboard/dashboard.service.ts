@@ -1,14 +1,14 @@
 import {
-  BadGatewayException,
+  //BadGatewayException,
   Injectable,
   NotFoundException,
-  ServiceUnavailableException,
+  //ServiceUnavailableException,
 } from '@nestjs/common';
-import { createHash } from 'node:crypto';
+//import { createHash } from 'node:crypto';
 import type {
   ColumnCategory,
   DashboardWorkloadItem,
-  WeeklyReport,
+  //WeeklyReport,
   WorkspaceDashboard,
 } from '@repo/shared';
 import { PrismaService } from '../prisma/prisma.service';
@@ -215,56 +215,57 @@ export class DashboardService {
     };
   }
 
-  async generateWeeklyReport(
-    userId: string,
-    workspaceId: string,
-  ): Promise<WeeklyReport> {
-    const dashboard = await this.getDashboard(userId, workspaceId);
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      throw new ServiceUnavailableException(
-        'AI weekly reports require OPENAI_API_KEY on the API service',
-      );
-    }
-    const model = process.env.OPENAI_REPORT_MODEL ?? 'gpt-5.6-terra';
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 30_000);
-    let response: Response;
-    try {
-      response = await fetch('https://api.openai.com/v1/responses', {
-        method: 'POST',
-        signal: controller.signal,
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model,
-          reasoning: { effort: 'low' },
-          safety_identifier: createHash('sha256').update(userId).digest('hex'),
-          instructions:
-            'Create a concise, factual weekly project report in Markdown. Use only the supplied JSON. Do not invent numbers, people, dates, or causes. Include Progress, Workload, Deadlines, Recent activity, and Next-week focus sections.',
-          input: JSON.stringify(dashboard),
-        }),
-      });
-    } catch {
-      throw new BadGatewayException(
-        'OpenAI could not generate the weekly report',
-      );
-    } finally {
-      clearTimeout(timeout);
-    }
-    if (!response.ok) {
-      throw new BadGatewayException(
-        'OpenAI could not generate the weekly report',
-      );
-    }
-    const payload = (await response.json()) as unknown;
-    const markdown = extractResponseText(payload);
-    if (!markdown)
-      throw new BadGatewayException('OpenAI returned an empty report');
-    return { markdown, generatedAt: new Date().toISOString(), model };
-  }
+  //AI Api fetch
+  // async generateWeeklyReport(
+  //   userId: string,
+  //   workspaceId: string,
+  // ): Promise<WeeklyReport> {
+  //   const dashboard = await this.getDashboard(userId, workspaceId);
+  //   const apiKey = process.env.OPENAI_API_KEY;
+  //   if (!apiKey) {
+  //     throw new ServiceUnavailableException(
+  //       'AI weekly reports require OPENAI_API_KEY on the API service',
+  //     );
+  //   }
+  //   const model = process.env.OPENAI_REPORT_MODEL ?? 'gpt-5.6-terra';
+  //   const controller = new AbortController();
+  //   const timeout = setTimeout(() => controller.abort(), 30_000);
+  //   let response: Response;
+  //   try {
+  //     response = await fetch('https://api.openai.com/v1/responses', {
+  //       method: 'POST',
+  //       signal: controller.signal,
+  //       headers: {
+  //         Authorization: `Bearer ${apiKey}`,
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         model,
+  //         reasoning: { effort: 'low' },
+  //         safety_identifier: createHash('sha256').update(userId).digest('hex'),
+  //         instructions:
+  //           'Create a concise, factual weekly project report in Markdown. Use only the supplied JSON. Do not invent numbers, people, dates, or causes. Include Progress, Workload, Deadlines, Recent activity, and Next-week focus sections.',
+  //         input: JSON.stringify(dashboard),
+  //       }),
+  //     });
+  //   } catch {
+  //     throw new BadGatewayException(
+  //       'OpenAI could not generate the weekly report',
+  //     );
+  //   } finally {
+  //     clearTimeout(timeout);
+  //   }
+  //   if (!response.ok) {
+  //     throw new BadGatewayException(
+  //       'OpenAI could not generate the weekly report',
+  //     );
+  //   }
+  //   const payload = (await response.json()) as unknown;
+  //   const markdown = extractResponseText(payload);
+  //   if (!markdown)
+  //     throw new BadGatewayException('OpenAI returned an empty report');
+  //   return { markdown, generatedAt: new Date().toISOString(), model };
+  // }
 
   private async assertAccess(
     userId: string,
@@ -278,19 +279,19 @@ export class DashboardService {
   }
 }
 
-function extractResponseText(value: unknown): string | null {
-  if (typeof value !== 'object' || value === null) return null;
-  const output = (value as { output?: unknown }).output;
-  if (!Array.isArray(output)) return null;
-  for (const item of output) {
-    if (typeof item !== 'object' || item === null) continue;
-    const content = (item as { content?: unknown }).content;
-    if (!Array.isArray(content)) continue;
-    for (const part of content) {
-      if (typeof part !== 'object' || part === null) continue;
-      const text = (part as { text?: unknown }).text;
-      if (typeof text === 'string' && text.trim()) return text.trim();
-    }
-  }
-  return null;
-}
+// function extractResponseText(value: unknown): string | null {
+//   if (typeof value !== 'object' || value === null) return null;
+//   const output = (value as { output?: unknown }).output;
+//   if (!Array.isArray(output)) return null;
+//   for (const item of output) {
+//     if (typeof item !== 'object' || item === null) continue;
+//     const content = (item as { content?: unknown }).content;
+//     if (!Array.isArray(content)) continue;
+//     for (const part of content) {
+//       if (typeof part !== 'object' || part === null) continue;
+//       const text = (part as { text?: unknown }).text;
+//       if (typeof text === 'string' && text.trim()) return text.trim();
+//     }
+//   }
+//   return null;
+// }

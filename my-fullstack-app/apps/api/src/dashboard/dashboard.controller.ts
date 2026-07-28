@@ -3,7 +3,7 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
-  Post,
+  //Post,
   UseGuards,
 } from '@nestjs/common';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -24,11 +24,11 @@ export class DashboardController {
     return this.dashboardService.getDashboard(user.id, workspaceId);
   }
 
-  @Post('reports/weekly')
-  generateWeeklyReport(
-    @CurrentUser() user: AuthenticatedUser,
-    @Param('workspaceId', new ParseUUIDPipe()) workspaceId: string,
-  ) {
-    return this.dashboardService.generateWeeklyReport(user.id, workspaceId);
-  }
+  // @Post('reports/weekly')
+  // generateWeeklyReport(
+  //   @CurrentUser() user: AuthenticatedUser,
+  //   @Param('workspaceId', new ParseUUIDPipe()) workspaceId: string,
+  // ) {
+  //   return this.dashboardService.generateWeeklyReport(user.id, workspaceId);
+  // }
 }
