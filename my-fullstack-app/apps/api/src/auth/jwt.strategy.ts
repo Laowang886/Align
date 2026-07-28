@@ -1,6 +1,6 @@
-// 定义“JWT 怎样验证”。当请求带有：
+// Defines how JWTs are verified. When a request includes:
 // Authorization: Bearer <token>
-// Passport 会调用这个文件的逻辑，验证 token 是否有效，并找出 token 对应的用户。
+// Passport uses this strategy to validate the token and load its user.
 import 'dotenv/config';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
