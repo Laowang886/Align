@@ -56,7 +56,6 @@ const categoryColors: Record<ColumnCategory, string> = {
 
 export default function DashboardView({
   workspaceId,
-  workspaceName = "Workspace",
   refreshKey = 0,
   onOpenProject,
 }: {

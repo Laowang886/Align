@@ -15,7 +15,7 @@ import NotificationBell from "./notifications/NotificationBell";
 
 export default function Header({
   onToggleSidebar,
-  workspaceName = "FormatWeaver HQ",
+  workspaceName = "Align Workspace",
   projectName,
   userName = "User",
   userAvatarUrl,

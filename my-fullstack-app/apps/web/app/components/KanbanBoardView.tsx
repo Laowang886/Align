@@ -448,7 +448,7 @@ export default function KanbanBoardView({
       <section
         className={styles.kanbanBoard}
         style={{
-          gridTemplateColumns: `repeat(${board.columns.length}, minmax(245px, 1fr)) minmax(180px, 220px)`,
+          gridTemplateColumns: `repeat(${board.columns.length}, minmax(272px, 320px)) minmax(180px, 220px)`,
         }}
       >
         {board.columns.map((column) => {
@@ -482,7 +482,7 @@ export default function KanbanBoardView({
                     onClick={() => openColumn(column)}
                     aria-label={`Edit ${column.title}`}
                   >
-                    •••
+                    <Icon name="more" size={16} />
                   </button>
                 </div>
               </div>
@@ -511,7 +511,7 @@ export default function KanbanBoardView({
                           onClick={() => openTask(undefined, task)}
                           aria-label={`Edit ${task.code}`}
                         >
-                          •••
+                          <Icon name="more" size={16} />
                         </button>
                       </div>
                     </div>
@@ -543,6 +543,16 @@ export default function KanbanBoardView({
                     </button>
                   </article>
                 ))}
+                {columnTasks.length === 0 && (
+                  <div className={styles.kanbanColumnEmpty}>
+                    <Icon name="clipboard" size={18} />
+                    <p>
+                      {search || priorityFilter !== "all"
+                        ? "No tasks match these filters."
+                        : "No tasks in this status yet."}
+                    </p>
+                  </div>
+                )}
               </div>
             </article>
           );

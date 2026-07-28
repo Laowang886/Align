@@ -3,6 +3,13 @@ import type { IconName, IconProps } from "./types";
 
 const paths: Record<IconName, ReactNode> = {
   menu: <path d="M4 6h16M4 12h16M4 18h16" />,
+  more: (
+    <>
+      <circle cx="5" cy="12" r="1" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
+      <circle cx="19" cy="12" r="1" fill="currentColor" stroke="none" />
+    </>
+  ),
   external: (
     <>
       <path d="M14 3h7v7M10 14 21 3" />

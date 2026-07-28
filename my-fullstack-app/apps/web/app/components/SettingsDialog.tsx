@@ -290,7 +290,7 @@ export default function SettingsDialog({
           <div>
             <div className={styles.settingsBrand}>
               <h2 id="settings-title">Settings</h2>
-              <p>SprintForge workspace</p>
+              <p>Align workspace</p>
             </div>
 
             <nav className={styles.settingsNav} aria-label="Settings sections">
@@ -710,7 +710,7 @@ export default function SettingsDialog({
                     <b>Submit feedback</b>
                     <p>
                       Share bug reports, suggestions, or design feedback with
-                      the SprintForge team.
+                      the Align team.
                     </p>
                     <div className={styles.settingsSupportFormShell}>
                       {feedbackSuccess ? (
@@ -718,7 +718,7 @@ export default function SettingsDialog({
                           <Icon name="check" size={17} />
                           <b>Feedback submitted successfully</b>
                           <small>
-                            Thank you for helping us improve SprintForge.
+                            Thank you for helping us improve Align.
                           </small>
                         </div>
                       ) : (

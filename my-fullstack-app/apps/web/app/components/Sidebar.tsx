@@ -51,17 +51,17 @@ export default function Sidebar({
   return (
     <aside className={styles.sidebar}>
       <div className={styles.brand}>
-        <div className={styles.logo}>SF</div>
+        <div className={styles.logo}>A</div>
         <div>
-          <b>SprintForge</b>
-          <span>SAAS CONSOLE</span>
+          <b>Align</b>
+          <span>TEAM WORKSPACE</span>
         </div>
       </div>
       {workspaceSelector ?? (
         <button className={styles.switcher}>
           <span>
             <small>WORKSPACE</small>
-            <b>FormatWeaver HQ</b>
+            <b>Align Workspace</b>
           </span>
           <Icon name="chevron" size={15} />
         </button>
@@ -85,7 +85,9 @@ export default function Sidebar({
         {navigation.map((item) => (
           <button
             key={item.label}
+            type="button"
             className={activeView === item.label ? styles.activeNav : ""}
+            aria-current={activeView === item.label ? "page" : undefined}
             onClick={() => onNavigate(item.label)}
           >
             <Icon name={item.icon} size={20} />
@@ -131,7 +133,7 @@ export default function Sidebar({
           </button>
         ))}
         {!projects && (
-          <button className={styles.allProjects}>
+          <button type="button" className={styles.allProjects}>
             <i />
             All Projects
           </button>
@@ -148,7 +150,7 @@ export default function Sidebar({
         )}
       </div>
       <div className={styles.sidebarBottom}>
-        <button onClick={onOpenMembers}>
+        <button type="button" onClick={onOpenMembers}>
           <Icon name="users" size={19} />
           Members &amp; Access
         </button>
