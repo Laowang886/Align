@@ -218,3 +218,8 @@ pnpm --filter api prisma migrate reset
 pnpm --filter api prisma:generate
 pnpm --filter api prisma:migrate
 npx prisma db push
+
+
+
+//for the migration of the database
+pnpm prisma:generate
