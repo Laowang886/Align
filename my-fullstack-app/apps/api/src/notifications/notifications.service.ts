@@ -145,7 +145,7 @@ export class NotificationsService {
       ),
     );
     if (recipients.length === 0) return;
-    const content = `${input.actorName} 在 ${input.workspaceName} 的 Workspace Chat 中发送了新消息`;
+    const content = `${input.actorName} sent a new message in ${input.workspaceName} Workspace Chat`;
     await this.prisma.notification.createMany({
       data: recipients.map(({ userId }) => ({
         recipientId: userId,
@@ -181,7 +181,7 @@ export class NotificationsService {
       type: 'WORKSPACE_CHAT_MESSAGE',
       eventId: input.messageId,
       title: 'New direct message',
-      content: `${input.actorName} 在 ${input.workspaceName} 中给你发送了私聊消息`,
+      content: `${input.actorName} sent you a direct message in ${input.workspaceName}`,
       link: `/workspaces/${input.workspaceId}/chat?directUserId=${input.actorId}`,
     });
   }
@@ -213,7 +213,7 @@ export class NotificationsService {
       type: 'TASK_ASSIGNED',
       eventId: input.eventId,
       title: 'Task assigned to you',
-      content: `${actor.name} 将任务 ${input.taskCode} 分配给了你`,
+      content: `${actor.name} assigned task ${input.taskCode} to you`,
       link: `/projects/${input.projectId}/kanban?taskId=${input.taskId}`,
     });
   }
