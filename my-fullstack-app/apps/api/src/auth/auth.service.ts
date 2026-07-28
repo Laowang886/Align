@@ -85,7 +85,14 @@ export class AuthService {
     });
 
     if (existingOAuthUser) {
-      return this.createAuthResponse(existingOAuthUser);
+      const user =
+        oauthUser.avatarUrl && oauthUser.avatarUrl !== existingOAuthUser.avatarUrl
+          ? await this.prisma.user.update({
+              where: { id: existingOAuthUser.id },
+              data: { avatarUrl: oauthUser.avatarUrl },
+            })
+          : existingOAuthUser;
+      return this.createAuthResponse(user);
     }
 
     const existingEmailUser = await this.prisma.user.findUnique({

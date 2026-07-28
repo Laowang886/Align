@@ -32,14 +32,17 @@ export default function Header({
   const [signingOut, setSigningOut] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState(userAvatarUrl);
+  const [avatarFailed, setAvatarFailed] = useState(false);
 
   useEffect(() => {
     setAvatarUrl(userAvatarUrl);
+    setAvatarFailed(false);
   }, [userAvatarUrl]);
 
   useEffect(() => {
     function updateProfile(event: Event) {
       setAvatarUrl((event as CustomEvent<CurrentUser>).detail.avatarUrl);
+      setAvatarFailed(false);
     }
 
     window.addEventListener("align:profile-updated", updateProfile);
@@ -116,9 +119,9 @@ export default function Header({
             aria-haspopup="menu"
             onClick={() => setMenuOpen((open) => !open)}
           >
-            {avatarUrl ? (
+            {avatarUrl && !avatarFailed ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={avatarUrl} alt="" />
+              <img src={avatarUrl} alt="" onError={() => setAvatarFailed(true)} />
             ) : (
               userName.charAt(0).toUpperCase()
             )}
